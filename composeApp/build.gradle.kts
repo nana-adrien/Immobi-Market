@@ -84,7 +84,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            runtimeOnly("org.jetbrains.compose.material:material-icons-extended:1.7.3")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-alpha17")
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation(projects.shared)
             implementation(libs.material3.windowSize)
 
