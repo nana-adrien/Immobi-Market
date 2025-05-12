@@ -1,4 +1,3 @@
-
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
@@ -13,10 +12,194 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    kotlin("plugin.serialization") version "1.9.10"
 }
 tasks.withType<ComposeHotRun>().configureEach {
     mainClass.set("empire.digiprem.MainKt")
 }
+apply(from = "buildSrc/generateMVVIPatternOf.gradle.kts")
+apply(from = "buildSrc/configkoinInjectionOf.gradle.kts")
+apply(from = "buildSrc/configAppNavigation.gradle.kts")
+
+tasks.register("configDashBoard") {
+    val componentName = project.findProperty("componentName")?.toString() ?: "Test"
+    val includeInDashboard = (project.findProperty("includedInDsh")?.toString())?.toBoolean() ?: false
+    val sectionName = project.findProperty("sectionName")?.toString() ?: ""
+
+    val basePath = projectDir.resolve("src/commonMain/kotlin/empire/digiprem/")
+    val dashboardPath = basePath.resolve("navigation")
+    val dashboardFile = dashboardPath.resolve("DashboardConfig.kt")
+    var dashBoardFileContent = dashboardFile.readText()
+
+    val createNavigationItemTag = "/* Auto config NavigationItem Content*/"
+    val configRoutesTag = "/* Auto config Routes Content*/"
+    val createComponentTag = "/* Auto create component */"
+    val addImportTag = "/* Auto import file */"
+    val createSubNavigationItemTag:(String)->String={ "/* Auto config $it section subNavigationItems Content*/" }
+
+
+    doLast {
+
+        val subTag=createSubNavigationItemTag( "View${sectionName}")
+        fun generateDashboard() {
+            if (!dashBoardFileContent.contains(createComponentTag)) {
+                dashBoardFileContent = """
+            $createComponentTag
+            package empire.digiprem.navigation
+            
+            $addImportTag
+            import androidx.compose.foundation.ScrollState
+            import androidx.compose.runtime.*
+            import androidx.compose.ui.Modifier
+            import empire.digiprem.core.utils.getName
+            import androidx.compose.material.icons.Icons
+            import androidx.compose.material.icons.filled.Edit
+            import androidx.navigation.NavHostController
+            import empire.digiprem.presentation.components.NavigationItem
+            import empire.digiprem.presentation.components.NavigationRailWithPopupDrawer
+
+
+            @Composable
+            fun AppNavigationConfig(
+                modifier: Modifier = Modifier,
+                navController: NavHostController,
+                appScrollState: ScrollState,
+            ) {
+                var enableNavRail by remember { mutableStateOf(false) }
+                var selectedNavItem by remember { mutableStateOf("") }
+                
+                val navigationItems = listOf<NavigationItem>(
+                    $createNavigationItemTag
+                )
+                val routes = listOf<String>(
+                    $configRoutesTag
+                    )
+
+                NavigationRailWithPopupDrawer(
+                    enableNavRail = enableNavRail,
+                    enabledExpensiveMenu = true,
+                    isPopupOpen = true,
+                    topBar = {},
+                    navigationItems = navigationItems
+                ) {
+                     AppNavigation(
+                            navController = navController,
+                        startDestination =
+                     ) {
+                        selectedNavItem=it?:""
+                        enableNavRail=routes.contains(it)
+                    }
+                }
+            }
+        """.trimIndent()
+            }
+
+        }
+        fun dashboardRootConfiguration(componentName: String) {
+            if (dashBoardFileContent.contains(addImportTag)) {
+                val import = "import empire.digiprem.navigation.${componentName}"
+                if (!dashBoardFileContent.contains(import)) {
+                    dashBoardFileContent = dashBoardFileContent.replace(
+                        addImportTag, "$addImportTag \n $import"
+                    )
+                }
+            }
+            if (dashBoardFileContent.contains(configRoutesTag)) {
+                val route = "${componentName}.getName(),"
+                //if (!dashBoardFileContent.contains(route)) {
+                dashBoardFileContent = dashBoardFileContent.replace(
+                    configRoutesTag,
+                    """$configRoutesTag 
+                        $route""".trimMargin()
+                )
+                //  }
+            }
+        }
+        fun generateNavigationItem(componentName: String) {
+            if (dashBoardFileContent.contains(createNavigationItemTag)) {
+                val navItem = """
+                NavigationItem(
+                    label = ${componentName}.getName(),
+                    icon = Icons.Default.Edit,
+                    selected =selectedNavItem==${componentName}.getName(),
+                    onClick = {
+                       navController.navigate(${componentName}())
+                     },
+                     subNavigationItem = listOf(
+                        ${createSubNavigationItemTag(componentName)}
+                     )
+                  ),
+            """.trimIndent()
+                if (!dashBoardFileContent.contains(navItem)) {
+                    dashBoardFileContent = dashBoardFileContent.replace(
+                        createNavigationItemTag, """
+                            $createNavigationItemTag
+                            $navItem""".trimMargin()
+                    )
+                }
+                dashboardRootConfiguration(componentName)
+            }
+        }
+        fun generateSubNavigationItem(componentName: String) {
+            if (dashBoardFileContent.contains(subTag)) {
+                if (subTag.contains("$sectionName")) {
+                    val navItem = """
+                NavigationItem(
+                    label = ${componentName}.getName()?:"",
+                    icon = Icons.Default.Edit,
+                    selected =selectedNavItem==${componentName}.getName(),
+                    onClick = {
+                       navController.navigate(${componentName})
+                     },
+                  ),""".trimIndent()
+                    if (!dashBoardFileContent.contains(navItem)) {
+                        dashBoardFileContent = dashBoardFileContent.replace(
+                            subTag, """
+                            $subTag
+                            $navItem""".trimMargin()
+                        )
+                        // dashboardFile.writeText(addNavItem)
+                    } else {
+                        throw RuntimeException("impossible d'ajouter un sub navItem dans la section $sectionName")
+                    }
+
+                    dashboardRootConfiguration(componentName)
+
+                } else {
+                     throw RuntimeException("la section=$sectionName du dasboard n'existe pas")
+                }
+            }
+        }
+
+        var componentClassName = "View${componentName}"
+
+
+        generateDashboard()
+        if (dashBoardFileContent.contains(createComponentTag)) {
+            if (includeInDashboard) {
+                if (sectionName.isEmpty()) {
+                    generateNavigationItem(componentClassName)
+                } else {
+                    generateSubNavigationItem(componentClassName)
+                }
+            }
+        }
+        /*else {
+            generateNavigationItem(componentClassName)
+            //  dashboardRootConfiguration(componentClassName)
+        }*/
+
+        println("➡️ Génération du composant : $componentName")
+        println("➡️ Inclusion dans dashboard : $includeInDashboard")
+        println("➡️ Section cible : $sectionName")
+        println("➡️ dashBoardFileContent.contains(createSubNavigationItemTag) : ${dashBoardFileContent.contains(subTag)} ;  subTag=$subTag")
+        dashboardFile.writeText(dashBoardFileContent)
+
+    }
+
+}
+
+
 composeCompiler {
     featureFlags.add(ComposeFeatureFlag.OptimizeNonSkippingGroups)
 }
@@ -74,6 +257,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.android)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -83,18 +268,26 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-alpha17")
             implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation(projects.shared)
             implementation(libs.material3.windowSize)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1") // ou plus récent
 
+            implementation(libs.koin.core)
+            implementation("io.insert-koin:koin-androidx-compose:4.0.4")
         }
-      desktopMain.dependencies {
+        desktopMain.dependencies {
             // https://mvnrepository.com/artifact/org.jetbrains.compose.web/web-core
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.java)
             runtimeOnly("org.jetbrains.compose.hot-reload:core:1.0.0-alpha08")
+            implementation("io.insert-koin:koin-core-jvm:4.0.4")
         }
 
         jsMain.dependencies {
@@ -102,8 +295,9 @@ kotlin {
             implementation(compose.html.core)
             implementation(compose.runtime)
         }
-        wasmJsMain.dependencies{
-          //  implementation("org.jetbrains.compose.web:web-core:1.8.0-beta02")
+        wasmJsMain.dependencies {
+            //  implementation("org.jetbrains.compose.web:web-core:1.8.0-beta02")
+            implementation("io.insert-koin:koin-core-wasm-js:4.0.4")
         }
     }
 }

@@ -1,37 +1,6 @@
 package empire.digiprem.ui.Screen.dashboard_screen
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import composeApp.src.commonMain.ComposeResources.drawable.Res
-import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
-import composeApp.src.commonMain.ComposeResources.drawable.images
-import org.jetbrains.compose.resources.painterResource
-
-
+/*
 @Composable
 fun RealEstateItem() {
 
@@ -187,48 +156,169 @@ fun RealEstateItem() {
         }
     }
 
-}
+}*/
 
+
+
+
+
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.lerp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.util.lerp
+import androidx.compose.ui.window.Popup
+import coil3.compose.AsyncImage
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Tag(
-    val imageVector: ImageVector,
+    val iconName: String, // On ne peut pas sérialiser directement ImageVector, donc on stocke son nom
     val value: String
 )
+val tabTemp = listOf(
+    Tag(
+        "Workspaces",
+        "1000km2"
+    ),
+    Tag(
+        "CarCrash",
+        "100"
+    ),
+    Tag(
+        "Phone",
+        "10km"
+    ),
+    Tag(
+        "Notifications",
+        "2"
+    ),
+    Tag(
+        "WifiProtectedSetup",
+        "1"
+    )
+)
+enum class RealEstateCategories{
+    MAISON,
+    TERRAIN,
+    CHAMBRE,
+    STUDIO,
+    APPARTEMENT,
+    BUREAU,
+    BOUTIQUE
+}
+enum class RealEstateType{
+    VENDRE,
+    LOUER
+}
 
+
+@Serializable
+data class RealEstateData(
+    val id: String,
+    val title: String,
+    val location: String,
+    val price: String,
+    val postedAgo: String,
+    val categorie:RealEstateCategories,
+    val type:RealEstateType,
+    val tags: List<Tag>,
+    val images:List<String>,
+)
+
+fun getIconByName(name: String): ImageVector {
+    return when (name) {
+        "Workspaces" -> Icons.Default.Workspaces
+        "CarCrash" -> Icons.Default.CarCrash
+        "Phone" -> Icons.Default.Phone
+        "Notifications" -> Icons.Default.Notifications
+        "WifiProtectedSetup" -> Icons.Default.WifiProtectedSetup
+        else -> Icons.Default.Help
+    }
+}
 
 @Composable
-fun RealEstateItem2() {
+fun RealEstateItem2(
+    location: String,
+    postedAgo: String,
+    title: String,
+    price: String,
+    image:String,
+    tags: List<Tag>,
+    onClick: () -> Unit
+) {
 
+    var enabledPageDetail by remember { mutableStateOf(false) }
+    var showPopup by remember { mutableStateOf(false) }
+    var cardBounds by remember { mutableStateOf<Rect?>(null) }
+    val density = LocalDensity.current
+    // Animatables pour X, Y, width, height
+    val offsetX = remember { Animatable(0f) }
+    val offsetY = remember { Animatable(0f) }
+    val width = remember { Animatable(0f) }
+    val height = remember { Animatable(0f) }
 
-    val tabTemp = listOf(
-        Tag(
-            Icons.Default.Workspaces,
-            "1000km2"
-        ),
-        Tag(
-            Icons.Default.CarCrash,
-            "100"
-        ),
-        Tag(
-            Icons.Default.Phone,
-            "10km"
-        ),
-        Tag(
-            Icons.Default.Notifications,
-            "2"
-        ),
-        Tag(
-            Icons.Default.WifiProtectedSetup,
-            "1"
-        )
-    )
+    // Démarrer l’animation si demandé
+    LaunchedEffect(enabledPageDetail) {
+        if (enabledPageDetail && cardBounds != null) {
+            offsetX.snapTo(cardBounds!!.left)
+            offsetY.snapTo(cardBounds!!.top)
+            width.snapTo(cardBounds!!.width)
+            height.snapTo(cardBounds!!.height)
+
+            offsetX.animateTo(200f, animationSpec = tween(500))
+            offsetY.animateTo(300f, animationSpec = tween(500))
+            width.animateTo(600f, animationSpec = tween(500))
+            height.animateTo(400f, animationSpec = tween(500))
+        }
+    }
+
 
     Box(
-        modifier = Modifier.width(200.dp) .shadow(elevation = 10.dp, shape = RoundedCornerShape(10.dp)).background(Color.White)
-            .clickable { }
+        modifier = Modifier.width(250.dp)
+            .wrapContentHeight()
+            .onGloballyPositioned {
+                val position = it.localToRoot(Offset.Zero)
+                val size = it.size
+                cardBounds = Rect(position, size.toSize())
+            }
+            .shadow(elevation = 10.dp, shape = RoundedCornerShape(10.dp))
+            .background(Color.White)
+            .clickable(onClick = { onClick() })
             .padding(8.dp),
     ) {
         Column(
-            modifier = Modifier.wrapContentSize()
+            modifier = Modifier.wrapContentSize(),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth().height(25.dp),
@@ -247,7 +337,7 @@ fun RealEstateItem2() {
                         tint = Color.Gray
                     )
                     Text(
-                        "Douala-Ndogbong ",
+                        location,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodySmall
                     )
@@ -264,46 +354,66 @@ fun RealEstateItem2() {
                         tint = Color.Gray
                     )
                     Text(
-                        "il y'a 2 minutes",
+                        postedAgo,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp)
                     )
                 }
 
             }
-            Row(
-                modifier = Modifier.fillMaxWidth()
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(5.dp, alignment = Alignment.CenterVertically),
+                horizontalArrangement = Arrangement.spacedBy(5.dp, alignment = Alignment.Start),
             ) {
-                Row(modifier = Modifier.weight(0.4f).fillMaxWidth().padding(5.dp),
-                    horizontalArrangement = Arrangement.Start) {
+                Row(
+                    modifier = Modifier.wrapContentWidth().padding(5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Icon(
+                        modifier = Modifier.height(16.dp),
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "",
+                        tint = Color.Gray
+                    )
                     Text(
-                        text = "Terrain Titrer",
+                        text =title,
                         style = MaterialTheme.typography.titleMedium,
-                        maxLines = 2
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 Row(
-                    modifier = Modifier.weight(0.6f).fillMaxWidth().padding(5.dp),
+                    modifier = Modifier.wrapContentWidth().padding(5.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    //Text("Acheter:", style = MaterialTheme.typography.bodyMedium)
                     Text(
-                        "50.000cfa/m2",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                        text = price,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
+
             }
             Column(
-                modifier = Modifier.fillMaxWidth().height(200.dp).padding(bottom = 5.dp),
+                modifier = Modifier.fillMaxWidth().height(200.dp).padding(bottom = 1.dp),
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp)).padding(vertical = 5.dp)
                 ) {
-                    Image(
-                        painter = painterResource(Res.drawable.images),
+                   /* Image(
+                        painter = imageRes,
                         contentDescription = null,
                         contentScale = ContentScale.Crop
+                    )*/
+                    AsyncImage(
+                        model = image,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
                     )
 
                     FlowRow(
@@ -312,7 +422,7 @@ fun RealEstateItem2() {
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
-                        tabTemp.forEach {
+                        tags.forEach {
                             Row(
                                 modifier = Modifier//.shadow(elevation = 1.dp, shape = RoundedCornerShape(5.dp))
                                     .padding(2.dp),
@@ -320,7 +430,7 @@ fun RealEstateItem2() {
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    it.imageVector,
+                                    getIconByName(it.iconName),
                                     modifier = Modifier.height(20.dp).padding(2.dp),
                                     contentDescription = null,
                                     tint = Color.White
@@ -331,99 +441,113 @@ fun RealEstateItem2() {
                     }
                 }
             }
-            var expandedText by remember { mutableStateOf(false) }
-            Column(
+        }
+    }
+}
+
+
+@Composable
+fun HeroCardDemo() {
+    var showDetails by remember { mutableStateOf(false) }
+    var cardBounds by remember { mutableStateOf<Rect?>(null) }
+
+    Box(Modifier.fillMaxSize()) {
+        if (!showDetails) {
+            Box(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth().clickable { expandedText = !expandedText },
-                verticalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(Res.drawable.background_immeuble),
-                            contentDescription = "Photo de profil",
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clip(CircleShape)
-                                .border(1.dp, Color.Gray, CircleShape)
-                        )
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            Text(
-                                text = "userName",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                            )
-                            Text(
-                                text = "~20yrs",
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 10.sp,
-                                    color = Color.Gray
-                                )
-                            )
-                        }
+                    .padding(32.dp)
+                    .size(150.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.Blue)
+                    .clickable {
+                        showDetails = true
                     }
-                    Icon(if (expandedText) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown, null)
-                }
+                    .onGloballyPositioned {
+                        val position = it.positionInRoot()
+                        val size = it.size.toSize()
+                        cardBounds = Rect(position, size)
+                    }
+            ) {
                 Text(
-                    modifier = Modifier.padding(start = 20.dp),
-                    text = "Voici la description de l’article publié par l’utilisateur. Elle peut être un peu longue.Voici la description de l’article publié par l’utilisateur. Elle peut être un peu longue.Voici la description de l’article publié par l’utilisateur. Elle peut être un peu longue.",
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = if (expandedText) Int.MAX_VALUE else 2,
-                    overflow = TextOverflow.Ellipsis
+                    "Cliquez-moi",
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth().height(30.dp).padding(2.dp),
-                horizontalArrangement = Arrangement.spacedBy(7.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier.weight(1f).shadow(elevation = 1.dp, shape = RoundedCornerShape(5.dp))
-                        .background(Color.White).padding(2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.Handshake,
-                        modifier = Modifier.padding(2.dp),
-                        contentDescription = null,
-                    )
-                    Text("0", style = MaterialTheme.typography.bodyMedium)
-                }
-                Row(
-                    modifier = Modifier.weight(1f).shadow(elevation = 1.dp, shape = RoundedCornerShape(5.dp))
-                        .background(Color.White).padding(2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.Favorite,
-                        modifier = Modifier.padding(2.dp),
-                        contentDescription = null,
-                    )
-                    Text("0", style = MaterialTheme.typography.bodyMedium)
-                }
-                Row(
-                    modifier = Modifier.weight(1f).shadow(elevation = 1.dp, shape = RoundedCornerShape(5.dp))
-                        .background(Color.White).padding(2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text("more...", style = MaterialTheme.typography.bodyMedium)
+        }
+
+        cardBounds?.let { bounds ->
+            AnimatedVisibility(visible = showDetails) {
+                HeroPopup(bounds) {
+                    showDetails = false
                 }
             }
         }
     }
-
 }
+
+@Composable
+fun HeroPopup(startBounds: Rect, onDismiss: () -> Unit) {
+    var animProgress by remember { mutableStateOf(0f) }
+
+    // Animate the progress
+    LaunchedEffect(Unit) {
+        animate(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        ) { value, _ ->
+            animProgress = value
+        }
+    }
+
+    val targetSize = Size(400f, 400f)
+    val currentSize = lerp(startBounds.size, targetSize, animProgress)
+    val currentOffset = Offset(
+        lerp(startBounds.left, (startBounds.center.x - targetSize.width / 2), animProgress),
+        lerp(startBounds.top, (startBounds.center.y - targetSize.height / 2), animProgress)
+    )
+
+    Popup(
+        alignment = Alignment.Center,
+        offset = IntOffset(currentOffset.x.toInt(), currentOffset.y.toInt()),
+        onDismissRequest = onDismiss
+    ) {
+        Box(
+            Modifier
+                .size(DpSize(currentSize.width.dp, currentSize.height.dp))
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.Green)
+                .clickable { onDismiss() }
+        ) {
+            Text("Détail de la carte", Modifier.align(Alignment.Center), color = Color.White)
+        }
+    }
+}
+
+@Composable
+fun SimplePopupExample(
+    showPopup: Boolean,
+    onClick: () -> Unit
+) {
+
+    Box(Modifier.fillMaxSize().padding(32.dp)) {
+
+        if (showPopup) {
+            Popup(
+                alignment = Alignment.TopStart,
+                offset = IntOffset(100, 100),
+                onDismissRequest = { onClick() } // facultatif
+            ) {
+                Box(
+                    Modifier
+                        .background(Color.LightGray)
+                        .padding(16.dp)
+                ) {
+                    Text("Contenu du popup")
+                }
+            }
+        }
+    }
+}
+
