@@ -1,4 +1,4 @@
-package empire.digiprem.ui.Screen.dashboard_screen
+package empire.digiprem.presentation.components.app
 
 /*
 @Composable
@@ -201,33 +201,34 @@ import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Tag(
+data class Equipment(
     val iconName: String, // On ne peut pas sérialiser directement ImageVector, donc on stocke son nom
     val value: String
 )
-val tabTemp = listOf(
-    Tag(
+val equipmentes = listOf(
+    Equipment(
         "Workspaces",
         "1000km2"
     ),
-    Tag(
+    Equipment(
         "CarCrash",
         "100"
     ),
-    Tag(
+    Equipment(
         "Phone",
         "10km"
     ),
-    Tag(
+    Equipment(
         "Notifications",
         "2"
     ),
-    Tag(
+    Equipment(
         "WifiProtectedSetup",
         "1"
     )
 )
-enum class RealEstateCategories{
+enum class RealEstateType{
+                               ALL,
     MAISON,
     TERRAIN,
     CHAMBRE,
@@ -236,7 +237,7 @@ enum class RealEstateCategories{
     BUREAU,
     BOUTIQUE
 }
-enum class RealEstateType{
+enum class RealEstateCategories{
     VENDRE,
     LOUER
 }
@@ -249,9 +250,9 @@ data class RealEstateData(
     val location: String,
     val price: String,
     val postedAgo: String,
-    val categorie:RealEstateCategories,
-    val type:RealEstateType,
-    val tags: List<Tag>,
+    val type: RealEstateType,
+    val categories: RealEstateCategories,
+    val equipment: List<Equipment>,
     val images:List<String>,
 )
 
@@ -273,7 +274,7 @@ fun RealEstateItem2(
     title: String,
     price: String,
     image:String,
-    tags: List<Tag>,
+    equipment: List<Equipment>,
     onClick: () -> Unit
 ) {
 
@@ -422,7 +423,7 @@ fun RealEstateItem2(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
-                        tags.forEach {
+                        equipment.forEach {
                             Row(
                                 modifier = Modifier//.shadow(elevation = 1.dp, shape = RoundedCornerShape(5.dp))
                                     .padding(2.dp),

@@ -32,7 +32,7 @@ tasks.register("configDashBoard") {
     var dashBoardFileContent = dashboardFile.readText()
 
     val createNavigationItemTag = "/* Auto config NavigationItem Content*/"
-    val configRoutesTag = "/* Auto config Routes Content*/"
+    val configRoutesTag = "/*Auto generate EnumView content*/"
     val createComponentTag = "/* Auto create component */"
     val addImportTag = "/* Auto import file */"
     val createSubNavigationItemTag:(String)->String={ "/* Auto config $it section subNavigationItems Content*/" }
@@ -66,15 +66,12 @@ tasks.register("configDashBoard") {
                 appScrollState: ScrollState,
             ) {
                 var enableNavRail by remember { mutableStateOf(false) }
-                var selectedNavItem by remember { mutableStateOf("") }
+                var selectedNavItem by remember { mutableStateOf(EnumView.ViewStatistics) }
                 
                 val navigationItems = listOf<NavigationItem>(
                     $createNavigationItemTag
                 )
-                val routes = listOf<String>(
-                    $configRoutesTag
-                    )
-
+              
                 NavigationRailWithPopupDrawer(
                     enableNavRail = enableNavRail,
                     enabledExpensiveMenu = true,
@@ -85,27 +82,37 @@ tasks.register("configDashBoard") {
                      AppNavigation(
                             navController = navController,
                         startDestination =
-                     ) {
-                        selectedNavItem=it?:""
-                        enableNavRail=routes.contains(it)
+                     ) { enumView->
+                      selectedNavItem = enumView
+                      enableNavRail =EnumView.entries.filter { it==enumView }.any { it.includeInDashboard }
                     }
                 }
             }
+            
+            
+            
+                /*Auto generate EnumView*/  
+            enum class EnumView(val includeInDashboard:Boolean=false) {
+            
+                $configRoutesTag
+                
+            }
+                
         """.trimIndent()
             }
 
         }
         fun dashboardRootConfiguration(componentName: String) {
-            if (dashBoardFileContent.contains(addImportTag)) {
+            /*if (dashBoardFileContent.contains(addImportTag)) {
                 val import = "import empire.digiprem.navigation.${componentName}"
                 if (!dashBoardFileContent.contains(import)) {
                     dashBoardFileContent = dashBoardFileContent.replace(
                         addImportTag, "$addImportTag \n $import"
                     )
                 }
-            }
+            }*/
             if (dashBoardFileContent.contains(configRoutesTag)) {
-                val route = "${componentName}.getName(),"
+                val route = "${componentName}${if(includeInDashboard)"(true)" else ""},"
                 //if (!dashBoardFileContent.contains(route)) {
                 dashBoardFileContent = dashBoardFileContent.replace(
                     configRoutesTag,
@@ -121,7 +128,7 @@ tasks.register("configDashBoard") {
                 NavigationItem(
                     label = ${componentName}.getName(),
                     icon = Icons.Default.Edit,
-                    selected =selectedNavItem==${componentName}.getName(),
+                    selected =selectedNavItem==EnumView.${componentName},
                     onClick = {
                        navController.navigate(${componentName}())
                      },
@@ -147,9 +154,9 @@ tasks.register("configDashBoard") {
                 NavigationItem(
                     label = ${componentName}.getName()?:"",
                     icon = Icons.Default.Edit,
-                    selected =selectedNavItem==${componentName}.getName(),
+                    selected =selectedNavItem==EnumView.${componentName},
                     onClick = {
-                       navController.navigate(${componentName})
+                       navController.navigate(${componentName}())
                      },
                   ),""".trimIndent()
                     if (!dashBoardFileContent.contains(navItem)) {
@@ -277,9 +284,12 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1") // ou plus récent
-
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
             implementation(libs.koin.core)
-            implementation("io.insert-koin:koin-androidx-compose:4.0.4")
+            implementation("io.insert-koin:koin-compose-viewmodel:4.0.4")
+            implementation("io.insert-koin:koin-compose:4.0.4")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            // implementation("io.insert-koin:koin-androidx-compose:4.0.4")
         }
         desktopMain.dependencies {
             // https://mvnrepository.com/artifact/org.jetbrains.compose.web/web-core
@@ -297,7 +307,7 @@ kotlin {
         }
         wasmJsMain.dependencies {
             //  implementation("org.jetbrains.compose.web:web-core:1.8.0-beta02")
-            implementation("io.insert-koin:koin-core-wasm-js:4.0.4")
+            //implementation("io.insert-koin:koin-core-wasm-js:4.0.4")
         }
     }
 }

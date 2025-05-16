@@ -19,7 +19,6 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -29,12 +28,14 @@ import com.octopusfx.mymessenger.ui.screen.Conversations
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
 import empire.digiprem.config.getActualWindowsSize
-import empire.digiprem.presentation.components.AppHeader
+import empire.digiprem.config.isCompactMobilePlatform
 import empire.digiprem.navigation.Home
 import empire.digiprem.navigation.chat
 import empire.digiprem.navigation.login
 import empire.digiprem.navigation.signUp
-import empire.digiprem.ui.Screen.dashboard_screen.screens.MarketplaceScreen
+import empire.digiprem.presentation.components.AppHeader
+import empire.digiprem.presentation.components.AppIconActionButton
+import empire.digiprem.presentation.components.TopBarAction
 import empire.digiprem.ui.Screen.dashboard_screen.screens.notifications.Notifications
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.ceil
@@ -345,11 +346,12 @@ fun HomeScreen(
                 }
             }
         ) {
-            MarketplaceScreen(navController,homeState=homeState)
+           // MarketplaceScreen(navController,homeState=homeState)
         }
 
        /* Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-            Row *//*(Modifier.padding(3.dp))*//*{
+            Row */
+        /*(Modifier.padding(3.dp))*//*{
 
             }
             Row(
@@ -376,25 +378,7 @@ fun HomeScreen(
 
 }
 
-@Composable
-private fun AppIconActionButton(
-    modifier: Modifier = Modifier,
-    selected: Boolean = false,
-    enabled: Boolean = true,
-    onClick: () -> Unit,
-    content: @Composable() (BoxScope.() -> Unit)
-) {
-    Box(
-        modifier = Modifier.then(modifier).size(30.dp).clip(RoundedCornerShape(20.dp)).background(
-            if (selected) MaterialTheme.colorScheme.primary.copy(
-                alpha = 0.7f
-            ) else Color.White
-        ).padding(5.dp)
-            .clickable(enabled) { onClick() },
-        contentAlignment = Alignment.Center,
-        content = content
-    )
-}
+
 
 
 @Composable
@@ -432,6 +416,8 @@ fun PageSection(
     modifier: Modifier = Modifier, state: LazyGridState = rememberLazyGridState(),
     content: @Composable () -> Unit
 ) {
+
+    val isCompactSize = isCompactMobilePlatform()
     val count = when (getActualWindowsSize().widthSizeClass) {
         WindowWidthSizeClass.Expanded -> {
             4
@@ -458,7 +444,9 @@ fun PageSection(
                 "~ $title",
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = if(isCompactSize) MaterialTheme.typography.titleSmall.fontSize
+                    else MaterialTheme.typography.titleLarge.fontSize
                 )
             )
             TextButton(
@@ -468,7 +456,9 @@ fun PageSection(
                     "Voir plus ...",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.W400
+                        fontWeight = FontWeight.W400,
+                        fontSize = if(isCompactSize) MaterialTheme.typography.bodySmall.fontSize
+                        else MaterialTheme.typography.bodyMedium.fontSize
                     )
                 )
             }

@@ -14,8 +14,11 @@ tasks.register("generateMVVIPatternOf") {
     * */
     val screenName = project.findProperty("view")?.toString()?.capitalize() ?: run {
         print("Veuillez entrer le nom de l'écran : ")
-        System.console()?.readLine() ?: "Exemple"
+        System.console()?.readLine() ?: "CreateAnnonce"
     }
+    val includeInDashboard = (project.findProperty("includedInDsh")?.toString())?.toBoolean() ?: true
+    val sectionName = project.findProperty("sectionName")?.toString() ?: "MyAnnonces"
+
 
     /*Définit le chemin où les fichiers seront créés, en minuscule (Home → home).*/
 
@@ -48,29 +51,39 @@ tasks.register("generateMVVIPatternOf") {
             }
         }
 
+        var viewClassName = screenName.replaceFirstChar { it.uppercaseChar() }
 
-        /* 📂 Crée tous les dossiers nécessaires s'ils n'existent pas déjà (mkdir -p en shell).*/
-        baseDir.mkdirs()
-        /*Définit les fichiers à créer :
+        fun verifySectionExist():Boolean{
+            val sectionFile = File(baseDir, "presentation/views/${sectionName}View.kt")
+            if (sectionFile.exists()) {
+                viewClassName="${sectionName.replaceFirstChar { it.uppercaseChar() }}$viewClassName"
+                return true
+            }else{
+                return false
+            }
+        }
+        if (sectionName.isEmpty() ||verifySectionExist()) {
+            /* 📂 Crée tous les dossiers nécessaires s'ils n'existent pas déjà (mkdir -p en shell).*/
+            baseDir.mkdirs()
+            /*Définit les fichiers à créer :
 
-        HomeScreen.kt
+            HomeScreen.kt
 
-        HomeState.kt
+            HomeState.kt
 
-        HomeViewModel.kt"*/
-        val viewClassName = screenName.replaceFirstChar { it.uppercaseChar() }
+            HomeViewModel.kt"*/
 
-        val viewFile = File(baseDir, "presentation/views/${viewClassName}View.kt")
-        val modelFile = File(baseDir, "presentation/models/${viewClassName}Model.kt")
-        val intentFile = File(baseDir, "presentation/intents/${viewClassName}Intent.kt")
-        val viewModelFile = File(baseDir, "presentation/viewmodels/${viewClassName}ViewModel.kt")
-        val abstractViewModelFile = File(baseDir, "presentation/viewmodels/base/AbstractViewModel.kt")
+            val viewFile = File(baseDir, "presentation/views/${viewClassName}View.kt")
+            val modelFile = File(baseDir, "presentation/models/${viewClassName}Model.kt")
+            val intentFile = File(baseDir, "presentation/intents/${viewClassName}Intent.kt")
+            val viewModelFile = File(baseDir, "presentation/viewmodels/${viewClassName}ViewModel.kt")
+            val abstractViewModelFile = File(baseDir, "presentation/viewmodels/base/AbstractViewModel.kt")
 
 
-        /*💡 Écriture du contenu de chaque fichier*/
-        writeIfNotExists(
-            abstractViewModelFile,
-            """
+            /*💡 Écriture du contenu de chaque fichier*/
+            writeIfNotExists(
+                abstractViewModelFile,
+                """
             package empire.digiprem.presentation.viewmodels.base
             
             import androidx.lifecycle.ViewModel
@@ -79,20 +92,17 @@ tasks.register("generateMVVIPatternOf") {
             
             abstract class AbstractViewModel<model,intent>(private val defaultState:model):ViewModel() {
             
-                private val _mutableState = MutableStateFlow(defaultState)
+                protected val _mutableState = MutableStateFlow(defaultState)
                 val state=_mutableState.asStateFlow()
             
-                fun onIntentHandler(intent:intent){
-            
-            
-                }
+              abstract  fun onIntentHandler(intent:intent)
             }
             """.trimIndent()
-        )
-        /*💡 Écriture du contenu de chaque fichier*/
-        writeIfNotExists(
-            viewFile,
-            """
+            )
+            /*💡 Écriture du contenu de chaque fichier*/
+            writeIfNotExists(
+                viewFile,
+                """
             package empire.digiprem.presentation.views
            
               import empire.digiprem.navigation.View${viewClassName}
@@ -116,66 +126,78 @@ tasks.register("generateMVVIPatternOf") {
                     val onSendIntent=${screenName.toLowerCase()}ViewModel::onIntentHandler
             }
             """.trimIndent()
-        )
-        writeIfNotExists(
-            modelFile,
-            """
+            )
+            writeIfNotExists(
+                modelFile,
+                """
         package empire.digiprem.presentation.models
         
         data class ${viewClassName}Model(
             val isLoading: Boolean = false
         )
         """.trimIndent()
-        )
+            )
 
-        writeIfNotExists(
-            intentFile,
-            """
+            writeIfNotExists(
+                intentFile,
+                """
         package empire.digiprem.presentation.intents
         
         sealed class ${viewClassName}Intent {
         
          }
         """.trimIndent()
-        )
+            )
 
-        writeIfNotExists(
-            viewModelFile,
-            """
+            writeIfNotExists(
+                viewModelFile,
+                """
             package empire.digiprem.presentation.viewmodels
             import empire.digiprem.presentation.viewmodels.base.AbstractViewModel
             import empire.digiprem.presentation.intents.${viewClassName}Intent
             import empire.digiprem.presentation.models.${viewClassName}Model
-            class ${screenName}ViewModel : AbstractViewModel<${viewClassName}Model,${viewClassName}Intent>(defaultState = ${viewClassName}Model()) {
+            class ${viewClassName}ViewModel : AbstractViewModel<${viewClassName}Model,${viewClassName}Intent>(defaultState = ${viewClassName}Model()) {
                 // TODO: ViewModel logic
+            
+                    override fun onIntentHandler(intent: ${viewClassName}Intent) {
+        
+                     }
             }
                 """.trimIndent()
-        )
-        exec {
-            workingDir = rootDir
-            commandLine = listOf("cmd", "/c",
-                "gradlew.bat",
-                "configkoinInjectionOf",
-                "-PinjectClass=${viewClassName}ViewModel"
             )
+            exec {
+                workingDir = rootDir
+                commandLine = listOf(
+                    "cmd", "/c",
+                    "gradlew.bat",
+                    "configkoinInjectionOf",
+                    "-PinjectClass=${viewClassName}ViewModel"
+                )
+            }
+            exec {
+                workingDir = rootDir
+                commandLine = listOf(
+                    "cmd", "/c",
+                    "gradlew.bat",
+                    "configAppNavigation",
+                    "-PcomposableName=${viewClassName}"
+                )
+            }
+            exec {
+                workingDir = rootDir
+                commandLine = listOf(
+                    "cmd", "/c",
+                    "gradlew.bat",
+                    "configDashBoard",
+                    "-PcomponentName=${viewClassName}",
+                    "-PincludedInDsh=${includeInDashboard}",
+                    "-PsectionName=${sectionName}"
+                )
+            }
+
         }
-        exec {
-            workingDir = rootDir
-            commandLine = listOf("cmd", "/c",
-                "gradlew.bat",
-                "configAppNavigation",
-                "-PcomposableName=${screenName}"
-            )
-        }
-        exec {
-            workingDir = rootDir
-            commandLine = listOf("cmd", "/c",
-                "gradlew.bat",
-                "configDashBoard",
-                "-PcomponentName=${screenName}",
-                "-PincludedInDsh=true"
-                //"-PsectionName=${screenName}"
-            )
+        else {
+            println("✅ aucune section conrrespondant a ${sectionName}View")
         }
         println("✅ Fichiers générés pour l'écran $screenName")
     }

@@ -66,9 +66,7 @@ fun LoginScreen() {
             item {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
-                    navigationIcon = {
-
-                    },
+                    navigationIcon = {},
                     title = {},
                     actions = {
                         Button(onClick = {}) {

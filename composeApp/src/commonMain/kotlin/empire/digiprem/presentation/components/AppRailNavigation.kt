@@ -1,5 +1,6 @@
 package empire.digiprem.presentation.components
 
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -25,7 +26,10 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import empire.digiprem.config.getActualWindowsSize
+import empire.digiprem.core.utils.pointerEvent
 import kotlinx.coroutines.launch
 import androidx.compose.material3.MaterialTheme as Material1Theme
 
@@ -150,7 +155,7 @@ fun WrapperPage(
     enabled: Boolean,
     content: @Composable () -> Unit,
 ) {
-    val modifier1 = if (enabled) Modifier.fillMaxSize().background(Material1Theme.colorScheme.primary)
+    val modifier1 = if (enabled) Modifier.fillMaxSize().background(Material1Theme.colorScheme.surfaceVariant)
         .padding(start = 3.dp, top = 3.dp) else Modifier.fillMaxSize().background(Material1Theme.colorScheme.background)
 
     Box(
@@ -330,11 +335,12 @@ fun NavigationRailWithPopupDrawer(
     enabledExpensiveMenu: Boolean = false,
     isPopupOpen: Boolean = false,
     navigationItems: List<NavigationItem>,
+    onClickFloatingActionButton: () -> Unit = {},
     topBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     // var isPopupOpen by remember { mutableStateOf(false) }
-    val targetWidth = if (isPopupOpen) 200.dp else 50.dp
+    val targetWidth = if (isPopupOpen) 150.dp else 50.dp
     val width by animateDpAsState(
         targetValue = targetWidth,
         animationSpec = tween(durationMillis = 500),
@@ -356,168 +362,175 @@ fun NavigationRailWithPopupDrawer(
         }
     }
 
-    Column(Modifier.fillMaxSize().background(Material1Theme.colorScheme.primary)) {
-
-
+    Column(Modifier.fillMaxSize()) {
         when (windowSizeClass) {
             WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
+                var showPopup by remember { mutableStateOf(false) }
+                var buttonPosition by remember { mutableStateOf(Offset.Zero) }
+                var popupData by remember { mutableStateOf(PopupData()) }
+                var popupContent by remember { mutableStateOf<List<NavigationItem>>(emptyList()) }
+                var popupTitle by remember { mutableStateOf("") }
+
                 Row /*(Modifier.padding(3.dp))*/{
                     if (enableNavRail) {
                         topBar.invoke()
                     }
                 }
-                Row(
-                    modifier = Modifier.background(Material1Theme.colorScheme.primary.copy(alpha = 0.7f))
-                ) {
-                    if (enableNavRail) {
-                        Box(modifier = Modifier.wrapContentWidth()) {
-                            AppNavigationRail {
-                                navigationItems.forEach {
 
-                                    CustomNavigationRailItem(
-                                        modifier = it.modifier,
-                                        selected = it.selected,
-                                        icon = it.icon,
-                                        badgeContent = it.badgeContent,
-                                        contentColor = it.contentColor,
-                                        badgeColor = it.badgeColor,
-                                        badgeTextStyle = it.badgeTextStyle,
-                                        onClick = it.onClick,
-                                    )
-
-                                }
-                                /*
-                                  CustomNavigationRailItem(
-                                      icon = Icons.Outlined.Menu,
-                                  ) {
-                                      isPopupOpen = !isPopupOpen
-                                  }
-                                  CustomNavigationRailItem(
-                                      selected = true,
-                                      icon = Icons.Outlined.Message,
-                                      badgeContent = "3"
-                                  ) {
-
-                                  }
-                                  CustomNavigationRailItem(
-                                      icon = Icons.Outlined.Phone,
-                                      badgeContent = ""
-                                  ) {
-
-                                  }
-                                  CustomNavigationRailItem(
-                                      icon = Icons.Outlined.Settings,
-                                      badgeContent = "35+"
-                                  ) {
-
-                                  }
-                                  CustomNavigationRailItem(
-                                      icon = Icons.Outlined.Settings,
-                                      badgeContent = "35"
-                                  ) {
-
-                                  }*/
-                            }
-                            if (width > 50.dp) {
-                                AppNavigationRail(
-                                    modifier = Modifier.width(width),
-                                    containerColor = Material1Theme.colorScheme.primary
-                                ) {
-                                    /* if (enabledExpensiveMenu) {
-                                         CustomNavigationRailItem(
-                                             icon = Icons.Outlined.Menu,
-                                             modifier = Modifier.clip(RoundedCornerShape(5.dp)).background( if (isPopupOpen) Color.Gray.copy(0.5f) else Color.Transparent),
-                                         ) {
-                                             isPopupOpen = !isPopupOpen
-                                         }
-                                         Spacer(modifier = Modifier.height(20.dp))
-                                     }*/
+                Box(modifier = Modifier.wrapContentSize()) {
+                    Row(
+                        modifier = Modifier//.background(Material1Theme.colorScheme.primary.copy(alpha = 0.7f))
+                    ) {
+                        Box(modifier = Modifier.wrapContentSize()) {
+                            if (enableNavRail) {
+                                AppNavigationRail {
                                     navigationItems.forEach {
-                                        if (!it.enableExpenciveItem) {
-                                            CustomNavigationRailItem(
-                                                modifier = it.modifier,
-                                                selected = it.selected,
-                                                icon = it.icon,
-                                                badgeContent = it.badgeContent,
-                                                contentColor = it.contentColor,
-                                                badgeColor = it.badgeColor,
-                                                badgeTextStyle = it.badgeTextStyle,
-                                                onClick = it.onClick
-                                            )
-                                        } else {
-                                            CustomExpensiveNavItem(
-                                                modifier = it.modifier,
-                                                label = it.label,
-                                                selected = it.selected,
-                                                icon = it.icon,
-                                                badgeContent = it.badgeContent,
-                                                contentColor = it.contentColor,
-                                                badgeColor = it.badgeColor,
-                                                badgeTextStyle = it.badgeTextStyle,
-                                                textStyle = it.textStyle,
-                                                onClick = it.onClick,
-                                                subNavItem = if (it.subNavigationItem.isEmpty()) null else {
-                                                    {
-                                                        it.subNavigationItem.forEach { item ->
-                                                            CustomExpensiveNavItem(
-                                                                modifier = item.modifier,
-                                                                isSubMenuItem = true,
-                                                                label = item.label,
-                                                                selected = item.selected,
-                                                                icon = item.icon,
-                                                                badgeContent = item.badgeContent,
-                                                                contentColor = item.contentColor,
-                                                                badgeColor = item.badgeColor,
-                                                                badgeTextStyle = item.badgeTextStyle,
-                                                                textStyle = item.textStyle,
-                                                                onClick = item.onClick
+                                        var offset = Offset.Zero
+                                        CustomNavigationRailItem(
+                                            modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
+                                                offset = layoutCoordinates.localToWindow(Offset.Zero)
+                                            }.pointerEvent(PointerEventType.Enter) { ti ->
+                                                popupData = popupData.copy(
+                                                    enable = true,
+                                                    offset = Offset(x = offset.x + 60, y = offset.y - 80),
+                                                    content = {
+                                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                                            Text(
+                                                                it.label, style = TextStyle(
+                                                                    color = Material1Theme.colorScheme.primary.copy(
+                                                                        alpha = 0.8f
+                                                                    ),
+                                                                    fontWeight = FontWeight.Bold
+                                                                )
                                                             )
+                                                            if (it.subNavigationItem.isNotEmpty()) {
+                                                                HorizontalDivider()
+                                                                it.subNavigationItem.forEach { item ->
+                                                                    CustomExpensiveNavItem(
+                                                                        modifier = item.modifier,
+                                                                        label = item.label,
+                                                                        selected = item.selected,
+                                                                        icon = item.icon,
+                                                                        badgeContent = item.badgeContent,
+                                                                        // contentColor = item.contentColor,
+                                                                        badgeColor = item.badgeColor,
+                                                                        badgeTextStyle = item.badgeTextStyle,
+                                                                        // textStyle = item.textStyle,
+                                                                        onClick = {
+                                                                            item.onClick()
+                                                                            popupData = popupData.copy(
+                                                                                enable = false,
+                                                                            )
+                                                                        }
+                                                                    )
+
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            )
-                                        }
-
+                                                )
+                                            }.pointerEvent(PointerEventType.Exit) {
+                                                popupData = popupData.copy(
+                                                    enable = false,
+                                                )
+                                            },
+                                            selected = if (it.subNavigationItem.isNotEmpty()) it.subNavigationItem.any { it.selected } else it.selected,
+                                            icon = it.icon,
+                                            badgeContent = it.badgeContent,
+                                            // contentColor = it.contentColor,
+                                            badgeColor = it.badgeColor,
+                                            badgeTextStyle = it.badgeTextStyle,
+                                            onClick = it.onClick,
+                                        )
                                     }
-                                    /*
-                                                    CustomNavigationRailItem(
-                                                        icon = Icons.Outlined.Menu
-                                                    ) {
-                                                        isPopupOpen = !isPopupOpen
+                                }
+                                if (width > 50.dp) {
+                                    AppNavigationRail(
+                                        modifier = Modifier.width(width)
+                                    ) {
+                                        navigationItems.forEach {
+                                            if (!it.enableExpenciveItem) {
+                                                CustomNavigationRailItem(
+                                                    modifier = it.modifier,
+                                                    selected = if (it.subNavigationItem.isNotEmpty()) it.subNavigationItem.any { it.selected } else it.selected,
+                                                    icon = it.icon,
+                                                    badgeContent = it.badgeContent,
+                                                    //contentColor = it.contentColor,
+                                                    badgeColor = it.badgeColor,
+                                                    badgeTextStyle = it.badgeTextStyle,
+                                                    onClick = it.onClick
+                                                )
+                                            } else {
+                                                CustomExpensiveNavItem(
+                                                    modifier = it.modifier,
+                                                    label = it.label,
+                                                    selected = if (it.subNavigationItem.isNotEmpty()) it.subNavigationItem.any { it.selected } else it.selected,
+                                                    icon = it.icon,
+                                                    badgeContent = it.badgeContent,
+                                                    // contentColor = it.contentColor,
+                                                    // badgeColor = it.badgeColor,
+                                                    badgeTextStyle = it.badgeTextStyle,
+                                                    //textStyle = it.textStyle,
+                                                    onClick = it.onClick,
+                                                    subNavItem = if (it.subNavigationItem.isEmpty()) null else {
+                                                        {
+                                                            it.subNavigationItem.forEach { item ->
+                                                                CustomExpensiveNavItem(
+                                                                    modifier = item.modifier,
+                                                                    isSubMenuItem = true,
+                                                                    label = item.label,
+                                                                    selected = item.selected,
+                                                                    icon = item.icon,
+                                                                    badgeContent = item.badgeContent,
+                                                                    // contentColor = item.contentColor,
+                                                                    badgeColor = item.badgeColor,
+                                                                    badgeTextStyle = item.badgeTextStyle,
+                                                                    // textStyle = item.textStyle,
+                                                                    onClick = item.onClick
+                                                                )
+                                                            }
+                                                        }
                                                     }
-                                                    CustomExpensiveNavItem(
-                                                        icon = Icons.Outlined.Message,
-                                                        selected = true,
-                                                        label = "Discussion",
-                                                        badgeContent = "3"
-                                                    ) {
-                                                        isPopupOpen = !isPopupOpen
-                                                    }
-                                                    CustomExpensiveNavItem(
-                                                        icon = Icons.Outlined.Phone,
-                                                        label = "Contact ",
-                                                        badgeContent = ""
-                                                    ) {
-                                                        isPopupOpen = !isPopupOpen
-                                                    }
-                                                    CustomExpensiveNavItem(
-                                                        icon = Icons.Outlined.Settings,
-                                                        label = "Settings",
-                                                        badgeContent = "35+"
-                                                    ) {
-                                                        isPopupOpen = !isPopupOpen
-                                                    }*/
+                                                )
+                                            }
+
+                                        }
+                                    }
                                 }
                             }
-
+                        }
+                        WrapperPage(
+                            enabled = enableNavRail
+                        ) {
+                            appContent()
                         }
                     }
-                    WrapperPage(
-                        enabled = enableNavRail
-                    ) {
-                        appContent()
+
+                    popupTitle = ""
+                    popupContent = emptyList()
+                    showPopup = false
+                    val content = @Composable {
+
                     }
+                    val offset = Offset(x = buttonPosition.x + 60, y = buttonPosition.y - 80)
+
+                    val onPointerEnterEvent = {}
+                    val onPointerExitEvent = {}
+
+                    AppPopup(
+                        popupData.enable,
+                        offset = popupData.offset,
+                        color = Color.White,
+                        onPointerEnterEvent = {
+                            popupData = popupData.copy(enable = true)
+                        },
+                        onPointerExitEvent = {
+                            popupData = popupData.copy(enable = false)
+                        },
+                        content = popupData.content
+                    )
                 }
+
             }
 
             WindowWidthSizeClass.Compact -> {
@@ -528,29 +541,51 @@ fun NavigationRailWithPopupDrawer(
                         }
                     },
                     bottomBar = {
-                        if (enableNavRail){
-                            AppBottomBar {
-                                navigationItems.forEach {
-                                    Column(
-                                        modifier = Modifier.weight(1f).height(40.dp)
-                                            .background(if (it.selected) Material1Theme.colorScheme.primary else Color.Transparent)
-                                            .clickable { it.onClick() }.padding(5.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = it.icon,
-                                            contentDescription = "",
-                                            tint = if (it.selected) Color.White else Color.Black,
-                                        )
-                                        Text(
-                                            it.label, style = Material1Theme.typography.bodySmall.copy(
-                                                color = if (it.selected) Color.White else Color.Black,
-                                            )
-                                        )
+                        if (enableNavRail) {
+                            Box(Modifier.fillMaxWidth()){
+                                FloatingActionButton(
+                                    modifier = Modifier.padding(bottom =40.dp),
+                                    onClick = onClickFloatingActionButton
+                                ) {
+                                    Icon(
+                                        Icons.Default.ShoppingCart, ""
+                                    )
+                                }
+                                Box(modifier=Modifier.fillMaxWidth().align(Alignment.BottomCenter)){
+                                    AppBottomBar {
+                                        navigationItems.forEach {
+                                            Column(
+                                                modifier = Modifier.weight(1f).height(60.dp)
+                                                    .background(if (it.selected) Material1Theme.colorScheme.primary else Color.Transparent)
+                                                    .clickable { it.onClick() }.padding(5.dp),
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+                                                Icon(
+                                                    modifier = Modifier.size(16.dp),
+                                                    imageVector = it.icon,
+                                                    contentDescription = "",
+                                                    tint = if (it.selected) Material1Theme.colorScheme.surfaceVariant else Material1Theme.colorScheme.primary,
+                                                )
+                                                Text(
+                                                    it.label.split(" ").last(),
+                                                    style = Material1Theme.typography.bodySmall.copy(
+                                                        color = if (it.selected) Material1Theme.colorScheme.surfaceVariant else Color.Black,
+                                                    )
+                                                )
+                                            }
+                                        }
                                     }
                                 }
+
                             }
+
+                        }
+                    },
+                    floatingActionButtonPosition = FabPosition.Center,
+                    floatingActionButton = {
+                        if (enableNavRail) {
+
                         }
                     }
                 ) {
@@ -559,205 +594,83 @@ fun NavigationRailWithPopupDrawer(
             }
 
         }
-
-
-        /*if (width > 50.dp) {
-            AppNavigationRail(
-                modifier = Modifier.width(width),
-                containerColor = Material1Theme.colorScheme.primary
-            ) {
-                navigationItems.forEach {
-                    if (!it.enableExpenciveItem) {
-                        CustomNavigationRailItem(
-                            modifier = it.modifier,
-                            selected = it.selected,
-                            icon = it.icon,
-                            badgeContent = it.badgeContent,
-                            contentColor = it.contentColor,
-                            badgeColor = it.badgeColor,
-                            badgeTextStyle = it.badgeTextStyle,
-                            onClick = it.onClick
-                        )
-                    } else {
-                        CustomExpensiveNavItem(
-                            modifier = it.modifier,
-                            label = it.label,
-                            selected = it.selected,
-                            icon = it.icon,
-                            badgeContent = it.badgeContent,
-                            contentColor = it.contentColor,
-                            badgeColor = it.badgeColor,
-                            badgeTextStyle = it.badgeTextStyle,
-                            textStyle = it.textStyle,
-                            onClick = it.onClick
-                        )
-                    }
-                }
-*//*
-                CustomNavigationRailItem(
-                    icon = Icons.Outlined.Menu
-                ) {
-                    isPopupOpen = !isPopupOpen
-                }
-                CustomExpensiveNavItem(
-                    icon = Icons.Outlined.Message,
-                    selected = true,
-                    label = "Discussion",
-                    badgeContent = "3"
-                ) {
-                    isPopupOpen = !isPopupOpen
-                }
-                CustomExpensiveNavItem(
-                    icon = Icons.Outlined.Phone,
-                    label = "Contact ",
-                    badgeContent = ""
-                ) {
-                    isPopupOpen = !isPopupOpen
-                }
-                CustomExpensiveNavItem(
-                    icon = Icons.Outlined.Settings,
-                    label = "Settings",
-                    badgeContent = "35+"
-                ) {
-                    isPopupOpen = !isPopupOpen
-                }*//*
-            }*/
-        /*   NavigationRail(
-              modifier = Modifier.offset(x = 0.dp) // Juste à droite du rail
-                 .width(width)
-                 .fillMaxHeight() ,
-              containerColor = Material1Theme.colorScheme.primary.copy(alpha = 0.9f) ,
-              contentColor = Color.White
-           ) {
-              Column(
-                 modifier = Modifier.padding(horizontal = 4.5.dp , vertical = 4.dp) ,
-                 horizontalAlignment = Alignment.Start ,
-                 verticalArrangement = Arrangement.spacedBy(5.dp)
-              ) {
-                 */
-        /* Row(
-                   modifier = Modifier.size(35.dp).clip(RoundedCornerShape(5.dp))
-                      .background(Color.Gray.copy(0.5f)).clickable { isPopupOpen = !isPopupOpen } ,
-                   verticalAlignment = Alignment.CenterVertically
-                ) {
-                   Divider(
-                      modifier = Modifier.height(15.dp).width(3.dp).clip(RoundedCornerShape(2.dp))
-                         .background(Color.Green)
-                   )
-                   Box(
-                      modifier = Modifier.fillMaxSize().padding(end = 3.dp) ,
-                      contentAlignment = Alignment.Center
-                   ) {
-                      BadgedBox(
-                         badge = {
-
-                         }
-                      ) {
-                         Icon(
-                            Icons.Default.Menu ,
-                            contentDescription = null ,
-                            tint = Color.White,
-                            modifier = Modifier.size(18.dp)
-                         )
-                      }
-                   }
-                }*/
-        /*
-               CustomNavigationRailItem(
-                  icon = Icons.Outlined.Menu
-               ) {
-                  isPopupOpen = !isPopupOpen
-               }
-               CustomExpensiveNavItem(
-                  icon = Icons.Outlined.Message ,
-                  selected = true ,
-                  label = "Discussion" ,
-                  badgeContent = "3"
-               ) {
-                  isPopupOpen = !isPopupOpen
-               }
-               CustomExpensiveNavItem(
-                  icon = Icons.Outlined.Phone ,
-                  label = "Contact " ,
-                  badgeContent = ""
-               ) {
-                  isPopupOpen = !isPopupOpen
-               }
-               CustomExpensiveNavItem(
-                  icon = Icons.Outlined.Settings ,
-                  label = "Settings" ,
-                  badgeContent = "35+"
-               ) {
-                  isPopupOpen = !isPopupOpen
-               }
-
-            }
-         }*/
-        /*
-         Column(
-            modifier = Modifier
-               .offset(x = 0.dp) // Juste à droite du rail
-               .width(width)
-               .fillMaxHeight()
-               .background(Material3Theme.colorScheme.primary.copy(alpha = 0.9f))
-         ) {
-
-            Row(modifier = Modifier.clip(RoundedCornerShape(5.dp)).background(Color.Gray.copy(0.5f)).clickable{isPopupOpen = !isPopupOpen }, verticalAlignment = Alignment.CenterVertically){
-               Divider(modifier = Modifier.height(15.dp).width(3.dp).clip( RoundedCornerShape(2.dp)).background(Color.Green))
-               Row(modifier = Modifier.padding(5.dp)){
-                  Icon(Icons.Default.Menu , contentDescription = null, modifier = Modifier.size(20.dp))
-               }
-               Spacer(modifier = Modifier.width( 25.dp))
-               Text("bonjour le monde ")
-            }
-
-            NavigationDrawerItem(
-               selected = false ,
-               onClick = {  isPopupOpen = !isPopupOpen } ,
-               icon = { Icon(Icons.Default.Menu , contentDescription = null)
-               } ,
-               label = { "null" }
-            )
-            NavigationDrawerItem(
-               selected = false ,
-               onClick = { } ,
-               icon = { Icon(Icons.Default.Message , contentDescription = null) } ,
-               label = { "null" }
-            )
-            NavigationDrawerItem(
-               selected = false ,
-               onClick = { } ,
-               icon = { Icon(Icons.Default.Phone , contentDescription = null) } ,
-               label = { null }
-            )
-         }*/
-
     }
 }
 
+
+data class PopupData(
+    val enable: Boolean = false,
+    val offset: Offset = Offset.Zero,
+    val backgroundColor: Color = Color.White,
+    val onPointerEnterEvent: () -> Unit = {},
+    val onPointerExitEvent: () -> Unit = {},
+    val content: @Composable () -> Unit = {},
+)
+
+@Composable
+fun AppPopup(
+    enabled: Boolean,
+    offset: Offset,
+    color: Color,
+    onPointerEnterEvent: () -> Unit,
+    onPointerExitEvent: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    AnimatedVisibility(
+        enabled,
+        enter = fadeIn() + slideInVertically(),
+        exit = fadeOut(animationSpec = tween(durationMillis = 300, delayMillis = 500)) +
+                slideOutVertically(animationSpec = tween(durationMillis = 300, delayMillis = 2000))
+    ) {
+        val density = LocalDensity.current
+        val xDp = with(density) { offset.x.toDp() }
+        val yDp = with(density) { offset.y.toDp() }
+
+        Box(
+            modifier = Modifier.absoluteOffset(x = xDp, y = yDp)
+                .wrapContentHeight()
+                .width(150.dp)
+                .background(color, shape = RoundedCornerShape(8.dp))
+                .padding(5.dp).pointerEvent(PointerEventType.Enter) { ti ->
+                    onPointerEnterEvent()
+                }.pointerEvent(PointerEventType.Exit) {
+                    onPointerExitEvent()
+                }
+        ) {
+            content()
+        }
+    }
+}
+
+
 @Composable
 private fun AppBottomBar(
-    content: @Composable () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().background(Material1Theme.colorScheme.background),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally)
-    ) {
-        content.invoke()
+    Column {
+        HorizontalDivider()
+        Row(
+            modifier = Modifier.wrapContentHeight().fillMaxWidth().background(Material1Theme.colorScheme.background),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            content()
+        }
     }
+
 }
 
 @Composable
 private fun AppNavigationRail(
-    containerColor: Color = Material1Theme.colorScheme.primary,
-    contentColor: Color = Color.White,
+    containerColor: Color = Material1Theme.colorScheme.surfaceVariant,
+    contentColor: Color = Color.Black,
     containerModifier: Modifier = Modifier.padding(3.dp),
     modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(5.dp),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: @Composable () -> Unit,
 ) {
+    // Box(modifier=Modifier.wrapContentSize().background(Color.Gray).padding(top = 1.dp, end = 1.dp)){
     NavigationRail(
         modifier = Modifier.then(modifier).offset(x = 0.dp)
             .width(45.dp)
@@ -773,6 +686,7 @@ private fun AppNavigationRail(
             content.invoke()
         }
     }
+    //}
 }
 
 @Composable
@@ -781,7 +695,7 @@ fun CustomNavigationRailItem(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     badgeContent: String? = null,
-    contentColor: Color = Color.White,
+    contentColor: Color = if (selected) Color.White else Material1Theme.colorScheme.primary,
     badgeColor: Color = Color.Black,
     badgeTextStyle: TextStyle = TextStyle(
         color = badgeColor,
@@ -793,14 +707,14 @@ fun CustomNavigationRailItem(
 ) {
     Row(
         modifier = Modifier.then(modifier).height(35.dp).width(40.dp).clip(RoundedCornerShape(5.dp))
-            .background(if (selected) Color.Gray.copy(0.5f) else Color.Transparent)
+            .background(if (selected) Material1Theme.colorScheme.primary /*Color.Gray.copy(0.5f)*/ else Color.Transparent)
             .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         androidx.compose.animation.AnimatedVisibility(selected) {
-            Divider(
+            VerticalDivider(
                 modifier = Modifier.height(15.dp).width(3.dp).clip(RoundedCornerShape(2.dp))
-                    .background(if (selected) Color.Green else Color.Transparent)
+                    .background(if (selected) Material1Theme.colorScheme.background else Color.Transparent)
             )
         }
         AppBadgeBox(
@@ -900,9 +814,12 @@ private fun CustomExpensiveNavItem(
     badgeContent: String? = null,
     icon: ImageVector,
     selected: Boolean = false,
-    contentColor: Color = Color.White,
+    contentColor: Color = if (selected) Color.White else Material1Theme.colorScheme.primary,
     badgeColor: Color = Color.Black,
-    textStyle: TextStyle = TextStyle(color = contentColor, fontWeight = FontWeight.Bold),
+    textStyle: TextStyle = TextStyle(
+        color = if (selected) contentColor else contentColor.copy(alpha = 0.5f),
+        fontWeight = FontWeight.Bold
+    ),
     badgeTextStyle: TextStyle = TextStyle(color = contentColor, fontSize = 10.sp),
     onClick: () -> Unit,
     subNavItem: @Composable (() -> Unit)? = null,
@@ -917,14 +834,14 @@ private fun CustomExpensiveNavItem(
         Row(
             modifier = Modifier.padding(start = if (isSubMenuItem) 10.dp else 0.dp).height(35.dp).width(200.dp)
                 .clip(RoundedCornerShape(5.dp))
-                .background(if (selected) Color.Gray.copy(0.5f) else Color.Transparent)
+                .background(if (selected) Material1Theme.colorScheme.primary.copy(alpha = if (isSubMenuItem) 0.5f else 1f) /*Color.Gray.copy(0.5f)*/ else Color.Transparent)
                 .clickable(onClick = onClickItem).then(modifier),
             verticalAlignment = Alignment.CenterVertically
         ) {
             androidx.compose.animation.AnimatedVisibility(selected) {
-                Divider(
+                VerticalDivider(
                     modifier = Modifier.height(15.dp).width(3.dp).clip(RoundedCornerShape(2.dp))
-                        .background(if (selected) Color.Green else Color.Transparent)
+                        .background(if (selected) Material1Theme.colorScheme.background else Color.Transparent)
                 )
             }
             Row(
@@ -969,7 +886,11 @@ private fun CustomExpensiveNavItem(
             }
         }
         androidx.compose.animation.AnimatedVisibility(subNavItem != null && enabledSubNavItem == true) {
-            Column(modifier = Modifier.width(200.dp).background(Color.Black.copy(alpha = 0.3f))) {
+            Column(
+                modifier = Modifier.width(200.dp)
+                    .background(Material1Theme.colorScheme.surfaceVariant.copy(alpha = 0.8f)).padding(end = 10.dp)
+                    .padding(vertical = 10.dp)/*.background(Color.Black.copy(alpha = 0.3f))*/
+            ) {
                 subNavItem?.invoke()
             }
         }

@@ -25,23 +25,23 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
+import empire.digiprem.navigation.ViewChat
 import empire.digiprem.presentation.components.ImageSection
 import empire.digiprem.presentation.components.NavigationTypeEnum
-import empire.digiprem.navigation.chat
-import empire.digiprem.ui.Screen.dashboard_screen.RealEstateData
+import empire.digiprem.presentation.components.app.RealEstateData
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
-    navigationRail: NavigationTypeEnum,
     navController: NavHostController,
+    navigationRail: NavigationTypeEnum,
     conversation: Conversation?,
-    chatState: chat?
+    viewChat: ViewChat
 ) {
-    val realEstateData by remember { mutableStateOf( if (chatState!=null) Json.decodeFromString<RealEstateData>(chatState.content) else null) }
-    var textfield by remember { mutableStateOf(chatState?.message ?: "") }
+    val realEstateData by remember { mutableStateOf( if (viewChat!=null) Json.decodeFromString<RealEstateData>(viewChat.content) else null) }
+    var textfield by remember { mutableStateOf(viewChat?.message ?: "") }
     Scaffold(
         topBar = {
             Column {

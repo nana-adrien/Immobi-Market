@@ -41,6 +41,7 @@ fun AppTextField(
     label: @Composable() (() -> Unit)? = null,
     leadingIcon: @Composable() (() -> Unit)? = null,
     trailingIcon: @Composable() (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit,
 ) {
     var isFocus by remember { mutableStateOf(false) }
@@ -82,7 +83,8 @@ fun AppTextField(
                     value = value,
                     visualTransformation = visualTransformation,
                     onValueChange = onValueChange,
-                    textStyle = textStyle
+                    textStyle = textStyle,
+                    keyboardOptions=keyboardOptions
                 )
             }
             trailingIcon?.let {

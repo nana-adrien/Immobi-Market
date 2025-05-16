@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import empire.digiprem.config.isCompactMobilePlatform
 
 @Composable
  fun AppButton(
@@ -34,6 +35,25 @@ import androidx.compose.ui.unit.dp
         horizontalArrangement =horizontalArrangement
     ) {
        content()
+    }
+}
+@Composable
+ fun AppSecondaryButton(
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier,
+    horizontalArrangement: Arrangement. Horizontal = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally),
+    verticalAlignment: Alignment. Vertical = Alignment.CenterVertically,
+     onClick: () -> Unit,
+     content: @Composable (Color) -> Unit
+ ) {
+    Row(
+        modifier = Modifier.then(modifier).fillMaxWidth().height(40.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant).clickable(enabled=enabled, onClick =onClick),
+        verticalAlignment = verticalAlignment,
+        horizontalArrangement =horizontalArrangement
+    ) {
+       content(MaterialTheme.colorScheme.primary)
     }
 }
 @Composable
@@ -78,4 +98,30 @@ import androidx.compose.ui.unit.dp
     }
 }
 
+@Composable
+fun AppIconActionButton(
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    content: @Composable() (BoxScope.(Color) -> Unit)
+) {
+    var color:Color= Color.Black
+    val isCompactSize= isCompactMobilePlatform()
+    Box(
+        modifier = Modifier.then(modifier).size(if (isCompactSize) 28.dp else 40.dp).clip(RoundedCornerShape(20.dp)).background(
+            if (selected) {
+                color=Color.White
+                MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.7f
+                )
+            } else {
+                color= Color.Black
+                if(isCompactSize)  Color.Transparent else Color.White
+            }
+        ).clickable(enabled) { onClick() },
+        contentAlignment = Alignment.Center,
+        content = { content(color) }
+    )
+}
 

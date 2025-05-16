@@ -31,14 +31,10 @@ import androidx.savedstate.SavedState
 import androidx.savedstate.read
 import androidx.savedstate.write
 import empire.digiprem.core.utils.getName
-import empire.digiprem.presentation.components.AppHeader
-import empire.digiprem.presentation.components.NavigationItem
-import empire.digiprem.presentation.components.NavigationRailWithPopupDrawer
-import empire.digiprem.presentation.components.NavigationTypeEnum
+import empire.digiprem.presentation.components.*
 import empire.digiprem.presentation.views.AuthenticateScreen.*
 import empire.digiprem.ui.Screen.dashboard_screen.DashboardNavigation
 import empire.digiprem.ui.Screen.dashboard_screen.HomeScreen
-import empire.digiprem.ui.Screen.dashboard_screen.TopBarAction
 import empire.digiprem.ui.Screen.dashboard_screen.screens.AnnonceSuiviScreen
 import empire.digiprem.ui.Screen.dashboard_screen.screens.MessagesScreen
 import empire.digiprem.ui.Screen.dashboard_screen.screens.NotificationsScreen

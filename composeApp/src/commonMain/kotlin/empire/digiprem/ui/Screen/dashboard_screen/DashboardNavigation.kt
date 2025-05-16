@@ -22,13 +22,8 @@ import empire.digiprem.navigation.SectionEnum
 import empire.digiprem.presentation.components.AppHeader
 import empire.digiprem.presentation.components.NavigationItem
 import empire.digiprem.presentation.components.NavigationRailWithPopupDrawer
+import empire.digiprem.presentation.components.TopBarAction
 
-
-data class TopBarAction(
-    val currentActionName: String = "",
-    val enabled: Boolean = true,
-    val content: @Composable () -> Unit = {}
-)
 
 @Composable
 fun DashboardNavigation(navController: NavHostController, dashboardState: Dashboard) {

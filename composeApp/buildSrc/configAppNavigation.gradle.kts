@@ -49,7 +49,7 @@ tasks.register("configAppNavigation") {
         }
         val addComponent = ""+
         "composable<View${composableName}>{\n"+
-            "onNavigate(View${composableName}.getName())\n"+
+            "onNavigate(EnumView.View${composableName})\n"+
            " val view${composableName} = it.toRoute<View${composableName}>()\n"+
             "${composableName}View(view${composableName}=view${composableName},navController=navController,)\n"+
         " }"
@@ -77,8 +77,8 @@ tasks.register("configAppNavigation") {
         fun AppNavigation(
             modifier: Modifier=Modifier,
             navController: NavHostController,
-            startDestination: KClass<*>,
-            onNavigate: (String?) -> Unit
+            startDestination: Any,
+            onNavigate: (EnumView) -> Unit
         ) {
             NavHost(
                 navController,

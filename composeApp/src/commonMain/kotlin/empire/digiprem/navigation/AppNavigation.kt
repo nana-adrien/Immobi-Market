@@ -1,26 +1,127 @@
 package empire.digiprem.navigation
 
-/*@Auto import file*/
-
-import androidx.compose.runtime.Composable
+                                                                                                         /*@Auto import file*/
+                     import empire.digiprem.presentation.views.SplashView
+import empire.digiprem.navigation.ViewSplash
+                     import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import kotlin.reflect.KClass
+import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import empire.digiprem.presentation.views.*
 
 /*@Auto Generate*/
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: KClass<*>,
-    onNavigate: (String?) -> Unit
+    startDestination: Any,
+    onNavigate: (EnumView ) -> Unit
 ) {
+
     NavHost(
         navController,
         modifier = modifier,
         startDestination = startDestination,
     ) {
-        /*@Auto Generate Composable*/
+                                                                                                            /*@Auto Generate Composable*/
+                    composable<ViewSplash>{
+onNavigate(EnumView.ViewSplash)
+ val viewSplash = it.toRoute<ViewSplash>()
+SplashView(viewSplash=viewSplash,navController=navController,)
+ }
+                    composable<ViewPropertyALLProperty>{
+onNavigate(EnumView.ViewPropertyALLProperty)
+ val viewPropertyALLProperty = it.toRoute<ViewPropertyALLProperty>()
+PropertyALLPropertyView(viewPropertyALLProperty=viewPropertyALLProperty,navController=navController,)
+ }
+                    composable<ViewPropertyAddProperty>{
+onNavigate(EnumView.ViewPropertyAddProperty)
+ val viewPropertyAddProperty = it.toRoute<ViewPropertyAddProperty>()
+PropertyAddPropertyView(viewPropertyAddProperty=viewPropertyAddProperty,navController=navController,)
+ }
+                    composable<ViewProfil>{
+onNavigate(EnumView.ViewProfil)
+ val viewProfil = it.toRoute<ViewProfil>()
+ProfilView(viewProfil=viewProfil,navController=navController,)
+ }
+                    composable<ViewProperty>{
+onNavigate(EnumView.ViewProperty)
+ val viewProperty = it.toRoute<ViewProperty>()
+PropertyView(viewProperty=viewProperty,navController=navController,)
+ }
+        composable<ViewConversations> {
+            onNavigate(EnumView.ViewConversations)
+            val viewConversations = it.toRoute<ViewConversations>()
+            ConversationsView(viewConversations = viewConversations, navController = navController)
+        }
+        composable<ViewNegotiations> {
+            onNavigate(EnumView.ViewNegotiations)
+            val viewNegotiations = it.toRoute<ViewNegotiations>()
+            NegotiationsView(viewNegotiations = viewNegotiations, navController = navController)
+        }
+        composable<ViewDetailRealEstateItem> {
+            onNavigate(EnumView.ViewDetailRealEstateItem)
+            val viewDetailRealEstateItem = it.toRoute<ViewDetailRealEstateItem>()
+            DetailRealEstateItemView(
+                viewDetailRealEstateItem = viewDetailRealEstateItem,
+                navController = navController,
+            )
+        }
+        composable<ViewVerifyIdentity> {
+            onNavigate(EnumView.ViewVerifyIdentity)
+            val viewVerifyIdentity = it.toRoute<ViewVerifyIdentity>()
+            VerifyIdentityView(viewVerifyIdentity = viewVerifyIdentity, navController = navController)
+        }
+        composable<ViewResetPassword> {
+            onNavigate(EnumView.ViewResetPassword)
+            val viewResetPassword = it.toRoute<ViewResetPassword>()
+            ResetPasswordView(viewResetPassword = viewResetPassword, navController = navController)
+        }
+        composable<ViewForgotPassword> {
+            onNavigate(EnumView.ViewForgotPassword)
+            val viewForgotPassword = it.toRoute<ViewForgotPassword>()
+            ForgotPasswordView(viewForgotPassword = viewForgotPassword, navController = navController)
+        }
+        composable<ViewRegister> {
+            onNavigate(EnumView.ViewRegister)
+            val viewRegister = it.toRoute<ViewRegister>()
+            RegisterView(viewRegister = viewRegister, navController = navController)
+        }
+        composable<ViewStatistics> {
+            onNavigate(EnumView.ViewStatistics)
+            val viewStatistics = it.toRoute<ViewStatistics>()
+            StatisticsView(viewStatistics = viewStatistics, navController = navController)
+        }
+        composable<ViewLogin> {
+            onNavigate(EnumView.ViewLogin)
+            val viewLogin = it.toRoute<ViewLogin>()
+            LoginView(viewLogin = viewLogin, navController = navController)
+        }
+        composable<ViewChat> {
+            onNavigate(EnumView.ViewChat)
+            val viewChat = it.toRoute<ViewChat>()
+            ChatView(viewChat = viewChat,
+                navController = navController,
+                firstContent = {  ConversationsView(navController=navController) },
+                secondContent = { /*com.octopusfx.mymessenger.ui.screen.ChatScreen(navigationRail , navController , null, viewChat) */}
+            )
+        }
+        composable<ViewSettings> {
+            onNavigate(EnumView.ViewSettings)
+            val viewSettings = it.toRoute<ViewSettings>()
+            SettingsView(viewSettings = viewSettings, navController = navController)
+        }
+        composable<ViewNotifications> {
+            onNavigate(EnumView.ViewNotifications)
+            val viewNotifications = it.toRoute<ViewNotifications>()
+            NotificationsView(viewNotifications = viewNotifications, navController = navController)
+        }
+        composable<ViewHome> {
+            onNavigate(EnumView.ViewHome)
+            val viewHome = it.toRoute<ViewHome>()
+            HomeView(viewHome = viewHome, navController = navController)
+        }
     }
 }

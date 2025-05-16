@@ -1,47 +1,10 @@
-package empire.digiprem.ui.Screen.dashboard_screen.screens
+package empire.digiprem.presentation.components.home
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
-import composeApp.src.commonMain.ComposeResources.drawable.Res
-import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
-import empire.digiprem.ui.Screen.DetailRealEstateItemScreen
-import empire.digiprem.navigation.Home
-import empire.digiprem.ui.Screen.dashboard_screen.*
-import empire.digiprem.presentation.components.AppScrollableDialog
-import empire.digiprem.presentation.components.AppVerticalScrollBar
-import org.jetbrains.compose.resources.painterResource
+/*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MarketplaceScreen(navigationController: NavHostController, homeState: Home) {
+fun MarketplaceScreen(navigationController: NavHostController, homeState: ViewHome) {
 
     //val route=navigationController.currentBackStackEntryAsState().value?.toRoute<Produits>()
 
@@ -244,7 +207,8 @@ fun MarketplaceScreen(navigationController: NavHostController, homeState: Home) 
                         }
                     }
 
-                    /*PageSection(
+                    */
+/*PageSection(
                     title = "Maison/Appartement",
                     modifier = Modifier.nestedScroll(connection = nestedScrollConnection),// Parallax ou suivi partiel
                     state = gridState,
@@ -268,7 +232,8 @@ fun MarketplaceScreen(navigationController: NavHostController, homeState: Home) 
                     onClickItem = {
                         //  enabledPageDetail = true
                     }
-                )*/
+                )*//*
+
                 }
             }
         }
@@ -297,4 +262,4 @@ fun MarketplaceScreen(navigationController: NavHostController, homeState: Home) 
 
 
     }
-}
+}*/

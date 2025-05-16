@@ -28,16 +28,16 @@ import coil3.compose.AsyncImage
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.background_Immobi_Marcket
 import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
-import empire.digiprem.presentation.components.AppTextField
 import empire.digiprem.navigation.chat
+import empire.digiprem.presentation.components.AppTextField
+import empire.digiprem.presentation.components.app.RealEstateData
 import empire.digiprem.ui.Screen.dashboard_screen.PageSectionEx
-import empire.digiprem.ui.Screen.dashboard_screen.RealEstateData
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun DetailRealEstateItemScreen(navController: NavController,realEstateData: RealEstateData, onClose: (() -> Unit)?=null) {
+fun DetailRealEstateItemScreen(navController: NavController, realEstateData: RealEstateData?=null, onClose: (() -> Unit)?=null) {
 
     val contents =
         listOf(
@@ -53,13 +53,16 @@ fun DetailRealEstateItemScreen(navController: NavController,realEstateData: Real
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
                 state = pagerState,
-            ) {
-                AsyncImage(
-                    model = realEstateData.images.get(it),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
+            ) {page->
+                realEstateData?.let {
+                    AsyncImage(
+                        model = it.images.get(page),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
 
                 /*Image(
                     modifier = Modifier.fillMaxSize(),
@@ -115,7 +118,7 @@ fun DetailRealEstateItemScreen(navController: NavController,realEstateData: Real
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
             ) {
-                realEstateData.images.forEachIndexed { index, item ->
+                realEstateData?.let{it.images.forEachIndexed { index, item ->
                     val selectedItem = index == pagerState.currentPage
                     Box(
                         modifier = Modifier.size(if (selectedItem) 75.dp else 60.dp).clip(RoundedCornerShape(5.dp))
@@ -141,7 +144,7 @@ fun DetailRealEstateItemScreen(navController: NavController,realEstateData: Real
                             contentScale = ContentScale.Crop
                         )*/
                     }
-                }
+                }}
 
 
             }
