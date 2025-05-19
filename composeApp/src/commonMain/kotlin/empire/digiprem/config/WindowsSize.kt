@@ -9,8 +9,15 @@ import androidx.compose.runtime.Composable
 expect fun getActualWindowsSize(): WindowSizeClass
 
 @Composable
-fun isCompactMobilePlatform():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Compact && (getPlatform()==Platform.ANDROID||getPlatform()==Platform.IOS)
+fun isCompactMobilePlatform():Boolean=( getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Compact||getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Medium) && (getPlatform()==Platform.ANDROID||getPlatform()==Platform.IOS)
 @Composable
-fun isMediumWindowSize():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Medium
+fun isMediumMobilePlatform():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Medium && (getPlatform()==Platform.ANDROID||getPlatform()==Platform.IOS)
 @Composable
-fun isExpandedWindowSize():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Expanded
+fun isExpandedMobilePlatform():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Expanded && (getPlatform()==Platform.ANDROID||getPlatform()==Platform.IOS)
+
+@Composable
+fun isCompactPlatform():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Compact && (getPlatform()==Platform.DESKTOP||getPlatform()==Platform.WEB)
+@Composable
+fun isMediumPlatform():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Medium && (getPlatform()==Platform.DESKTOP||getPlatform()==Platform.WEB)
+@Composable
+fun isExpandedPlatform():Boolean= getActualWindowsSize().widthSizeClass==WindowWidthSizeClass.Expanded && (getPlatform()==Platform.DESKTOP||getPlatform()==Platform.WEB)

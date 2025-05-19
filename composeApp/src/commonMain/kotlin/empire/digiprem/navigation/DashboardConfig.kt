@@ -52,6 +52,7 @@ fun AppNavigationConfig(
 
     val navigationItems = mutableListOf<NavigationItem>(
         /* Auto config NavigationItem Content*/
+
         NavigationItem(
             label = "Statistics",
             icon = Icons.Default.QueryStats,
@@ -113,17 +114,17 @@ fun AppNavigationConfig(
             )
         ),
     )
-    if (isCompactSize.not()){
+    if (isCompactSize.not()) {
         navigationItems += listOf(
             NavigationItem(
-                label = "Chat",
+                label = "Chats",
                 icon = Icons.Default.Chat,
-                selected = selectedNavItem == EnumView.ViewChat,
+                selected = selectedNavItem == EnumView.ViewMessenger,
                 onClick = {
-                    navController.navigate(ViewChat())
+                    navController.navigate(ViewMessenger())
                 },
                 subNavigationItem = listOf(
-                    /* Auto config ViewChat section subNavigationItems Content*/
+                    /* Auto config ViewMessenger section subNavigationItems Content*/
                 )
             ),
             NavigationItem(
@@ -152,7 +153,7 @@ fun AppNavigationConfig(
     }
 
     NavigationRailWithPopupDrawer(
-        enableNavRail = enableNavRail,
+        enableNavRail = if (isCompactSize) false else enableNavRail,
         enabledExpensiveMenu = true,
         isPopupOpen = isPopupOpen,
         topBar = {
@@ -208,25 +209,35 @@ fun AppNavigationConfig(
         AppNavigation(
             modifier = modifier,
             navController = navController,
-            startDestination = if (isCompactSize) ViewSplash()  else ViewHome()
+            startDestination = if (isCompactSize) ViewSplash() else ViewHome()
         ) { enumView ->
             selectedNavItem = enumView
-            enableNavRail = EnumView.entries.filter { it == enumView }.any { it.includeInDashboard } || if (isCompactSize) enumView==EnumView.ViewHome  else false
+            enableNavRail = EnumView.entries.filter { it == enumView }
+                .any { it.includeInDashboard } || if (isCompactSize) enumView == EnumView.ViewHome else false
         }
     }
+}
+
+
+@Composable
+fun AppBottomNavigation() {
+
+
 }
 
 
 /*Auto generate EnumView*/
 enum class EnumView(val includeInDashboard: Boolean = false) {
     /*Auto generate EnumView content*/
+    ViewMessenger(true),
+    ViewMobileDashBoard,
     ViewSplash,
     ViewPropertyALLProperty(true),
     ViewPropertyAddProperty(true),
     ViewProfil(true),
     ViewProperty(true),
     ViewStatistics(true),
-    ViewChat(true),
+    ViewChat(false),
     ViewSettings(true),
     ViewNotifications(true),
     ViewNegotiations(true),

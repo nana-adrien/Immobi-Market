@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import empire.digiprem.navigation.ViewChat
 import empire.digiprem.presentation.components.*
 import kotlinx.serialization.Serializable
 
@@ -320,12 +321,13 @@ fun Conversations(navController : NavHostController) {
             status = it.status ,
             timeIndicator = it.timeIndicator ,
             onClick = {
-              /* navController.navigateTo(
-                  ViewEnum.CHAT ,
+               navController.navigate(
+                  ViewChat()
+                  /*ViewEnum.CHAT ,
                   closeThisScreen = false ,
                   argument = NavigationShippingArg.Builder().addArgument(key = "Chat" , value = it)
-                     .build()
-               )*/
+                     .build()*/
+               )
             } ,
             onLongClick = {
             }

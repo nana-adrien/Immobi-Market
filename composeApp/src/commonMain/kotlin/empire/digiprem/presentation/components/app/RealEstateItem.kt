@@ -164,13 +164,13 @@ fun RealEstateItem() {
 
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -181,6 +181,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -193,6 +194,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.util.lerp
@@ -205,6 +207,7 @@ data class Equipment(
     val iconName: String, // On ne peut pas sérialiser directement ImageVector, donc on stocke son nom
     val value: String
 )
+
 val equipmentes = listOf(
     Equipment(
         "Workspaces",
@@ -227,8 +230,30 @@ val equipmentes = listOf(
         "1"
     )
 )
-enum class RealEstateType{
-                               ALL,
+
+fun RealEstateType.getIcon(): ImageVector = when (this) {
+    RealEstateType.ALL -> Icons.Default.Home
+    RealEstateType.MAISON -> Icons.Default.House
+    RealEstateType.TERRAIN -> Icons.Default.Terrain // à importer : androidx.compose.material.icons.filled.Terrain (si tu l'as)
+    RealEstateType.CHAMBRE -> Icons.Default.Bed
+    RealEstateType.STUDIO -> Icons.Default.VideoCameraFront
+    RealEstateType.APPARTEMENT -> Icons.Default.Apartment
+    RealEstateType.BUREAU -> Icons.Default.Work
+    RealEstateType.BOUTIQUE -> Icons.Default.Store
+}
+fun RealEstateType.getColor(): Color = when (this) {
+    RealEstateType.ALL -> Color(0xFF607D8B)       // Bleu-gris
+    RealEstateType.MAISON -> Color(0xFF4CAF50)     // Vert
+    RealEstateType.TERRAIN -> Color(0xFF795548)    // Brun
+    RealEstateType.CHAMBRE -> Color(0xFF9C27B0)    // Violet
+    RealEstateType.STUDIO -> Color(0xFFFF9800)     // Orange
+    RealEstateType.APPARTEMENT -> Color(0xFF03A9F4) // Bleu clair
+    RealEstateType.BUREAU -> Color(0xFF3F51B5)     // Indigo
+    RealEstateType.BOUTIQUE -> Color(0xFFE91E63)   // Rose foncé
+}
+
+enum class RealEstateType {
+    ALL,
     MAISON,
     TERRAIN,
     CHAMBRE,
@@ -237,9 +262,17 @@ enum class RealEstateType{
     BUREAU,
     BOUTIQUE
 }
-enum class RealEstateCategories{
-    VENDRE,
-    LOUER
+
+enum class RealEstateCategories {
+    A_VENDRE,
+    A_LOUER
+}
+
+enum class RealEstateState{
+    All,
+    ON_HOLD,
+    ACTIVE,
+    EXPIRED
 }
 
 
@@ -251,9 +284,10 @@ data class RealEstateData(
     val price: String,
     val postedAgo: String,
     val type: RealEstateType,
+    val state: RealEstateState,
     val categories: RealEstateCategories,
     val equipment: List<Equipment>,
-    val images:List<String>,
+    val images: List<String>,
 )
 
 fun getIconByName(name: String): ImageVector {
@@ -273,143 +307,67 @@ fun RealEstateItem2(
     postedAgo: String,
     title: String,
     price: String,
-    image:String,
+    image: String,
+    type: RealEstateType,
+    categories: RealEstateCategories,
     equipment: List<Equipment>,
     onClick: () -> Unit
 ) {
 
-    var enabledPageDetail by remember { mutableStateOf(false) }
-    var showPopup by remember { mutableStateOf(false) }
-    var cardBounds by remember { mutableStateOf<Rect?>(null) }
+    /*  var enabledPageDetail by remember { mutableStateOf(false) }
+      var showPopup by remember { mutableStateOf(false) }
+      var cardBounds by remember { mutableStateOf<Rect?>(null) }
+      val density = LocalDensity.current*/
+    /* // Animatables pour X, Y, width, height
+     val offsetX = remember { Animatable(0f) }
+     val offsetY = remember { Animatable(0f) }
+     val width = remember { Animatable(0f) }
+     val height = remember { Animatable(0f) }
+
+     // Démarrer l’animation si demandé
+     LaunchedEffect(enabledPageDetail) {
+         if (enabledPageDetail && cardBounds != null) {
+             offsetX.snapTo(cardBounds!!.left)
+             offsetY.snapTo(cardBounds!!.top)
+             width.snapTo(cardBounds!!.width)
+             height.snapTo(cardBounds!!.height)
+
+             offsetX.animateTo(200f, animationSpec = tween(500))
+             offsetY.animateTo(300f, animationSpec = tween(500))
+             width.animateTo(600f, animationSpec = tween(500))
+             height.animateTo(400f, animationSpec = tween(500))
+         }
+     }*/
+
     val density = LocalDensity.current
-    // Animatables pour X, Y, width, height
-    val offsetX = remember { Animatable(0f) }
-    val offsetY = remember { Animatable(0f) }
-    val width = remember { Animatable(0f) }
-    val height = remember { Animatable(0f) }
-
-    // Démarrer l’animation si demandé
-    LaunchedEffect(enabledPageDetail) {
-        if (enabledPageDetail && cardBounds != null) {
-            offsetX.snapTo(cardBounds!!.left)
-            offsetY.snapTo(cardBounds!!.top)
-            width.snapTo(cardBounds!!.width)
-            height.snapTo(cardBounds!!.height)
-
-            offsetX.animateTo(200f, animationSpec = tween(500))
-            offsetY.animateTo(300f, animationSpec = tween(500))
-            width.animateTo(600f, animationSpec = tween(500))
-            height.animateTo(400f, animationSpec = tween(500))
-        }
-    }
-
 
     Box(
-        modifier = Modifier.width(250.dp)
+        modifier = Modifier.width(350.dp)
             .wrapContentHeight()
-            .onGloballyPositioned {
+            /*.onGloballyPositioned {
                 val position = it.localToRoot(Offset.Zero)
                 val size = it.size
                 cardBounds = Rect(position, size.toSize())
-            }
+            }*/
             .shadow(elevation = 10.dp, shape = RoundedCornerShape(10.dp))
             .background(Color.White)
             .clickable(onClick = { onClick() })
-            .padding(8.dp),
     ) {
         Column(
             modifier = Modifier.wrapContentSize(),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
+            // verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().height(25.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier.weight(0.6f),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.LocationOn,
-                        modifier = Modifier.height(18.dp).padding(2.dp),
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                    Text(
-                        location,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-                Row(
-                    modifier = Modifier.weight(0.4f),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.CalendarToday,
-                        modifier = Modifier.height(18.dp).padding(2.dp),
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                    Text(
-                        postedAgo,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp)
-                    )
-                }
-
-            }
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(5.dp, alignment = Alignment.CenterVertically),
-                horizontalArrangement = Arrangement.spacedBy(5.dp, alignment = Alignment.Start),
-            ) {
-                Row(
-                    modifier = Modifier.wrapContentWidth().padding(5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Icon(
-                        modifier = Modifier.height(16.dp),
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "",
-                        tint = Color.Gray
-                    )
-                    Text(
-                        text =title,
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Row(
-                    modifier = Modifier.wrapContentWidth().padding(5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = price,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-            }
             Column(
-                modifier = Modifier.fillMaxWidth().height(200.dp).padding(bottom = 1.dp),
+                modifier = Modifier.fillMaxWidth().height(200.dp),
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp)).padding(vertical = 5.dp)
+                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp))
                 ) {
-                   /* Image(
-                        painter = imageRes,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )*/
+                    /*Image(
+                         painter = imageRes,
+                         contentDescription = null,
+                         contentScale = ContentScale.Crop
+                     )*/
                     AsyncImage(
                         model = image,
                         contentDescription = null,
@@ -417,13 +375,119 @@ fun RealEstateItem2(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth().background(Color.Black.copy(alpha = 0.5f))
-                            .align(Alignment.BottomCenter).padding(5.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    Box(
+                        modifier = Modifier
+                            .width(100.dp).height(20.dp)
+                            .rotate(35f) // Rotation en diagonale
+                            .align(Alignment.TopEnd)
+                            .offset(x = 18.dp, y = -5.dp)  // Décalage pour bien le placer
+                            .background(if (categories == RealEstateCategories.A_VENDRE) Color.Red else Color.Blue),
+                        contentAlignment = Alignment.Center
                     ) {
-                        equipment.forEach {
+                        Text(
+                            text = if (categories == RealEstateCategories.A_VENDRE) "For sale" else "For rent",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                            )
+                        )
+                    }
+                    Box(
+                        modifier = Modifier.size(50.dp).align(Alignment.TopStart).padding(top = 20.dp, start = 20.dp).clip(CircleShape)
+                            .background(Color.White).padding(5.dp), contentAlignment = Alignment.Center
+                    ) {
+                        Icon(imageVector = type.getIcon(), contentDescription = "Home", tint = Color.Black)
+                    }
+                }
+            }
+            Column(modifier = Modifier.wrapContentSize().padding(5.dp).padding(bottom = 10.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(25.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier.weight(0.6f),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.LocationOn,
+                            modifier = Modifier.height(18.dp),
+                            contentDescription = null,
+                            tint = Color.Gray
+                        )
+                        Text(
+                            location,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.weight(0.4f),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.CalendarToday,
+                            modifier = Modifier.height(18.dp).padding(2.dp),
+                            contentDescription = null,
+                            tint = Color.Gray
+                        )
+                        Text(
+                            postedAgo,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp)
+                        )
+                    }
+
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+
+                    Row(
+                        modifier = Modifier.weight(1f).padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                       /* Icon(
+                            modifier = Modifier.height(16.dp),
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "",
+                            tint = Color.Gray
+                        )*/
+                        Text(
+                            text ="~$title",
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.weight(1f).padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = price,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                }
+                /*FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    equipment.forEachIndexed { index, it ->
+                        if (index < 3) {
                             Row(
                                 modifier = Modifier//.shadow(elevation = 1.dp, shape = RoundedCornerShape(5.dp))
                                     .padding(2.dp),
@@ -434,13 +498,14 @@ fun RealEstateItem2(
                                     getIconByName(it.iconName),
                                     modifier = Modifier.height(20.dp).padding(2.dp),
                                     contentDescription = null,
-                                    tint = Color.White
+                                    *//*
+                                                                        tint = Color.White*//*
                                 )
-                                Text(it.value, style = MaterialTheme.typography.bodySmall, color = Color.White)
+                                //Text(it.value, style = MaterialTheme.typography.bodySmall,)
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }

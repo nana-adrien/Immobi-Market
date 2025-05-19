@@ -2,7 +2,11 @@
               /*@Auto import file*/
               import kotlinx.serialization.Serializable
               
-                                                                                                                                                                                                                                                                                              /*@Auto Generate Composable*/
+                                                                                                                                                                                                                                                                                                                              /*@Auto Generate Composable*/
+                @Serializable
+data class ViewMessenger(val scrollPosition: Int = 0)
+                @Serializable
+data class ViewMobileDashBoard(val scrollPosition: Int = 0,val isConnected: Boolean=false)
                 @Serializable
 data class ViewSplash(val scrollPosition: Int = 0)
                 @Serializable

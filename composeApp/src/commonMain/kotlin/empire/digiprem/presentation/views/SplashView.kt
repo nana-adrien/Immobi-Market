@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,10 +25,7 @@ import androidx.navigation.NavHostController
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
 import empire.digiprem.config.isCompactMobilePlatform
-import empire.digiprem.navigation.ViewHome
-import empire.digiprem.navigation.ViewLogin
-import empire.digiprem.navigation.ViewRegister
-import empire.digiprem.navigation.ViewSplash
+import empire.digiprem.navigation.*
 import empire.digiprem.presentation.components.AppButton
 import empire.digiprem.presentation.components.AppSecondaryButton
 import empire.digiprem.presentation.viewmodels.SplashViewModel
@@ -95,7 +93,7 @@ fun SplashView(
                         AppButton(onClick = {
                             navController.navigate(ViewLogin())
                         }){
-                            Text("se connecter")
+                            Text("se connecter", color = it)
                         }
                         AppSecondaryButton(
                             onClick = { navController.navigate(ViewRegister())}
@@ -121,10 +119,10 @@ fun SplashView(
                 }
                 Box(modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 30.dp)){
                     TextButton(onClick = {
-                        navController.navigate(ViewHome())
+                        navController.navigate(ViewMobileDashBoard())
                     }){
-                        Text("se connceter plutard" , color = Color.White)
-                        Icon( Icons.Default.ArrowRight,"")
+                        Text("Pass Authentication" , color = Color.White)
+                        Icon( Icons.Default.KeyboardDoubleArrowRight,"",tint=Color.White)
                     }
                 }
             }

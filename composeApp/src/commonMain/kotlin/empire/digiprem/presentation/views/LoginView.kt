@@ -20,10 +20,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import composeApp.src.commonMain.ComposeResources.drawable.*
 import empire.digiprem.config.getActualWindowsSize
-import empire.digiprem.navigation.ViewHome
-import empire.digiprem.navigation.ViewLogin
-import empire.digiprem.navigation.ViewRegister
-import empire.digiprem.navigation.forgotPassword
+import empire.digiprem.config.isCompactMobilePlatform
+import empire.digiprem.navigation.*
 import empire.digiprem.presentation.components.AppButton
 import empire.digiprem.presentation.components.AppCardWrapper
 import empire.digiprem.presentation.components.AppIconButton
@@ -189,7 +187,7 @@ fun LoginView(
                             ) {
                                 Text(
                                     "Mot de passe oublier ?",
-                                    modifier = Modifier.clickable { navController.navigate(forgotPassword) },
+                                    modifier = Modifier.clickable { navController.navigate(ViewForgotPassword()) },
                                     style = TextStyle(fontSize = 12.sp),
                                     color = MaterialTheme.colorScheme.primary
                                 )
@@ -200,8 +198,17 @@ fun LoginView(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
+                        val isCompactMobilePlatform=isCompactMobilePlatform()
                         AppButton(
-                            onClick = { navController.navigate(ViewHome(true)) }
+                            onClick = {
+                                navController.navigate(
+                                    if (isCompactMobilePlatform) {
+                                        ViewMobileDashBoard(0, isConnected = true)
+                                    } else {
+                                        ViewHome(isConnected = true)
+                                    }
+                                )
+                            }
                         ) {
                             Text("Login with email", color = Color.White)
                         }

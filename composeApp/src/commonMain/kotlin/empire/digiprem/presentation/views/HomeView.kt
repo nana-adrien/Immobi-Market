@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Notifications
@@ -263,14 +264,18 @@ fun HomeView(
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
             topBar = {
-                AnimatedVisibility(
-                    scrollableState.value > 50,
-                    enter = slideInTop,
-                    exit = fadeOut()
-                ) {
-                    topBar(MaterialTheme.colorScheme.surfaceVariant)
+                if (!isCompactSize) {
+                    AnimatedVisibility(
+                        scrollableState.value > 50,
+                        enter = slideInTop,
+                        exit = fadeOut()
+                    ) {
+                        topBar(MaterialTheme.colorScheme.background)
+                    }
                 }
+
             }
         ) {
             MarketplaceScreen(
@@ -284,19 +289,22 @@ fun HomeView(
             )
         }
 
-        AnimatedVisibility(
-            visible = activeTopBarAction.enabled,//enabledNotification,
-            modifier = Modifier.padding(top = 70.dp, end = 20.dp).wrapContentSize().align(Alignment.TopEnd)
-        ) {
-            Box(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
-                    .background(Color.White)
+        if (!isCompactSize) {
+            AnimatedVisibility(
+                visible = activeTopBarAction.enabled,//enabledNotification,
+                modifier = Modifier.padding(top = 70.dp, end = 20.dp).wrapContentSize().align(Alignment.TopEnd)
             ) {
-                activeTopBarAction.content()
+                Box(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
+                        .background(Color.White)
+                ) {
+                    activeTopBarAction.content()
+                }
             }
         }
+
 
     }
 }
@@ -315,7 +323,7 @@ fun MarketplaceScreen(
 ) {
 
     //val route=navigationController.currentBackStackEntryAsState().value?.toRoute<Produits>()
-    var enabledPageDetail by remember { mutableStateOf(false) }
+    var selectedCategories by remember { mutableStateOf(0) }
     val gridState = rememberLazyGridState()
     // var isCompactSize= isCompactWindowSize()
     val nestedScrollConnection = remember {
@@ -407,76 +415,102 @@ fun MarketplaceScreen(
                             }
                         }
                     }
-                } else {
-                    Box(modifier = Modifier.align(Alignment.TopStart)) {
-                        topBar(Color.Transparent)
-                    }
                 }
-
             }
             val modifier = if (isCompactSize) {
-                Modifier.fillMaxWidth().padding(top = 60.dp, /*start = 10.dp, end = 10.dp*/)
+                Modifier.fillMaxWidth()
                     .align(Alignment.Center)
             } else {
                 Modifier.padding(top = 700.dp).fillMaxWidth().padding(start = 350.dp, end = 50.dp)
                     .align(Alignment.Center)
             }
             Column(
-                modifier = modifier.align(Alignment.Center).zIndex(0f),
+                modifier = modifier.align(Alignment.TopCenter).zIndex(0f),
             ) {
-                PageSection(
-                    title = "Les plus visites",
-                    modifier =
-                        Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
-                    state = gridState,
-                ) {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        val liste = RealEstateList.value.subList(0, 5)
-                        liste.forEach {
-                            RealEstateItem2(
-                                location = it.location,
-                                postedAgo = it.postedAgo,
-                                price = it.price,
-                                title = it.title,
-                                image = it.images.first(),
-                                equipment = it.equipment,
-                                onClick = {
-                                    onClickRealEstateItem(it.id)
-                                }
-                            )
-                        }
-                    }
-                }
 
-                PageSection(
-                    title = "Juste a quelque Metre",
-                    modifier =
-                        Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
-                    state = gridState,
-                ) {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        val liste = RealEstateList.value
-                        liste.forEach {
-                            RealEstateItem2(
-                                location = it.location,
-                                postedAgo = it.postedAgo,
-                                price = it.price,
-                                title = it.title,
-                                image = it.images.first(),
-                                equipment = it.equipment,
+               /* Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {*/
+                    ScrollableTabRow(
+                        selectedTabIndex = selectedCategories,
+                        containerColor = MaterialTheme.colorScheme.background,
+                    ){
+                        RealEstateType.entries.forEachIndexed {index,item->
+                            AssistChip(
+                                modifier = Modifier.padding(horizontal = 10.dp),
+                                colors = AssistChipDefaults.assistChipColors().copy(containerColor = item.getColor()),
                                 onClick = {
-                                    onClickRealEstateItem(it.id)
+                                    selectedCategories=index
+                                    onSendIntent(HomeIntent.OnFilterRealEstatesType(  item))
+                                },
+                                label = {  Text("${item.name.lowercase()}", color = Color.White) },
+                                leadingIcon = {
+                                    Icon(item.getIcon(), "", tint = Color.White)
                                 }
                             )
+
                         }
                     }
-                }
+
+
+
+                // }
+
+
+                /* PageSection(
+                     title = "Les plus visites",
+                     modifier =
+                         Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
+                     state = gridState,
+                 ) {
+                     FlowRow(
+                         horizontalArrangement = Arrangement.spacedBy(10.dp),
+                         verticalArrangement = Arrangement.spacedBy(10.dp)
+                     ) {
+                         val liste = homeModel.realEstates.subList(0, 5)
+                         liste.forEach {
+                             RealEstateItem2(
+                                 location = it.location,
+                                 postedAgo = it.postedAgo,
+                                 price = it.price,
+                                 title = it.title,
+                                 image = it.images.first(),
+                                 equipment = it.equipment,
+                                 onClick = {
+                                     onClickRealEstateItem(it.id)
+                                 }
+                             )
+                         }
+                     }
+                 }
+
+                 PageSection(
+                     title = "Juste a quelque Metre",
+                     modifier =
+                         Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
+                     state = gridState,
+                 ) {
+                     FlowRow(
+                         horizontalArrangement = Arrangement.spacedBy(10.dp),
+                         verticalArrangement = Arrangement.spacedBy(10.dp)
+                     ) {
+
+                         homeModel.realEstates.forEach {
+                             RealEstateItem2(
+                                 location = it.location,
+                                 postedAgo = it.postedAgo,
+                                 price = it.price,
+                                 title = it.title,
+                                 image = it.images.first(),
+                                 equipment = it.equipment,
+                                 onClick = {
+                                     onClickRealEstateItem(it.id)
+                                 }
+                             )
+                         }
+                     }
+                 }*/
                 RealEstateType.values().forEach { category ->
                     val filteredList = homeModel.realEstates.filter { it.type == category }
                     if (filteredList.isNotEmpty()) {
@@ -503,6 +537,8 @@ fun MarketplaceScreen(
                                         price = it.price,
                                         title = it.title,
                                         image = it.images.first(),
+                                        categories = it.categories,
+                                        type = it.type,
                                         equipment = it.equipment,
                                         onClick = {
                                             onClickRealEstateItem(it.id)
@@ -542,11 +578,11 @@ fun MarketplaceScreen(
             }
         }
 
-        AppVerticalScrollBar(
-            modifier = Modifier.width(5.dp).align(Alignment.CenterEnd).zIndex(0.8f),
-            scrollState = state
-        )
         if (!isCompactSize) {
+            AppVerticalScrollBar(
+                modifier = Modifier.width(5.dp).align(Alignment.CenterEnd).zIndex(0.8f),
+                scrollState = state
+            )
             AnimatedVisibility(
                 visible = state.value > 600,
                 enter = slideInStart,

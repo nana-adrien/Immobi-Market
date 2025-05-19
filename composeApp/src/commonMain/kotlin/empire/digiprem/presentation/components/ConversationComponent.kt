@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
@@ -325,6 +326,37 @@ fun ImageSection(
             contentScale = ContentScale.Crop,
             painter = painter,
             contentDescription = contentDescription
+        )
+        if (online) {
+            Badge(
+                modifier = Modifier
+                    .then(badgeModifier)
+                    .size(15.dp)
+                    .padding(start = 7.dp, bottom = 5.dp)
+                    .align(Alignment.BottomStart),
+                containerColor = Color.Green,
+                contentColor = Color.White
+            )
+        }
+    }
+}@Composable
+fun AsyncImageSection(
+    model: Any?,
+    online: Boolean,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    badgeModifier: Modifier = Modifier,
+) {
+    Box {
+        AsyncImage(
+            model = model,
+            contentDescription = contentDescription,
+            modifier =  Modifier
+                .then(modifier)
+                .size(55.dp)
+                .clip(CircleShape),
+            clipToBounds = true,
+            contentScale = ContentScale.Crop
         )
         if (online) {
             Badge(

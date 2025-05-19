@@ -644,7 +644,7 @@ fun AppPopup(
 
 
 @Composable
-private fun AppBottomBar(
+fun AppBottomBar(
     content: @Composable RowScope.() -> Unit,
 ) {
     Column {

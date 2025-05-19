@@ -12,7 +12,17 @@ import org.koin.dsl.module
 import empire.digiprem.presentation.viewmodels.SplashViewModel
 
 
+ 
+import empire.digiprem.presentation.viewmodels.MobileDashBoardViewModel
+
+
+ 
+import empire.digiprem.presentation.viewmodels.MessengerViewModel
+
+
  val commonModules = module {
+  viewModel { MessengerViewModel() }
+  viewModel { MobileDashBoardViewModel() }
   viewModel { SplashViewModel() }
   viewModel { PropertyALLPropertyViewModel() }
     viewModel { PropertyAddPropertyViewModel() }

@@ -25,7 +25,7 @@ import empire.digiprem.config.isCompactMobilePlatform
     horizontalArrangement: Arrangement. Horizontal = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally),
     verticalAlignment: Alignment. Vertical = Alignment.CenterVertically,
      onClick: () -> Unit,
-     content: @Composable () -> Unit
+     content: @Composable (Color) -> Unit
  ) {
     Row(
         modifier = Modifier.then(modifier).fillMaxWidth().height(40.dp)
@@ -34,9 +34,10 @@ import empire.digiprem.config.isCompactMobilePlatform
         verticalAlignment = verticalAlignment,
         horizontalArrangement =horizontalArrangement
     ) {
-       content()
+       content(MaterialTheme.colorScheme.surfaceVariant)
     }
 }
+
 @Composable
  fun AppSecondaryButton(
     enabled: Boolean = true,
@@ -56,6 +57,7 @@ import empire.digiprem.config.isCompactMobilePlatform
        content(MaterialTheme.colorScheme.primary)
     }
 }
+
 @Composable
  fun AppOutlinedButton(
     enabled: Boolean = true,

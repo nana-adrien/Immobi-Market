@@ -284,7 +284,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1") // ou plus récent
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+            //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
             implementation(libs.koin.core)
             implementation("io.insert-koin:koin-compose-viewmodel:4.0.4")
             implementation("io.insert-koin:koin-compose:4.0.4")
@@ -309,6 +309,9 @@ kotlin {
             //  implementation("org.jetbrains.compose.web:web-core:1.8.0-beta02")
             //implementation("io.insert-koin:koin-core-wasm-js:4.0.4")
         }
+    }
+    sourceSets.commonMain.dependencies {
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:null")
     }
 }
 
