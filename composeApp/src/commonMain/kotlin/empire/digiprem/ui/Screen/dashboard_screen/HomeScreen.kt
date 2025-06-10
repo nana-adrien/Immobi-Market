@@ -436,7 +436,7 @@ fun PageSection(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -463,7 +463,9 @@ fun PageSection(
                 )
             }
         }
-        content()
+        Box(modifier = Modifier.padding(horizontal = 20.dp)){
+            content()
+        }
         Spacer(Modifier.height(10.dp))
         HorizontalDivider()
     }

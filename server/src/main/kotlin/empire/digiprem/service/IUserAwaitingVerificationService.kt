@@ -1,0 +1,3 @@
+package empire.digiprem.service
+
+interface IUserAwaitingVerificationService

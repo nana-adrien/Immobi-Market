@@ -171,7 +171,9 @@ fun DashboardNavigation(navController: NavHostController, dashboardState: Dashbo
             enabledExpensiveMenu = true,
             isPopupOpen = true,
             topBar = {
-                AppHeader { }
+                AppHeader(
+
+                ){ }
             },
             navigationItems = navigation1
         ) {

@@ -5,10 +5,27 @@ spring:
   application:
     name: immobi-market-web-app
   datasource:
-    url: jdbc:postgresql://localhost:5432/test2
+    url: jdbc:postgresql://localhost:5432/immobi_market
     username: spring
     password: spring
     driver-class-name: org.postgresql.Driver
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: empire.digiprem@gmail.com
+    password: kakonana
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+
+
 
   jpa:
     hibernate:
@@ -17,6 +34,14 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show_sql: true
+
+jwt:
+  secret-key: Application de test
+  expiration: (5*60*1000)
+
+springdoc:
+  model-converters:
+      generic-models: empire.digiprem.models.ApiResponse
 
 
 

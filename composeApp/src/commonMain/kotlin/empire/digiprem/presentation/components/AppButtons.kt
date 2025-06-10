@@ -29,8 +29,9 @@ import empire.digiprem.config.isCompactMobilePlatform
  ) {
     Row(
         modifier = Modifier.then(modifier).fillMaxWidth().height(40.dp)
+            .border(width = 1.dp, color = if(enabled) MaterialTheme.colorScheme.primary else Color.Gray,RoundedCornerShape(8.dp))
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.primary).clickable(enabled=enabled, onClick =onClick),
+            .background( if(enabled) MaterialTheme.colorScheme.primary else Color.LightGray).clickable(enabled=enabled, onClick =onClick),
         verticalAlignment = verticalAlignment,
         horizontalArrangement =horizontalArrangement
     ) {
@@ -111,7 +112,7 @@ fun AppIconActionButton(
     var color:Color= Color.Black
     val isCompactSize= isCompactMobilePlatform()
     Box(
-        modifier = Modifier.then(modifier).size(if (isCompactSize) 28.dp else 40.dp).clip(RoundedCornerShape(20.dp)).background(
+        modifier = Modifier.then(modifier).size(if (isCompactSize) 22.dp else 35.dp).clip(RoundedCornerShape(20.dp)).background(
             if (selected) {
                 color=Color.White
                 MaterialTheme.colorScheme.primary.copy(

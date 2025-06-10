@@ -8,4 +8,8 @@ class ChatViewModel : AbstractViewModel<ChatModel,ChatIntent>(defaultState = Cha
     override fun onIntentHandler(intent: ChatIntent) {
         TODO("Not yet implemented")
     }
+
+    override fun onRefreshPage() {
+        TODO("Not yet implemented")
+    }
 }

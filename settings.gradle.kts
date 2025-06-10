@@ -10,6 +10,7 @@ pluginManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+        mavenLocal()
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
         mavenCentral()
         gradlePluginPortal()
@@ -17,6 +18,7 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+
     repositories {
         google {
             mavenContent {
@@ -25,6 +27,7 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+        mavenLocal()
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
         mavenCentral()
     }

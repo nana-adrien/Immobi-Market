@@ -1,4 +1,4 @@
-package empire.digiprem.data.model.components
+package empire.digiprem.app.model.components
 
 import empire.digiprem.presentation.components.app.Equipment
 import empire.digiprem.presentation.components.app.RealEstateCategories

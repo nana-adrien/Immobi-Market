@@ -4,12 +4,10 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -23,11 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -37,9 +39,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import composeApp.src.commonMain.ComposeResources.drawable.*
 import empire.digiprem.config.getActualWindowsSize
 import empire.digiprem.core.utils.pointerEvent
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import androidx.compose.material3.MaterialTheme as Material1Theme
 
 enum class NavigationTypeEnum {
@@ -156,24 +160,37 @@ fun WrapperPage(
     content: @Composable () -> Unit,
 ) {
     val modifier1 = if (enabled) Modifier.fillMaxSize().background(Material1Theme.colorScheme.surfaceVariant)
-        .padding(start = 3.dp, top = 3.dp) else Modifier.fillMaxSize().background(Material1Theme.colorScheme.background)
+        .padding(start = 3.dp, top = 3.dp) else Modifier.fillMaxSize()
+        .background(Material1Theme.colorScheme.surfaceVariant)
 
+    /* Box(
+         modifier = modifier1
+     ) {*/
+    val modifier = if (enabled) Modifier.fillMaxSize().shadow(
+        elevation = 2.dp,
+        shape = RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)
+    )else Modifier.fillMaxSize()
     Box(
-        modifier = modifier1
+        modifier = modifier.background(Material1Theme.colorScheme.surfaceVariant)
     ) {
-        val modifier = if (enabled) Modifier.fillMaxSize()
-            .clip(RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)) else Modifier.fillMaxSize()
-        Box(
-            modifier = modifier
-        ) {
-            content.invoke()
-        }
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(Res.drawable.Copilot),
+            contentDescription = "",
+            contentScale = ContentScale.FillBounds ,
+        )
+        Box(modifier = Modifier.fillMaxSize().background(Material1Theme.colorScheme.surface.copy(alpha = 0.4f)))
+        Box(modifier = Modifier.fillMaxSize().background( brush = Brush.horizontalGradient(
+            colors = listOf(Material1Theme.colorScheme.surface, Color.Transparent)
+        )))
+        content.invoke()
     }
 }
 
 
 @Composable
 fun NavigationApp(
+    modifier: Modifier=Modifier,
     navigationRail: NavigationTypeEnum,
     firstContent: @Composable() (() -> Unit?)? = null,
     secondContent: @Composable() (() -> Unit?)? = null,
@@ -187,7 +204,7 @@ fun NavigationApp(
 
     }
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.then(modifier).fillMaxSize()
     ) {
         Box(modifier = Modifier.width(leftWidth.dp).fillMaxHeight()) {
             firstContent?.invoke()
@@ -300,6 +317,7 @@ fun ExpandingRailDrawer(navigationRail: NavigationTypeEnum) {
         val navController = rememberNavController()
         WrapperPage(true) {
             NavigationApp(
+                modifier = Modifier,
                 navigationRail,
                 firstContent = {},
                 secondContent = { }
@@ -340,6 +358,8 @@ fun NavigationRailWithPopupDrawer(
     content: @Composable () -> Unit,
 ) {
     // var isPopupOpen by remember { mutableStateOf(false) }
+
+
     val targetWidth = if (isPopupOpen) 150.dp else 50.dp
     val width by animateDpAsState(
         targetValue = targetWidth,
@@ -379,7 +399,7 @@ fun NavigationRailWithPopupDrawer(
 
                 Box(modifier = Modifier.wrapContentSize()) {
                     Row(
-                        modifier = Modifier//.background(Material1Theme.colorScheme.primary.copy(alpha = 0.7f))
+                        modifier = Modifier.background(Color.White),
                     ) {
                         Box(modifier = Modifier.wrapContentSize()) {
                             if (enableNavRail) {
@@ -394,7 +414,10 @@ fun NavigationRailWithPopupDrawer(
                                                     enable = true,
                                                     offset = Offset(x = offset.x + 60, y = offset.y - 80),
                                                     content = {
-                                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                                        Column(
+                                                            modifier = Modifier.wrapContentWidth(),
+                                                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                                                        ) {
                                                             Text(
                                                                 it.label, style = TextStyle(
                                                                     color = Material1Theme.colorScheme.primary.copy(
@@ -404,7 +427,6 @@ fun NavigationRailWithPopupDrawer(
                                                                 )
                                                             )
                                                             if (it.subNavigationItem.isNotEmpty()) {
-                                                                HorizontalDivider()
                                                                 it.subNavigationItem.forEach { item ->
                                                                     CustomExpensiveNavItem(
                                                                         modifier = item.modifier,
@@ -502,7 +524,7 @@ fun NavigationRailWithPopupDrawer(
                         WrapperPage(
                             enabled = enableNavRail
                         ) {
-                            appContent()
+                            content()
                         }
                     }
 
@@ -542,16 +564,16 @@ fun NavigationRailWithPopupDrawer(
                     },
                     bottomBar = {
                         if (enableNavRail) {
-                            Box(Modifier.fillMaxWidth()){
+                            Box(Modifier.fillMaxWidth()) {
                                 FloatingActionButton(
-                                    modifier = Modifier.padding(bottom =40.dp),
+                                    modifier = Modifier.padding(bottom = 40.dp),
                                     onClick = onClickFloatingActionButton
                                 ) {
                                     Icon(
                                         Icons.Default.ShoppingCart, ""
                                     )
                                 }
-                                Box(modifier=Modifier.fillMaxWidth().align(Alignment.BottomCenter)){
+                                Box(modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)) {
                                     AppBottomBar {
                                         navigationItems.forEach {
                                             Column(
@@ -629,7 +651,7 @@ fun AppPopup(
         Box(
             modifier = Modifier.absoluteOffset(x = xDp, y = yDp)
                 .wrapContentHeight()
-                .width(150.dp)
+                .wrapContentWidth()
                 .background(color, shape = RoundedCornerShape(8.dp))
                 .padding(5.dp).pointerEvent(PointerEventType.Enter) { ti ->
                     onPointerEnterEvent()
@@ -662,7 +684,7 @@ fun AppBottomBar(
 
 @Composable
 private fun AppNavigationRail(
-    containerColor: Color = Material1Theme.colorScheme.surfaceVariant,
+    containerColor: Color = Color.White,
     contentColor: Color = Color.Black,
     containerModifier: Modifier = Modifier.padding(3.dp),
     modifier: Modifier = Modifier,
@@ -671,21 +693,24 @@ private fun AppNavigationRail(
     content: @Composable () -> Unit,
 ) {
     // Box(modifier=Modifier.wrapContentSize().background(Color.Gray).padding(top = 1.dp, end = 1.dp)){
-    NavigationRail(
-        modifier = Modifier.then(modifier).offset(x = 0.dp)
-            .width(45.dp)
-            .fillMaxHeight(),
-        containerColor = containerColor,
-        contentColor = contentColor
-    ) {
-        Column(
-            modifier = containerModifier,
-            horizontalAlignment = horizontalAlignment,
-            verticalArrangement = verticalArrangement
+    Box(modifier = Modifier.border(width = 0.3.dp, color = Color.LightGray).background(Color.White).padding(start = 10.dp, end = 20.dp)){
+        NavigationRail(
+            modifier = Modifier.then(modifier).offset(x = 0.dp)
+                .width(45.dp)
+                .fillMaxHeight(),
+            containerColor = containerColor,
+            contentColor = contentColor
         ) {
-            content.invoke()
+            Column(
+                modifier =Modifier.then(containerModifier) ,
+                horizontalAlignment = horizontalAlignment,
+                verticalArrangement = verticalArrangement
+            ) {
+                content.invoke()
+            }
         }
     }
+
     //}
 }
 
@@ -807,7 +832,7 @@ private fun AppBadge(
 }
 
 @Composable
-private fun CustomExpensiveNavItem(
+fun CustomExpensiveNavItem(
     modifier: Modifier = Modifier,
     isSubMenuItem: Boolean = false,
     label: String,
@@ -817,7 +842,7 @@ private fun CustomExpensiveNavItem(
     contentColor: Color = if (selected) Color.White else Material1Theme.colorScheme.primary,
     badgeColor: Color = Color.Black,
     textStyle: TextStyle = TextStyle(
-        color = if (selected) contentColor else contentColor.copy(alpha = 0.5f),
+        color = if (selected) contentColor else Material1Theme.colorScheme.onBackground,
         fontWeight = FontWeight.Bold
     ),
     badgeTextStyle: TextStyle = TextStyle(color = contentColor, fontSize = 10.sp),
@@ -832,10 +857,10 @@ private fun CustomExpensiveNavItem(
     }
     Column {
         Row(
-            modifier = Modifier.padding(start = if (isSubMenuItem) 10.dp else 0.dp).height(35.dp).width(200.dp)
+            modifier = Modifier.then(modifier).padding(start = if (isSubMenuItem) 10.dp else 0.dp).height(35.dp).width(200.dp)
                 .clip(RoundedCornerShape(5.dp))
                 .background(if (selected) Material1Theme.colorScheme.primary.copy(alpha = if (isSubMenuItem) 0.5f else 1f) /*Color.Gray.copy(0.5f)*/ else Color.Transparent)
-                .clickable(onClick = onClickItem).then(modifier),
+                .clickable(onClick = onClickItem),
             verticalAlignment = Alignment.CenterVertically
         ) {
             androidx.compose.animation.AnimatedVisibility(selected) {
@@ -887,8 +912,8 @@ private fun CustomExpensiveNavItem(
         }
         androidx.compose.animation.AnimatedVisibility(subNavItem != null && enabledSubNavItem == true) {
             Column(
-                modifier = Modifier.width(200.dp)
-                    .background(Material1Theme.colorScheme.surfaceVariant.copy(alpha = 0.8f)).padding(end = 10.dp)
+                modifier = Modifier.padding(start = 10.dp).width(200.dp)
+                    .background(Color.White).padding(end = 10.dp)
                     .padding(vertical = 10.dp)/*.background(Color.Black.copy(alpha = 0.3f))*/
             ) {
                 subNavItem?.invoke()

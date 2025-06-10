@@ -1,3 +1,4 @@
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.ComposeHotRun
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
@@ -7,12 +8,14 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
+  alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    kotlin("plugin.serialization") version "1.9.10"
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.ktorfit)
+   kotlin("plugin.serialization") version "2.1.20"
 }
 tasks.withType<ComposeHotRun>().configureEach {
     mainClass.set("empire.digiprem.MainKt")
@@ -216,7 +219,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -266,6 +269,13 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
+            implementation("androidx.datastore:datastore:1.1.0")
+            implementation("androidx.datastore:datastore-preferences:1.1.0")
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            implementation("androidx.datastore:datastore:1.1.0")
+            implementation("androidx.datastore:datastore-preferences:1.1.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -277,18 +287,26 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-alpha17")
-            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
-            implementation(projects.shared)
+           implementation(projects.shared)
             implementation(libs.material3.windowSize)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0-alpha17")
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1") // ou plus récent
-            //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+           implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+
+          //  implementation(libs.ktorfit.ksp)
+            //Ktorfit
             implementation(libs.koin.core)
+            implementation(libs.ktorfit.lib)
+            implementation(libs.ktorfit.converters.response)
             implementation("io.insert-koin:koin-compose-viewmodel:4.0.4")
             implementation("io.insert-koin:koin-compose:4.0.4")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            //  implementation("octopusfx.client.mobile.core:octopusfx-core:0.0.2")
             // implementation("io.insert-koin:koin-androidx-compose:4.0.4")
         }
         desktopMain.dependencies {
@@ -310,9 +328,9 @@ kotlin {
             //implementation("io.insert-koin:koin-core-wasm-js:4.0.4")
         }
     }
-    sourceSets.commonMain.dependencies {
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:null")
-    }
+   /* sourceSets.commonMain.dependencies {
+       // implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:null")
+    }*/
 }
 
 android {
@@ -337,13 +355,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
 dependencies {
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.constraintlayout.core)
+    add("kspCommonMainMetadata","de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
+    add("kspDesktop", "de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
+    add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
+   // add("kspDesktop", "de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
     debugImplementation(compose.uiTooling)
 }
 

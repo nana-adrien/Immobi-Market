@@ -31,6 +31,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ConversationsView(
     viewConversations: ViewConversations?=null,
     navController: NavHostController,
+    enableTopBar:Boolean=true,
     navigationRail: NavigationTypeEnum=NavigationTypeEnum.NAVIGATION_RAIL,
     conversationsViewModel: ConversationsViewModel = koinViewModel()
 ) {
@@ -39,58 +40,21 @@ fun ConversationsView(
     val onSendIntent = conversationsViewModel::onIntentHandler
     Scaffold(
         topBar = {
-            Column {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors()
-                        .copy(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
-                    title = { Text("Conversation") },
-                    actions = {
-                        IconButton(
-                            onClick = {}
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Phone,
-                                contentDescription = ""
-                            )
-                        }
-                        IconButton(
-                            onClick = {}
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = ""
-                            )
-                        }
-                        IconButton(
-                            onClick = {}
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.MoreVert,
-                                contentDescription = ""
-                            )
-                        }
-                    }
-
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp)
-                        .padding(horizontal = 20.dp, vertical = 7.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(size = 15.dp))
-                            .background(Color.LightGray.copy(0.3f)),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(0.7f)
-                                .padding(2.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
+            if (enableTopBar){
+                Column {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors()
+                            .copy(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
+                        title = { Text("Conversation") },
+                        actions = {
+                            IconButton(
+                                onClick = {}
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Phone,
+                                    contentDescription = ""
+                                )
+                            }
                             IconButton(
                                 onClick = {}
                             ) {
@@ -99,44 +63,82 @@ fun ConversationsView(
                                     contentDescription = ""
                                 )
                             }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(3.5f)
-                                .padding(end = 5.dp),
-                        ) {
-                            BasicTextField(
-                                textStyle = MaterialTheme.typography.bodyMedium,
-                                singleLine = true,
-                                value = "bonjour le monde bonjour bonjour bonjour bonjour ",
-                                onValueChange = {
-
-                                })
-                        }
-                        Box(
-                            modifier = Modifier.weight(0.3f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            /*IconButton(
-                               onClick = {}
+                            IconButton(
+                                onClick = {}
                             ) {
-                               Icon(
-                                  imageVector = Icons.Filled.Send ,
-                                  contentDescription = ""
-                               )
-                            }*/
+                                Icon(
+                                    imageVector = Icons.Filled.MoreVert,
+                                    contentDescription = ""
+                                )
+                            }
                         }
-                    }
-                    Divider(
-                        modifier = Modifier
-                            .height(2.dp)
-                            .padding(horizontal = 13.dp),
-                        color = Color.LightGray
-                    )
-                }
-                Divider()
-            }
 
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(55.dp)
+                            .padding(horizontal = 20.dp, vertical = 7.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(size = 15.dp))
+                                .background(Color.LightGray.copy(0.3f)),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .weight(0.7f)
+                                    .padding(2.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                IconButton(
+                                    onClick = {}
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Search,
+                                        contentDescription = ""
+                                    )
+                                }
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .weight(3.5f)
+                                    .padding(end = 5.dp),
+                            ) {
+                                BasicTextField(
+                                    textStyle = MaterialTheme.typography.bodyMedium,
+                                    singleLine = true,
+                                    value = "bonjour le monde bonjour bonjour bonjour bonjour ",
+                                    onValueChange = {
+
+                                    })
+                            }
+                            Box(
+                                modifier = Modifier.weight(0.3f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                /*IconButton(
+                                   onClick = {}
+                                ) {
+                                   Icon(
+                                      imageVector = Icons.Filled.Send ,
+                                      contentDescription = ""
+                                   )
+                                }*/
+                            }
+                        }
+                        Divider(
+                            modifier = Modifier
+                                .height(2.dp)
+                                .padding(horizontal = 13.dp),
+                            color = Color.LightGray
+                        )
+                    }
+                    Divider()
+                }
+            }
         },
         floatingActionButton = {
             FloatingActionButton(

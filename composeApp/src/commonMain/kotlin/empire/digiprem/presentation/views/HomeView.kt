@@ -4,12 +4,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Notifications
@@ -17,6 +21,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -29,14 +34,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.octopusfx.mymessenger.ui.screen.Conversations
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
+import composeApp.src.commonMain.ComposeResources.drawable.brick_wall_watermark_background
 import empire.digiprem.config.isCompactMobilePlatform
-import empire.digiprem.core.database.AppDataBase.RealEstateList
-import empire.digiprem.data.model.components.SearchFilter
+import empire.digiprem.app.model.components.SearchFilter
 import empire.digiprem.navigation.*
 import empire.digiprem.presentation.base.AppAnimations.slideInStart
 import empire.digiprem.presentation.base.AppAnimations.slideInTop
@@ -60,7 +64,6 @@ fun HomeView(
     navController: NavHostController,
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
-    // val homeViewModel:HomeViewModel = viewModel{HomeViewModel()}
     val state by homeViewModel.state.collectAsState()
     val onSendIntent = homeViewModel::onIntentHandler
     val isCompactSize = isCompactMobilePlatform()
@@ -84,7 +87,7 @@ fun HomeView(
         }
     }
 
-    val scrollableState = rememberScrollState(viewHome.scrollPosition)
+    val scrollableState = rememberLazyListState(viewHome.scrollPosition)
     val authenticateButtons = @Composable {
         Row {
             TextButton(
@@ -113,7 +116,7 @@ fun HomeView(
                     authenticateButtons()
                 } else {
                     AppIconActionButton(
-                        selected = activeTopBarAction.currentActionName.equals("Notifications"),
+                        selected = activeTopBarAction.currentActionName.equals("Notifications") && activeTopBarAction.enabled,
                         onClick = {
                             lamd("Notifications") {
                                 Box(
@@ -128,7 +131,7 @@ fun HomeView(
                     }
                     if (isCompactSize.not()) {
                         AppIconActionButton(
-                            selected = activeTopBarAction.currentActionName.equals("Message"),
+                            selected = activeTopBarAction.currentActionName.equals("Message") && activeTopBarAction.enabled,
                             onClick = {
                                 lamd("Message") {
                                     Box(modifier = Modifier.height(300.dp).width(300.dp)) {
@@ -202,7 +205,7 @@ fun HomeView(
                         }
                     } else {
                         AppIconActionButton(
-                            selected = activeTopBarAction.currentActionName.equals("Filter"),
+                            selected = activeTopBarAction.currentActionName.equals("Filter") && activeTopBarAction.enabled,
                             onClick = {
                                 lamd("Filter") {
                                     Box(modifier = Modifier.height(500.dp).width(300.dp)) {
@@ -222,32 +225,10 @@ fun HomeView(
                     }
 
                     AppIconActionButton(
-                        selected = activeTopBarAction.currentActionName.equals("profil"),
+                        selected = activeTopBarAction.currentActionName.equals("profil") && activeTopBarAction.enabled,
                         onClick = {
                             lamd("profil") {
-                                Box(modifier = Modifier.height(250.dp).width(350.dp).padding(10.dp)) {
-                                    Column {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth()
-                                                .clickable { navController.navigate(ViewStatistics()) },
-                                            verticalAlignment = Alignment.CenterVertically,
-                                        ) {
-                                            Text("Tableau de board")
-                                        }
-                                        HorizontalDivider()
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth().clickable {
-                                                navController.navigate(
-                                                    ViewHome(isConnected = false)
-                                                )
-                                            },
-                                            verticalAlignment = Alignment.CenterVertically,
-                                        ) {
-                                            Text("Deconnexion")
-                                        }
-                                        HorizontalDivider()
-                                    }
-                                }
+                                ProfilMenu(navController)
                             }
                         },
                     ) {
@@ -260,60 +241,318 @@ fun HomeView(
                 }
 
             }
+
+            if (!isCompactSize) {
+                DropdownMenu(
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
+                    containerColor = Color.Transparent,
+                    modifier = Modifier.padding(top = 10.dp, end = 20.dp).wrapContentSize()
+                        .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
+                        .background(Color.White),
+                    expanded = activeTopBarAction.enabled,
+                    onDismissRequest = {
+                        activeTopBarAction = activeTopBarAction.copy(enabled = false)
+                    }
+                ) {
+                    activeTopBarAction.content()
+                    /* Box(
+                         modifier = Modifier
+                             .wrapContentSize()
+                             .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
+                             .background(Color.White)
+                     ) {
+                     }*/
+                }
+            }
         }
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = Color.Transparent,
             topBar = {
                 if (!isCompactSize) {
                     AnimatedVisibility(
-                        scrollableState.value > 50,
+                        scrollableState.firstVisibleItemIndex > 0,
                         enter = slideInTop,
                         exit = fadeOut()
                     ) {
-                        topBar(MaterialTheme.colorScheme.background)
+                        topBar(Color.White)
+                    }
+                }
+            }
+        ) {
+            LazyColumn(
+                state = scrollableState
+            ) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(if (isCompactSize) 300.dp else 800.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (isCompactSize.not()) {
+                            Image(
+                                painter = painterResource(Res.drawable.background_immeuble),
+                                null,
+                                contentScale = ContentScale.FillBounds,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Box(
+                                modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Box(modifier = Modifier.align(Alignment.TopStart)) {
+                                    topBar(Color.Transparent)
+                                }
+                                Column(
+                                    modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f),
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        25.dp,
+                                        alignment = Alignment.CenterVertically
+                                    ),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Spacer(modifier = Modifier.height(15.dp))
+                                    Text(
+                                        modifier = Modifier.width(700.dp),
+                                        text = "Trouvez le bien immobilier qui vous convient",
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = if (isCompactSize) 30.sp else 50.sp,
+                                            textAlign = TextAlign.Center,
+                                            lineHeight = if (isCompactSize) 35.sp else 50.sp,
+                                        )
+                                    )
+                                    if (isCompactSize) {
+                                        authenticateButtons()
+                                    } else {
+                                        Text(
+                                            modifier = Modifier.width(700.dp),
+                                            text = "En quête d’un espace qui vous ressemble ? Chambre, appart ou maison? Louez ou achetez en toute simplicité, partout au Cameroun.",
+                                            style = MaterialTheme.typography.titleLarge.copy(
+                                                color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                                                textAlign = TextAlign.Center,
+                                            )
+                                        )
+
+                                        Spacer(modifier = Modifier.height(25.dp))
+                                        RealEstateSearchForm(
+                                            availableEquipments = equipmentes
+                                        ) {
+                                            println("Serache form=$it")
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
-            }
-        ) {
-            MarketplaceScreen(
-                scrollableState,
-                navController,
-                viewHome = viewHome,
-                homeModel = state,
-                onSendIntent = onSendIntent,
-                topBar = topBar,
-                authenticateButtons = authenticateButtons
-            )
-        }
+                MarketplaceScreen(
+                    scrollableState,
+                    navController,
+                    viewHome = viewHome,
+                    homeModel = state,
+                    onSendIntent = onSendIntent,
+                    topBar = topBar,
+                    authenticateButtons = authenticateButtons
+                )
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(if (isCompactSize) 300.dp else 600.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (isCompactSize.not()) {
+                            Image(
+                                painter = painterResource(Res.drawable.brick_wall_watermark_background),
+                                null,
+                                contentScale = ContentScale.FillBounds,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Box(
+                                modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Box(modifier = Modifier.align(Alignment.TopStart)) {
+                                    topBar(Color.Transparent)
+                                }
+                                Column(
+                                    modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f),
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        25.dp,
+                                        alignment = Alignment.CenterVertically
+                                    ),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Spacer(modifier = Modifier.height(15.dp))
+                                    Text(
+                                        modifier = Modifier.width(700.dp),
+                                        text = "Trouvez le bien immobilier qui vous convient",
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = if (isCompactSize) 30.sp else 50.sp,
+                                            textAlign = TextAlign.Center,
+                                            lineHeight = if (isCompactSize) 35.sp else 50.sp,
+                                        )
+                                    )
+                                    if (isCompactSize) {
+                                        authenticateButtons()
+                                    } else {
+                                        Text(
+                                            modifier = Modifier.width(700.dp),
+                                            text = "En quête d’un espace qui vous ressemble ? Chambre, appart ou maison? Louez ou achetez en toute simplicité, partout au Cameroun.",
+                                            style = MaterialTheme.typography.titleLarge.copy(
+                                                color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                                                textAlign = TextAlign.Center,
+                                            )
+                                        )
 
-        if (!isCompactSize) {
-            AnimatedVisibility(
-                visible = activeTopBarAction.enabled,//enabledNotification,
-                modifier = Modifier.padding(top = 70.dp, end = 20.dp).wrapContentSize().align(Alignment.TopEnd)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
-                        .background(Color.White)
-                ) {
-                    activeTopBarAction.content()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height( 60.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(modifier = Modifier.align(Alignment.TopStart)) {
+                                topBar(Color.Transparent)
+                            }
+                        }
+                    }
                 }
             }
         }
-
 
     }
 }
 
+@Composable
+fun ProfilMenu(navController: NavHostController) {
+    Column(
+        modifier = Modifier.wrapContentHeight().width(300.dp).padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth().height(100.dp).shadow(2.dp, shape = MaterialTheme.shapes.medium)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                    shape = MaterialTheme.shapes.medium
+                ).background(MaterialTheme.colorScheme.background)
+        ) {
+            ListItem(
+                modifier = Modifier.fillMaxHeight(),
+                leadingContent = {
+                    Box(modifier = Modifier.size(50.dp).clip(CircleShape)) {
+                        Image(
+                            modifier = Modifier.fillMaxSize(),
+                            painter = painterResource(Res.drawable.background_immeuble),
+                            contentDescription = null,
+                        )
+                    }
+                },
+                headlineContent = { Text("Kako Nana") },
+                supportingContent = { Text("kokonana7@gmail.com") }
+            )
+            IconButton(
+                modifier = Modifier.padding(top = 10.dp, end = 10.dp).size(30.dp).align(Alignment.TopEnd),
+                onClick = {
+                    navController.navigate(ViewStatistics())
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LightMode,
+                    contentDescription = ""
+                )
+            }
+
+        }
+
+        Box(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().shadow(2.dp, shape = MaterialTheme.shapes.medium)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                    shape = MaterialTheme.shapes.medium
+                ).background(MaterialTheme.colorScheme.background)
+        ) {
+            CustomExpensiveNavItem(
+                selected = true,
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                label = "Publier un bien",
+                icon = Icons.Default.Publish,
+                onClick = {
+                    navController.navigate(ViewPropertyAddProperty())
+                }
+            )
+        }
+        Box(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+            /* .shadow(2.dp, shape =MaterialTheme.shapes.medium ).border(
+                 width = 1.dp,
+                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                 shape = MaterialTheme.shapes.medium
+             ).background(MaterialTheme.colorScheme.background)*/
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                CustomExpensiveNavItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Mon Profile",
+                    icon = Icons.Default.Person,
+                    onClick = {
+                        navController.navigate(ViewProfil())
+                    }
+                )
+                CustomExpensiveNavItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Tableau de board",
+                    icon = Icons.Default.Dashboard,
+                    onClick = {
+                        navController.navigate(ViewStatistics())
+                    }
+                )
+                CustomExpensiveNavItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Settings",
+                    icon = Icons.Default.Settings,
+                    onClick = {
+                        navController.navigate(ViewStatistics())
+                    }
+                )
+                HorizontalDivider()
+                CustomExpensiveNavItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Deconnexion",
+                    icon = Icons.Default.Logout,
+                    onClick = {
+                        ViewHome(isConnected = false)
+                    }
+                )
+            }
+        }
+
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MarketplaceScreen(
-    state: ScrollState,
+
+fun LazyListScope.MarketplaceScreen(
+    state: LazyListState,
     navigationController: NavHostController,
     viewHome: ViewHome,
     onSendIntent: KFunction1<HomeIntent, Unit>,
@@ -321,279 +560,192 @@ fun MarketplaceScreen(
     topBar: @Composable (Color) -> Unit,
     authenticateButtons: @Composable () -> Unit
 ) {
-
     //val route=navigationController.currentBackStackEntryAsState().value?.toRoute<Produits>()
-    var selectedCategories by remember { mutableStateOf(0) }
-    val gridState = rememberLazyGridState()
-    // var isCompactSize= isCompactWindowSize()
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                return Offset.Zero
-            }
 
-            override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                state.dispatchRawDelta(-consumed.y)
-                return Offset.Zero
+    item {
+        var selectedCategories by remember { mutableStateOf(0) }
+        val gridState = rememberLazyGridState()
+        // var isCompactSize= isCompactWindowSize()
+        val nestedScrollConnection = remember {
+            object : NestedScrollConnection {
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    return Offset.Zero
+                }
+
+                override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                    state.dispatchRawDelta(-consumed.y)
+                    return Offset.Zero
+                }
             }
         }
-    }
-    val isCompactSize = isCompactMobilePlatform()
+        val isCompactSize = isCompactMobilePlatform()
 
-    val onClickRealEstateItem: (String) -> Unit = {
-        navigationController.navigate(
-            if (isCompactSize) {
-                ViewDetailRealEstateItem(
-                    realEstateId = it
-                )
-            } else {
-                viewHome.copy(
-                    realEstateId = it,
-                    scrollPosition = state.value
-                )
-            }
-        )
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-
-        Box(modifier = Modifier.fillMaxSize().verticalScroll(state), contentAlignment = Alignment.Center) {
-            Box(
-                modifier = Modifier.fillMaxWidth().height(if (isCompactSize) 300.dp else 600.dp)
-                    .align(Alignment.TopStart).zIndex(0.8f),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isCompactSize.not()) {
-                    Image(
-                        painter = painterResource(Res.drawable.background_immeuble),
-                        null,
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier.fillMaxSize()
+        val onClickRealEstateItem: (String) -> Unit = {
+            navigationController.navigate(
+                if (isCompactSize) {
+                    ViewDetailRealEstateItem(
+                        realEstateId = it
                     )
-                    Box(modifier = Modifier.align(Alignment.TopStart)) {
-                        topBar(Color.Transparent)
-                    }
+                } else {
+                    viewHome.copy(
+                        realEstateId = it,
+                        scrollPosition = state.firstVisibleItemIndex
+                    )
+                }
+            )
+        }
+
+        Box(modifier = Modifier.padding(horizontal = 50.dp).fillMaxSize()) {
+            NavigationApp(
+                modifier = Modifier.wrapContentHeight(),
+                navigationRail = NavigationTypeEnum.NAVIGATION_RAIL,
+                firstContent = {
                     Box(
-                        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)),
+                        modifier = Modifier.heightIn(max = 700.dp).border(width = 1.dp, color = Color.LightGray)
+                            .background(Color.White),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.8f),
-                            verticalArrangement = Arrangement.spacedBy(25.dp, alignment = Alignment.CenterVertically),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Spacer(modifier = Modifier.height(15.dp))
-                            Text(
-                                modifier = Modifier.width(700.dp),
-                                text = "Trouvez le bien immobilier qui vous convient",
-                                style = MaterialTheme.typography.titleLarge.copy(
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = if (isCompactSize) 30.sp else 50.sp,
-                                    textAlign = TextAlign.Center,
-                                    lineHeight = if (isCompactSize) 35.sp else 50.sp,
-                                )
-                            )
-                            if (isCompactSize) {
-                                authenticateButtons()
-                            } else {
-                                Text(
-                                    modifier = Modifier.width(700.dp),
-                                    text = "En quête d’un espace qui vous ressemble ? Chambre, appart ou maison? Louez ou achetez en toute simplicité, partout au Cameroun.",
-                                    style = MaterialTheme.typography.titleLarge.copy(
-                                        color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                                        textAlign = TextAlign.Center,
-                                    )
-                                )
-
-                                Spacer(modifier = Modifier.height(25.dp))
-                                RealEstateSearchForm(
-                                    availableEquipments = equipmentes
-                                ) {
-                                    println("Serache form=$it")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            val modifier = if (isCompactSize) {
-                Modifier.fillMaxWidth()
-                    .align(Alignment.Center)
-            } else {
-                Modifier.padding(top = 700.dp).fillMaxWidth().padding(start = 350.dp, end = 50.dp)
-                    .align(Alignment.Center)
-            }
-            Column(
-                modifier = modifier.align(Alignment.TopCenter).zIndex(0f),
-            ) {
-
-               /* Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {*/
-                    ScrollableTabRow(
-                        selectedTabIndex = selectedCategories,
-                        containerColor = MaterialTheme.colorScheme.background,
-                    ){
-                        RealEstateType.entries.forEachIndexed {index,item->
-                            AssistChip(
-                                modifier = Modifier.padding(horizontal = 10.dp),
-                                colors = AssistChipDefaults.assistChipColors().copy(containerColor = item.getColor()),
-                                onClick = {
-                                    selectedCategories=index
-                                    onSendIntent(HomeIntent.OnFilterRealEstatesType(  item))
+                        val scrollableState = rememberScrollState()
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            RealEstateFilter(
+                                scrollableState,
+                                onCancel = {
+                                    onSendIntent(HomeIntent.OnFilterRealEstates(null))
                                 },
-                                label = {  Text("${item.name.lowercase()}", color = Color.White) },
-                                leadingIcon = {
-                                    Icon(item.getIcon(), "", tint = Color.White)
+                                onSend = {
+                                    onSendIntent(HomeIntent.OnFilterRealEstates(it))
                                 }
                             )
-
+                            AppVerticalScrollBar(
+                                modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd),
+                                scrollableState
+                            )
                         }
                     }
+                },
+                secondContent = {
+                    Box(
+                        modifier = Modifier.heightIn(max = 1000.dp)/*.verticalScroll(state)*/,
+                        contentAlignment = Alignment.Center
+                    ) {
 
 
-
-                // }
-
-
-                /* PageSection(
-                     title = "Les plus visites",
-                     modifier =
-                         Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
-                     state = gridState,
-                 ) {
-                     FlowRow(
-                         horizontalArrangement = Arrangement.spacedBy(10.dp),
-                         verticalArrangement = Arrangement.spacedBy(10.dp)
-                     ) {
-                         val liste = homeModel.realEstates.subList(0, 5)
-                         liste.forEach {
-                             RealEstateItem2(
-                                 location = it.location,
-                                 postedAgo = it.postedAgo,
-                                 price = it.price,
-                                 title = it.title,
-                                 image = it.images.first(),
-                                 equipment = it.equipment,
-                                 onClick = {
-                                     onClickRealEstateItem(it.id)
-                                 }
-                             )
-                         }
-                     }
-                 }
-
-                 PageSection(
-                     title = "Juste a quelque Metre",
-                     modifier =
-                         Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
-                     state = gridState,
-                 ) {
-                     FlowRow(
-                         horizontalArrangement = Arrangement.spacedBy(10.dp),
-                         verticalArrangement = Arrangement.spacedBy(10.dp)
-                     ) {
-
-                         homeModel.realEstates.forEach {
-                             RealEstateItem2(
-                                 location = it.location,
-                                 postedAgo = it.postedAgo,
-                                 price = it.price,
-                                 title = it.title,
-                                 image = it.images.first(),
-                                 equipment = it.equipment,
-                                 onClick = {
-                                     onClickRealEstateItem(it.id)
-                                 }
-                             )
-                         }
-                     }
-                 }*/
-                RealEstateType.values().forEach { category ->
-                    val filteredList = homeModel.realEstates.filter { it.type == category }
-                    if (filteredList.isNotEmpty()) {
-                        val sectionTitle = when (category) {
-                            RealEstateType.CHAMBRE,
-                            RealEstateType.STUDIO -> "Chambre / Studio"
-
-                            else -> category.name.lowercase().replaceFirstChar { it.uppercase() }
+                        val modifier = if (isCompactSize) {
+                            Modifier.fillMaxWidth()
+                                .align(Alignment.Center)
+                        } else {
+                            Modifier.padding(top = 700.dp).fillMaxWidth()
+                                .align(Alignment.Center)
                         }
 
-                        PageSection(
-                            title = sectionTitle,
-                            modifier = Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
-                            state = gridState,
+                        Column(
+                            modifier = Modifier.padding(start = 20.dp)
                         ) {
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                filteredList.forEach {
-                                    RealEstateItem2(
-                                        location = it.location,
-                                        postedAgo = it.postedAgo,
-                                        price = it.price,
-                                        title = it.title,
-                                        image = it.images.first(),
-                                        categories = it.categories,
-                                        type = it.type,
-                                        equipment = it.equipment,
-                                        onClick = {
-                                            onClickRealEstateItem(it.id)
-                                        }
-                                    )
+
+                            if (isCompactSize) {
+                                ScrollableTabRow(
+                                    selectedTabIndex = selectedCategories,
+                                    containerColor = MaterialTheme.colorScheme.background,
+                                ) {
+                                    RealEstateType.entries.forEachIndexed { index, item ->
+                                        AssistChip(
+                                            modifier = Modifier.padding(horizontal = 10.dp),
+                                            colors = AssistChipDefaults.assistChipColors()
+                                                .copy(containerColor = item.getColor()),
+                                            onClick = {
+                                                selectedCategories = index
+                                                onSendIntent(HomeIntent.OnFilterRealEstatesType(item))
+                                            },
+                                            label = { Text("${item.name.lowercase()}", color = Color.White) },
+                                            leadingIcon = {
+                                                Icon(item.getIcon(), "", tint = Color.White)
+                                            }
+                                        )
+
+                                    }
                                 }
+                            }
+
+                            RealEstateType.values().forEach { category ->
+
+                                val filteredList = homeModel.realEstates.filter { it.type == category }
+                                if (filteredList.isNotEmpty()) {
+                                    val sectionTitle = when (category) {
+                                        RealEstateType.CHAMBRE,
+                                        RealEstateType.STUDIO -> "Chambre / Studio"
+
+                                        else -> category.name.lowercase().replaceFirstChar { it.uppercase() }
+                                    }
+
+                                    PageSection(
+                                        title = sectionTitle,
+                                        modifier = Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
+                                        state = gridState,
+                                    ) {
+                                        FlowRow(
+                                            horizontalArrangement = Arrangement.spacedBy(40.dp),
+                                            verticalArrangement = Arrangement.spacedBy(50.dp)
+                                        ) {
+                                            filteredList.forEach {
+                                                RealEstateItem2(
+                                                    location = it.location,
+                                                    postedAgo = it.postedAgo,
+                                                    price = it.price,
+                                                    title = it.title,
+                                                    image = it.images.first(),
+                                                    categories = it.categories,
+                                                    type = it.type,
+                                                    equipment = it.equipment,
+                                                    onClick = {
+                                                        onClickRealEstateItem(it.id)
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                                /*PageSection(
+                                title = "Maison/Appartement",
+                                modifier = Modifier.nestedScroll(connection = nestedScrollConnection),// Parallax ou suivi partiel
+                                state = gridState,
+                                onClickItem = {
+                                    // enabledPageDetail = true
+
+                                }
+                            )
+                            PageSection(
+                                title = "Bureau / Boutique",
+                                modifier = Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
+                                state = gridState,
+                                onClickItem = {
+                                    //enabledPageDetail = true
+                                }
+                            )
+                            PageSection(
+                                title = "Terrain",
+                                modifier = Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
+                                state = gridState,
+                                onClickItem = {
+                                    //  enabledPageDetail = true
+                                }
+                            )*/
                             }
                         }
                     }
 
-                    /*PageSection(
-                    title = "Maison/Appartement",
-                    modifier = Modifier.nestedScroll(connection = nestedScrollConnection),// Parallax ou suivi partiel
-                    state = gridState,
-                    onClickItem = {
-                        // enabledPageDetail = true
-
-                    }
-                )
-                PageSection(
-                    title = "Bureau / Boutique",
-                    modifier = Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
-                    state = gridState,
-                    onClickItem = {
-                        //enabledPageDetail = true
-                    }
-                )
-                PageSection(
-                    title = "Terrain",
-                    modifier = Modifier.nestedScroll(connection = nestedScrollConnection), // Parallax ou suivi partiel
-                    state = gridState,
-                    onClickItem = {
-                        //  enabledPageDetail = true
-                    }
-                )*/
                 }
-            }
-        }
-
-        if (!isCompactSize) {
-            AppVerticalScrollBar(
-                modifier = Modifier.width(5.dp).align(Alignment.CenterEnd).zIndex(0.8f),
-                scrollState = state
             )
             AnimatedVisibility(
-                visible = state.value > 600,
+                visible = state.firstVisibleItemIndex ==1,
                 enter = slideInStart,
                 exit = slideOutStart,
-                modifier = Modifier.padding(start = 50.dp, top = 50.dp).wrapContentSize().align(Alignment.CenterStart)
+                modifier = Modifier.padding(start = 50.dp, top = 50.dp).wrapContentSize()
+                    .align(Alignment.CenterStart)
             ) {
                 Box(
-                    modifier = Modifier
-                        .height(450.dp)
-                        .width(250.dp)
-                        .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
+                    modifier = Modifier.heightIn(max = 700.dp).width(300.dp).border(width = 1.dp, color = Color.LightGray)
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
@@ -613,22 +765,28 @@ fun MarketplaceScreen(
                             scrollableState
                         )
                     }
-
                 }
             }
-            AnimatedVisibility(viewHome.realEstateId.isNotEmpty()) {
-                AppScrollableDialog(
-                    onDismissRequest = {
-                        navigationController.navigateUp()
-                    },
-                ) {
-                    Text("bonjour le monde")
-                    DetailRealEstateItemScreen(
-                        navController = navigationController,
-                        generateFakeRealEstateListCameroon().filter { it.id == viewHome.realEstateId }.first(),
-                        onClose = {
+            if (!isCompactSize) {
+                /* AppVerticalScrollBar(
+                     modifier = Modifier.width(5.dp).align(Alignment.CenterEnd).zIndex(0.8f),
+                     scrollState = state
+                 )*/
+
+                AnimatedVisibility(viewHome.realEstateId.isNotEmpty()) {
+                    AppScrollableDialog(
+                        onDismissRequest = {
                             navigationController.navigateUp()
-                        })
+                        },
+                    ) {
+                        Text("bonjour le monde")
+                        DetailRealEstateItemScreen(
+                            navController = navigationController,
+                            generateFakeRealEstateListCameroon().filter { it.id == viewHome.realEstateId }.first(),
+                            onClose = {
+                                navigationController.navigateUp()
+                            })
+                    }
                 }
             }
         }
@@ -649,23 +807,58 @@ private fun RealEstateFilter(
 ) {
     var realEstateFilter by remember { mutableStateOf(RealEstateFilterData()) }
     Scaffold(
-        modifier = Modifier.wrapContentSize(),
+        containerColor = Color.Transparent,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Speed up your research") }
+                modifier = Modifier.border(width = 0.5.dp, color = Color.LightGray),
+                colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
+                windowInsets = WindowInsets(0.dp),
+                navigationIcon = {
+                    IconButton(
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Filter4,
+                            contentDescription = ""
+                        )
+                    }
+                },
+                title = { Text("Filtres") },
+                actions = {
+                    AppIconActionButton(
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Restore,
+                            contentDescription = ""
+                        )
+                    }
+                    AppIconActionButton(
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Sort,
+                            contentDescription = ""
+                        )
+                    }
+                }
             )
         },
         bottomBar = {
-            Column(
-                modifier = Modifier.fillMaxWidth(0.7f).background(Color.White),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth().background(Color.White).padding(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                AppButton(
+                AppOutlinedButton(
+                    modifier = Modifier.weight(0.5f),
                     onClick = { onCancel() }
                 ) {
                     Text("Cancel")
                 }
-                AppOutlinedButton(
+                AppButton(
+                    modifier = Modifier.weight(0.5f),
                     onClick = { onSend(realEstateFilter) }
                 ) {
                     Text("Filter")
@@ -673,60 +866,7 @@ private fun RealEstateFilter(
             }
         }
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(scrollableState),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
 
-            RealEstateType.entries.forEach {
-                TextButton(onClick = {
-                    realEstateFilter = realEstateFilter.copy(type = it)
-                }) {
-                    Text(it.name.lowercase().replaceFirstChar { it.uppercaseChar() })
-                }
-            }
-            /*
-            TextButton(onClick = {
-                realEstateFilter=realEstateFilter.copy(type = RealEstateType.ALL)
-            }) {
-                Text("tout")
-            }
-
-            TextButton(onClick = {
-                realEstateFilter=realEstateFilter.copy(type = RealEstateType.MAISON)
-            }) {
-                Text("Maison")
-            }
-            TextButton(onClick = {
-
-                realEstateFilter=realEstateFilter.copy(type = RealEstateType.CHAMBRE)
-            }) {
-                Text("Chambre")
-            }
-            TextButton(onClick = {
-                realEstateFilter=realEstateFilter.copy(type = RealEstateType.BUREAU)
-            }) {
-                Text("Bureau")
-            }
-            TextButton(onClick = {
-                realEstateFilter=realEstateFilter.copy(type = RealEstateType.STUDIO)
-            }) {
-                Text("Studio")
-            }
-            TextButton(onClick = {
-                realEstateFilter=realEstateFilter.copy(type = RealEstateType.TERRAIN)
-            }) {
-                Text("Terrain")
-            }
-            TextButton(onClick = {
-                realEstateFilter=realEstateFilter.copy(type = RealEstateType.APPARTEMENT)
-            }) {
-                Text("Appartement")
-            }*/
-
-
-        }
     }
 
 }

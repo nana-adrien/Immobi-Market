@@ -87,6 +87,1287 @@ fun generateFakeRealEstateListCameroon(): List<RealEstateData> {
                 "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
                 "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
             )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
+        ),RealEstateData(
+            "1",
+            "Villa moderne",
+            "Bonapriso - Douala",
+            "90.000.000 FCFA",
+            "il y a 2 jours",
+            RealEstateType.MAISON,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/12/studio-meuble-Biyem-Assi33.jpeg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg"
+            )
+        ),
+        RealEstateData(
+            "2",
+            "Studio meublé",
+            "Bastos - Yaoundé",
+            "120.000 FCFA/mois",
+            "il y a 4 heures",
+            RealEstateType.STUDIO,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/11/studio-golf-blanc-27-2-1.jpeg",
+                "https://www.booking.com/hotel/cm/studio-meuble-bastos-yaounde1.html",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "3",
+            "Terrain constructible",
+            "Makepe - Douala",
+            "15.000 FCFA/m²",
+            "il y a 3 jours",
+            RealEstateType.TERRAIN,
+            state = RealEstateState.ON_HOLD,
+            RealEstateCategories.A_VENDRE,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-7-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-9-scaled-1.jpg"
+            )
+        ),
+        RealEstateData(
+            "4",
+            "Appartement 2 chambres",
+            "Elig-Essono - Yaoundé",
+            "200.000 FCFA/mois",
+            "il y a 1 jour",
+            RealEstateType.APPARTEMENT,
+            state = RealEstateState.ACTIVE,
+            RealEstateCategories.A_LOUER,
+            randomTags(),
+            listOf(
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-3-scaled-1.jpg",
+                "https://sacrevoyage.com/wp-content/uploads/2021/10/Studio-meuble-Bastos-Yaounde-11-scaled-1.jpg"
+            )
         ),
         RealEstateData(
             "5",

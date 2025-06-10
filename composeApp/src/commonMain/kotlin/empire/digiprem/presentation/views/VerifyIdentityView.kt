@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,26 +30,27 @@ import empire.digiprem.config.getPlatform
 import empire.digiprem.navigation.ViewVerifyIdentity
 import empire.digiprem.navigation.login
 import empire.digiprem.navigation.resetPassword
-import empire.digiprem.presentation.components.AppButton
-import empire.digiprem.presentation.components.AppCardWrapper
-import empire.digiprem.presentation.components.AppOutlinedButton
-import empire.digiprem.presentation.components.AppPinCodeTextField
+import empire.digiprem.presentation.components.*
+import empire.digiprem.presentation.intents.RegisterIntent
+import empire.digiprem.presentation.intents.VerifyIdentityIntent
+import empire.digiprem.presentation.viewmodels.RegisterViewModel.Companion.EMAIL_TEXTFIELD
 import empire.digiprem.presentation.viewmodels.VerifyIdentityViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun VerifyIdentityView(
     viewVerifyIdentity: ViewVerifyIdentity,
     navController: NavHostController,
-    verifyidentityViewModel: VerifyIdentityViewModel = koinViewModel()
+    verifyidentityViewModel: VerifyIdentityViewModel = koinViewModel{ parametersOf(navController)}
 ) {
     // val verifyidentityViewModel:VerifyIdentityViewModel = viewModel{VerifyIdentityViewModel()}
     val state by verifyidentityViewModel.state.collectAsState()
     val onSendIntent = verifyidentityViewModel::onIntentHandler
+    val pageState by  verifyidentityViewModel.pageWrapperState.collectAsState()
+    //var isError by remember { mutableStateOf(false) }
 
-    var isError by remember { mutableStateOf(false) }
-    var value2 by remember { mutableStateOf(listOf<String>()) }
     AppCardWrapper(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -105,33 +107,11 @@ fun VerifyIdentityView(
                         }
                     }
                     AnimatedVisibility(
-                        isError && (getPlatform() == Platform.DESKTOP || getPlatform() == Platform.WEB)
+                         (getPlatform() == Platform.DESKTOP || getPlatform() == Platform.WEB) && pageState.errorMessage.isNotEmpty()
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp).padding(6.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                "Cependant, pour une gestion plus avancée et optimisée des layouts adaptatifs, ",
-                                color = Color.Red,
-                                style = TextStyle(fontSize = 13.sp)
-                            )
-                        }
-                    }
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-
-                        AppPinCodeTextField(
-                            isError = if (getPlatform() == Platform.DESKTOP || getPlatform() == Platform.WEB) false else isError,
-                            values = value2,
-                            codeSize = 6,
-                            onComplete = {
-                                value2 = it
-                            },
+                        FormErrorMessageSection(
+                            enabled = true,
+                            errorMessage = pageState.errorMessage,
                         )
 
                     }
@@ -139,19 +119,55 @@ fun VerifyIdentityView(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        AppButton(
-                            enabled = value2.isNotEmpty(),
+
+                        AppTextField(
+                            enabled = false,
+                            value = viewVerifyIdentity.email,
+                            onValueChange = {},
+                        )
+                        Spacer(Modifier.height(30.dp))
+
+                        AppPinCodeTextField(
+                            isError = !(getPlatform() == Platform.DESKTOP || getPlatform() == Platform.WEB) && pageState.errorMessage.isNotEmpty(),
+                            values = state.pinCode.value.toList().map{it.toString()},
+                            codeSize = 6,
+                            onComplete = {
+                              //  value2 = it
+                            },
+                            onValueChange = {
+                                onSendIntent(
+                                    VerifyIdentityIntent.OnPinCodeChange(it)
+                                )
+                            }
+                        )
+
+                    }
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        /*AppButton(
+                            enabled = state.enableSendButton .isNotEmpty(),
                             onClick = {
                                 isError = true
                                 navController.navigate(resetPassword)
                             }
                         ) {
                             Text("Verify", color = Color.White)
-                        }
+                        }*/
+
+                        AppFormButton(
+                            label = "Verify",
+                            enabled = state.enableSendButton,
+                            enabledProgressIndicator = pageState.isLoading,
+                            onClick = {
+                                onSendIntent(VerifyIdentityIntent.OnSendForm(viewVerifyIdentity.email))
+                            }
+                        )
+
                         AppOutlinedButton(
                             onClick = {
-                                isError = false
-                                navController.navigate(login)
+                                navController.popBackStack()
                             }
                         ) {
                             Icon(
@@ -161,7 +177,7 @@ fun VerifyIdentityView(
                                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                             )
                             Text(
-                                "Back to Login",
+                                "Back",
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.colorScheme.primary
                                 )

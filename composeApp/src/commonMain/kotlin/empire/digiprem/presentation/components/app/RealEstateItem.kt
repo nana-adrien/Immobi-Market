@@ -342,14 +342,14 @@ fun RealEstateItem2(
     val density = LocalDensity.current
 
     Box(
-        modifier = Modifier.width(350.dp)
+        modifier = Modifier.width(300.dp)
             .wrapContentHeight()
             /*.onGloballyPositioned {
                 val position = it.localToRoot(Offset.Zero)
                 val size = it.size
                 cardBounds = Rect(position, size.toSize())
             }*/
-            .shadow(elevation = 10.dp, shape = RoundedCornerShape(10.dp))
+            .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
             .background(Color.White)
             .clickable(onClick = { onClick() })
     ) {
@@ -361,13 +361,8 @@ fun RealEstateItem2(
                 modifier = Modifier.fillMaxWidth().height(200.dp),
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp))
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    /*Image(
-                         painter = imageRes,
-                         contentDescription = null,
-                         contentScale = ContentScale.Crop
-                     )*/
                     AsyncImage(
                         model = image,
                         contentDescription = null,
@@ -401,7 +396,7 @@ fun RealEstateItem2(
                     }
                 }
             }
-            Column(modifier = Modifier.wrapContentSize().padding(5.dp).padding(bottom = 10.dp)) {
+            Column(modifier = Modifier.wrapContentSize().padding(horizontal = 10.dp).padding(bottom = 10.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth().height(25.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -449,37 +444,41 @@ fun RealEstateItem2(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
 
-                    Row(
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text ="~$title",
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = price,
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+               /*     Row(
                         modifier = Modifier.weight(1f).padding(5.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                       /* Icon(
+                       *//* Icon(
                             modifier = Modifier.height(16.dp),
                             imageVector = Icons.Default.ShoppingCart,
                             contentDescription = "",
                             tint = Color.Gray
-                        )*/
-                        Text(
-                            text ="~$title",
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                        )*//*
                     }
                     Row(
                         modifier = Modifier.weight(1f).padding(5.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = price,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
                     }
-
+*/
                 }
                 /*FlowRow(
                     modifier = Modifier.fillMaxWidth(),

@@ -1,6 +1,7 @@
 package empire.digiprem.navigation
 
 /*@Auto import file*/
+import empire.digiprem.presentation.views.CompleteAccountView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -8,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import empire.digiprem.config.isCompactMobilePlatform
+import empire.digiprem.presentation.components.NavigationTypeEnum
 import empire.digiprem.presentation.views.*
 
 /*@Auto Generate*/
@@ -25,6 +27,11 @@ fun AppNavigation(
         startDestination = startDestination,
     ) {
         /*@Auto Generate Composable*/
+        composable<ViewCompleteAccount> {
+            onNavigate(EnumView.ViewCreateAccount)
+            val viewCompleteAccount = it.toRoute<ViewCompleteAccount>()
+            CompleteAccountView(viewCompleteAccount = viewCompleteAccount, navController = navController)
+        }
         if (isCompactMobilePlatform) {
             composable<ViewMobileDashBoard> {
                 onNavigate(EnumView.ViewMobileDashBoard)
@@ -114,8 +121,14 @@ fun AppNavigation(
             MessengerView(
                 viewMessenger = viewMessenger,
                 navController = navController,
-                firstContent = { ConversationsView(navController = navController) },
-                secondContent = { ChatView(viewChat = null,navController = navController) }
+                firstContent = { ConversationsView(navController = navController, enableTopBar = false) },
+                secondContent = {
+                    ChatView(
+                        viewChat = null,
+                        navController = navController,
+                        navigationRail = NavigationTypeEnum.NAVIGATION_RAIL
+                    )
+                }
             )
         }
         if (!isCompactMobilePlatform) {

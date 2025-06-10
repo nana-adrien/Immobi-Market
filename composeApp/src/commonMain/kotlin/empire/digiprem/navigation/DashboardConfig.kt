@@ -3,15 +3,18 @@ package empire.digiprem.navigation
 
 /* Auto import file */
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -158,6 +161,7 @@ fun AppNavigationConfig(
         isPopupOpen = isPopupOpen,
         topBar = {
             AppHeader(
+                modifier = Modifier.border(width = 0.3.dp, color = Color.LightGray).padding(start = 10.dp, end = 40.dp),
                 navigationIcon = {
                     if (isCompactSize.not()) {
                         CustomNavigationRailItem(
@@ -229,7 +233,8 @@ fun AppBottomNavigation() {
 /*Auto generate EnumView*/
 enum class EnumView(val includeInDashboard: Boolean = false) {
     /*Auto generate EnumView content*/
-    ViewMessenger(true),
+    ViewCreateAccount,
+    ViewMessenger,
     ViewMobileDashBoard,
     ViewSplash,
     ViewPropertyALLProperty(true),
@@ -248,5 +253,13 @@ enum class EnumView(val includeInDashboard: Boolean = false) {
     ViewRegister,
     ViewLogin,
     ViewHome,
-    ViewConversations
+    ViewConversations;
+
+    fun getPageTitle():String{
+        val withoutPrefix = this.name.removePrefix("View")
+        // 2. Séparer selon les majuscules (en gardant les mots entiers)
+        val words = withoutPrefix.split(Regex("(?=[A-Z])"))
+        // 3. Filtrer les chaînes vides éventuelles
+        return words.filter { it.isNotEmpty() }.joinToString(" ")
+    }
 }

@@ -28,6 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
+data class AppTextFieldState(
+    val value: String="",
+    val isError: Boolean=false,
+    val errorMessage: String = "",
+)
+
+
+
 @Composable
 fun AppTextField(
     modifier: Modifier = Modifier,
@@ -35,6 +43,7 @@ fun AppTextField(
     errorMessage: String = "Cependant, pour une gestion plus avancée et optimisée ",
     placeholder: String? = null,
     isError: Boolean = false,
+    enabled: Boolean = true,
     singleLine: Boolean = true,
     textStyle: TextStyle = TextStyle.Default.copy(),
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -78,8 +87,9 @@ fun AppTextField(
                     }
                 }
                 BasicTextField(
-                    modifier = Modifier.wrapContentHeight().padding(horizontal = 3.dp),
+                    modifier = Modifier.wrapContentHeight().fillMaxWidth().padding(horizontal = 3.dp),
                     singleLine = singleLine,
+                    enabled = enabled,
                     value = value,
                     visualTransformation = visualTransformation,
                     onValueChange = onValueChange,
@@ -102,7 +112,7 @@ fun AppTextField(
 @Composable
 fun AppPinCodeTextField(
     modifier: Modifier = Modifier,
-    values:List<String> ,
+    values:List<String>,
     codeSize:Int,
     errorMessage: String = "Cependant, pour une gestion plus avancée et optimisée ",
     isError: Boolean = false,
@@ -113,6 +123,7 @@ fun AppPinCodeTextField(
         fontSize = 24.sp,
     ),
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    onValueChange: (List<String>) -> Unit={},
     onComplete: (List<String>) -> Unit,
 ) {
     val letters = remember {
@@ -177,6 +188,7 @@ fun AppPinCodeTextField(
                             onComplete(letters.map { it.value })
                         }
                     }
+                    onValueChange(letters.map { it.value }) // Call the onValueChange with the filtered input
                 },
             )
         }

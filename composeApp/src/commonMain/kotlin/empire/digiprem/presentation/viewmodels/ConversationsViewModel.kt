@@ -9,4 +9,8 @@ class ConversationsViewModel : AbstractViewModel<ConversationsModel,Conversation
     override fun onIntentHandler(intent: ConversationsIntent) {
         TODO("Not yet implemented")
     }
+
+    override fun onRefreshPage() {
+        TODO("Not yet implemented")
+    }
 }

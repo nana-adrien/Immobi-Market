@@ -230,6 +230,7 @@ fun PropertyView(
         }
     }
 
+
     //  RealEstateForm()
 
 

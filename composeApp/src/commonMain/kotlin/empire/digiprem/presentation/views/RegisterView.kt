@@ -11,17 +11,23 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import composeApp.src.commonMain.ComposeResources.drawable.*
@@ -31,17 +37,25 @@ import empire.digiprem.presentation.components.AppIconButton
 import empire.digiprem.presentation.components.AppTextField
 import empire.digiprem.config.getActualWindowsSize
 import empire.digiprem.navigation.login
+import empire.digiprem.presentation.intents.RegisterIntent
+import empire.digiprem.presentation.viewmodels.RegisterViewModel.Companion.CONFIRM_PASSWORD_TEXTFIELD
+import empire.digiprem.presentation.viewmodels.RegisterViewModel.Companion.EMAIL_TEXTFIELD
+import empire.digiprem.presentation.viewmodels.RegisterViewModel.Companion.PASSWORD_TEXTFIELD
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.parameter.parametersOf
+
 
 @Composable
 fun RegisterView(
     viewRegister: ViewRegister,
     navController: NavHostController,
-    registerViewModel: RegisterViewModel = koinViewModel()
+    registerViewModel: RegisterViewModel = koinViewModel { parametersOf(navController) }
 ) {
     // val registerViewModel:RegisterViewModel = viewModel{RegisterViewModel()}
     val state by registerViewModel.state.collectAsState()
+    val pageState by registerViewModel.pageWrapperState.collectAsState()
     val onSendIntent = registerViewModel::onIntentHandler
+    var enablePasswordVisualTransformation by remember { mutableStateOf(true) }
 
     AppCardWrapper(
         modifier = Modifier.fillMaxSize(),
@@ -107,41 +121,36 @@ fun RegisterView(
                             )
                         }
                     }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp).padding(6.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "Cependant, pour une gestion plus avancée et optimisée des layouts adaptatifs, ",
-                            color = Color.Red,
-                            style = TextStyle(fontSize = 13.sp)
+                    val message=pageState.errorMessage
+                    val enabled=!pageState.errorMessage.equals("")
+                    FormErrorMessageSection(
+                        enabled= enabled,
+                        errorMessage = message,
                         )
-                    }
+
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        var value1 by remember { mutableStateOf("") }
-                        var value2 by remember { mutableStateOf("") }
-
                         //Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         AppTextField(
                             label = {
                                 Text("Email")
                             },
                             placeholder = "Enter your email",
-                            value = value1,
+                            value = state.emailTextField.value,
+                            isError = state.emailTextField.isError,
+                            errorMessage = state.emailTextField.errorMessage,
                             leadingIcon = {
                                 Icon(
                                     Icons.Default.Person,
+                                    tint = Color.Gray,
                                     contentDescription = "",
                                     modifier = Modifier.size(20.dp)
                                 )
                             },
                             onValueChange = {
-                                value1 = it
+                                onSendIntent(RegisterIntent.onChangeTextField(EMAIL_TEXTFIELD, it))
                             },
                         )
                         AppTextField(
@@ -149,33 +158,57 @@ fun RegisterView(
                                 Text("Password")
                             },
                             placeholder = "Enter your password",
-                            value = value2,
+                            value = state.passwordTextField.value,
+                            isError = state.passwordTextField.isError,
+                            errorMessage = state.passwordTextField.errorMessage,
                             leadingIcon = {
                                 Icon(
                                     Icons.Default.Lock,
+                                    tint = Color.Gray,
                                     contentDescription = "",
                                     modifier = Modifier.size(20.dp)
                                 )
                             },
+                            visualTransformation = if (enablePasswordVisualTransformation) PasswordVisualTransformation() else VisualTransformation.None,
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = {
+                                        enablePasswordVisualTransformation = !enablePasswordVisualTransformation
+                                    }
+                                ) {
+                                    Icon(
+                                        if (enablePasswordVisualTransformation) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                        contentDescription = "",
+                                        tint = Color.Gray,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+
+                            },
                             onValueChange = {
-                                value2 = it
+                                onSendIntent(RegisterIntent.onChangeTextField(PASSWORD_TEXTFIELD, it))
                             }
                         )
+
                         AppTextField(
                             label = {
                                 Text("Confirm Password")
                             },
                             placeholder = "Enter your Confirm password",
-                            value = value2,
+                            value = state.confirmPasswordTextField.value,
+                            isError = state.confirmPasswordTextField.isError,
+                            errorMessage = state.confirmPasswordTextField.errorMessage,
                             leadingIcon = {
                                 Icon(
                                     Icons.Default.Lock,
                                     contentDescription = "",
+                                    tint = Color.Gray,
                                     modifier = Modifier.size(20.dp)
                                 )
                             },
+                            visualTransformation = PasswordVisualTransformation(),
                             onValueChange = {
-                                value2 = it
+                                onSendIntent(RegisterIntent.onChangeTextField(CONFIRM_PASSWORD_TEXTFIELD, it))
                             }
                         )
                         // }
@@ -184,11 +217,14 @@ fun RegisterView(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        AppButton(
-                            onClick = { navController.navigate(login) }
-                        ) {
-                            Text("Sing Up", color = Color.White)
-                        }
+                        AppFormButton(
+                            label = "Sign Up",
+                            enabled = state.enableSendButton,
+                            enabledProgressIndicator = pageState.isLoading,
+                            onClick = {
+                                onSendIntent(RegisterIntent.OnSendForm)
+                            }
+                        )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -232,6 +268,58 @@ fun RegisterView(
                 }
             }
 
+        }
+    }
+}
+
+@Composable
+ fun FormErrorMessageSection(enabled: Boolean, errorMessage: String) {
+    if (enabled) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.Black.copy(alpha = 0.2f))
+                .height(50.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize().padding(start = 2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    errorMessage,
+                    color = Color.Red,
+                    style = TextStyle(fontSize = 13.sp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun AppFormButton(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = false,
+    label: String,
+    enabledProgressIndicator: Boolean = false,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    onClick: () -> Unit = {},
+) {
+    AppButton(
+        modifier = modifier,
+        enabled = enabled,
+        onClick = onClick
+    ) {
+        Text(label, style = textStyle)
+        if (enabledProgressIndicator) {
+            CircularProgressIndicator(
+                color = Color.White,
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp
+            )
         }
     }
 }

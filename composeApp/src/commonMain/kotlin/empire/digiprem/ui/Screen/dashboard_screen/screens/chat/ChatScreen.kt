@@ -305,7 +305,7 @@ fun ChatScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
-                    ChatItem()
+                    //ChatItem()
                 }
             }
         }
