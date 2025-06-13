@@ -48,12 +48,10 @@ class AccountController(private val userAccountService: UserAccountService) {
         return ApiResponse2.success(ResetPasswordRespDto("Reset password successful"))
     }
 
-
     @PostMapping("/change-password")
     fun changePassword(@RequestParam email: String?): String {
         return "changePassword"
     }
-
     @PostMapping("/change-email")
     fun changeEmail(@RequestParam email: String?): String {
         return "changePassword"

@@ -105,6 +105,7 @@ class JwtTokenUtil(private val userDetailService: IUserDetailService) {
         return try {
             decodedJWT(token).expiresAt.before(Date(System.currentTimeMillis()))
         } catch (e: TokenExpiredException) {
+            println("Token is expired: ${e.message}")
             true
         }
     }
@@ -113,6 +114,7 @@ class JwtTokenUtil(private val userDetailService: IUserDetailService) {
         return try {
             decodedJWT(token).subject == userDetails.email && !isTokenExpired(token)
         } catch (e: TokenExpiredException) {
+            println("Token is not  valid: ${e.message}")
             true
         }
     }

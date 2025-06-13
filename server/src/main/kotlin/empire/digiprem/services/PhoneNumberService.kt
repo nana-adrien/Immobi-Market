@@ -22,7 +22,7 @@ class PhoneNumberService(userPhoneNumberRepository: UserPhoneNumberRepository) {
     fun changePhoneNumber(userId: String?, oldPwd: String?, newPwd: String?) {
     }
 
-    fun loadUserPhoneNumberByCountryCodeAndPhoneNumber(countryCode: String, phoneNumber: String): UserPhoneNumber {
+    fun loadUserPhoneNumberByCountryCodeAndPhoneNumber(countryCode: String, phoneNumber: String): UserPhoneNumber? {
         return userPhoneNumberRepository.findByCountryCodeAndPhoneNumber(countryCode, phoneNumber).orElse(null)
     }
 

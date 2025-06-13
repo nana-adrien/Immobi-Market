@@ -2,6 +2,7 @@ package octopusfx.client.mobile.core.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import empire.digiprem.presentation.base.color.Colors
 
 private val DarkColorScheme = darkColorScheme(
     primary = PurpleGrey80,
@@ -17,12 +19,12 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
+    primary = Colors.primary,
+    secondary =Colors.secondary,
     tertiary = Pink40,
     //Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    background = Colors.background,
+    surface = Colors.surface,
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.White,
@@ -33,7 +35,7 @@ private val LightColorScheme = lightColorScheme(
 
 
 @Composable
-fun AppToolsTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
@@ -68,5 +70,12 @@ fun AppToolsTheme(
             content = content
         )
     }*/
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = typography,
+        content = content
+
+    )
 }
 

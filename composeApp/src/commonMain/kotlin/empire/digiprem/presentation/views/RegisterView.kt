@@ -31,12 +31,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import composeApp.src.commonMain.ComposeResources.drawable.*
-import empire.digiprem.presentation.components.AppButton
-import empire.digiprem.presentation.components.AppCardWrapper
-import empire.digiprem.presentation.components.AppIconButton
-import empire.digiprem.presentation.components.AppTextField
 import empire.digiprem.config.getActualWindowsSize
+import empire.digiprem.navigation.ViewLogin
 import empire.digiprem.navigation.login
+import empire.digiprem.presentation.components.*
+import empire.digiprem.presentation.components.wrapper.PageWrapperState
+import empire.digiprem.presentation.components.wrapper.WebDesktopPageWrapper
 import empire.digiprem.presentation.intents.RegisterIntent
 import empire.digiprem.presentation.viewmodels.RegisterViewModel.Companion.CONFIRM_PASSWORD_TEXTFIELD
 import empire.digiprem.presentation.viewmodels.RegisterViewModel.Companion.EMAIL_TEXTFIELD
@@ -57,219 +57,229 @@ fun RegisterView(
     val onSendIntent = registerViewModel::onIntentHandler
     var enablePasswordVisualTransformation by remember { mutableStateOf(true) }
 
-    AppCardWrapper(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        Row(
-            modifier = Modifier.wrapContentHeight(),
-            verticalAlignment = Alignment.CenterVertically
+    WebDesktopPageWrapper(
+        state = PageWrapperState(isSuccess = true),
+        customTopAppBar = {
+            AppHeader {
+
+            }
+        }
+    ){
+        AppCardWrapper(
+            modifier = Modifier.fillMaxSize(),
         ) {
             Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.wrapContentHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (getActualWindowsSize().widthSizeClass != WindowWidthSizeClass.Compact) {
-                    Box(
-                        modifier = Modifier.weight(0.4F),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(Res.drawable.compose_multiplatform),
-                            contentDescription = ""
-                        )
-                    }
-                }
-                Column(
-                    modifier = Modifier.weight(0.6f)
-                        .background(Color.White.copy(alpha = 0.8f)).padding(30.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                Row(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(7.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Create your account",
-                            style = TextStyle(
-                                fontSize = 25.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(
-                                5.dp,
-                                alignment = Alignment.CenterHorizontally
-                            )
+                    if (getActualWindowsSize().widthSizeClass != WindowWidthSizeClass.Compact) {
+                        Box(
+                            modifier = Modifier.weight(0.4F),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "you have an account?",
-                                style = TextStyle(fontSize = 13.sp)
-                            )
-                            Text(
-                                modifier = Modifier.clickable { navController.navigate(login) },
-                                text = "login",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = TextStyle(
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                            Image(
+                                painter = painterResource(Res.drawable.`homme_qui_se_renseigne_pour_l'achat_d_une_maison`),
+                                contentDescription = ""
                             )
                         }
                     }
-                    val message=pageState.errorMessage
-                    val enabled=!pageState.errorMessage.equals("")
-                    FormErrorMessageSection(
-                        enabled= enabled,
-                        errorMessage = message,
+                    Column(
+                        modifier = Modifier.weight(0.6f)
+                            .background(Color.White.copy(alpha = 0.8f)).padding(30.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(7.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Create your account",
+                                style = TextStyle(
+                                    fontSize = 25.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(
+                                    5.dp,
+                                    alignment = Alignment.CenterHorizontally
+                                )
+                            ) {
+                                Text(
+                                    text = "you have an account?",
+                                    style = TextStyle(fontSize = 13.sp)
+                                )
+                                Text(
+                                    modifier = Modifier.clickable { navController.navigate(ViewLogin()) },
+                                    text = "login",
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = TextStyle(
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+                        }
+                        val message=pageState.errorMessage
+                        val enabled=!pageState.errorMessage.equals("")
+                        FormErrorMessageSection(
+                            enabled= enabled,
+                            errorMessage = message,
                         )
 
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        //Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        AppTextField(
-                            label = {
-                                Text("Email")
-                            },
-                            placeholder = "Enter your email",
-                            value = state.emailTextField.value,
-                            isError = state.emailTextField.isError,
-                            errorMessage = state.emailTextField.errorMessage,
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Default.Person,
-                                    tint = Color.Gray,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            onValueChange = {
-                                onSendIntent(RegisterIntent.onChangeTextField(EMAIL_TEXTFIELD, it))
-                            },
-                        )
-                        AppTextField(
-                            label = {
-                                Text("Password")
-                            },
-                            placeholder = "Enter your password",
-                            value = state.passwordTextField.value,
-                            isError = state.passwordTextField.isError,
-                            errorMessage = state.passwordTextField.errorMessage,
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Default.Lock,
-                                    tint = Color.Gray,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            visualTransformation = if (enablePasswordVisualTransformation) PasswordVisualTransformation() else VisualTransformation.None,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = {
-                                        enablePasswordVisualTransformation = !enablePasswordVisualTransformation
-                                    }
-                                ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            //Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            AppTextField(
+                                label = {
+                                    Text("Email")
+                                },
+                                placeholder = "Enter your email",
+                                value = state.emailTextField.value,
+                                isError = state.emailTextField.isError,
+                                errorMessage = state.emailTextField.errorMessage,
+                                leadingIcon = {
                                     Icon(
-                                        if (enablePasswordVisualTransformation) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                        Icons.Default.Person,
+                                        tint = Color.Gray,
+                                        contentDescription = "",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                onValueChange = {
+                                    onSendIntent(RegisterIntent.onChangeTextField(EMAIL_TEXTFIELD, it))
+                                },
+                            )
+                            AppTextField(
+                                label = {
+                                    Text("Password")
+                                },
+                                placeholder = "Enter your password",
+                                value = state.passwordTextField.value,
+                                isError = state.passwordTextField.isError,
+                                errorMessage = state.passwordTextField.errorMessage,
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Lock,
+                                        tint = Color.Gray,
+                                        contentDescription = "",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                visualTransformation = if (enablePasswordVisualTransformation) PasswordVisualTransformation() else VisualTransformation.None,
+                                trailingIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            enablePasswordVisualTransformation = !enablePasswordVisualTransformation
+                                        }
+                                    ) {
+                                        Icon(
+                                            if (enablePasswordVisualTransformation) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                            contentDescription = "",
+                                            tint = Color.Gray,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+
+                                },
+                                onValueChange = {
+                                    onSendIntent(RegisterIntent.onChangeTextField(PASSWORD_TEXTFIELD, it))
+                                }
+                            )
+
+                            AppTextField(
+                                label = {
+                                    Text("Confirm Password")
+                                },
+                                placeholder = "Enter your Confirm password",
+                                value = state.confirmPasswordTextField.value,
+                                isError = state.confirmPasswordTextField.isError,
+                                errorMessage = state.confirmPasswordTextField.errorMessage,
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Lock,
                                         contentDescription = "",
                                         tint = Color.Gray,
                                         modifier = Modifier.size(20.dp)
                                     )
+                                },
+                                visualTransformation = PasswordVisualTransformation(),
+                                onValueChange = {
+                                    onSendIntent(RegisterIntent.onChangeTextField(CONFIRM_PASSWORD_TEXTFIELD, it))
                                 }
-
-                            },
-                            onValueChange = {
-                                onSendIntent(RegisterIntent.onChangeTextField(PASSWORD_TEXTFIELD, it))
-                            }
-                        )
-
-                        AppTextField(
-                            label = {
-                                Text("Confirm Password")
-                            },
-                            placeholder = "Enter your Confirm password",
-                            value = state.confirmPasswordTextField.value,
-                            isError = state.confirmPasswordTextField.isError,
-                            errorMessage = state.confirmPasswordTextField.errorMessage,
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Default.Lock,
-                                    contentDescription = "",
-                                    tint = Color.Gray,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            visualTransformation = PasswordVisualTransformation(),
-                            onValueChange = {
-                                onSendIntent(RegisterIntent.onChangeTextField(CONFIRM_PASSWORD_TEXTFIELD, it))
-                            }
-                        )
-                        // }
-                    }
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        AppFormButton(
-                            label = "Sign Up",
-                            enabled = state.enableSendButton,
-                            enabledProgressIndicator = pageState.isLoading,
-                            onClick = {
-                                onSendIntent(RegisterIntent.OnSendForm)
-                            }
-                        )
-                        Row(
+                            )
+                            // }
+                        }
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            HorizontalDivider(modifier = Modifier.weight(0.4f))
-                            Box(
-                                modifier = Modifier.weight(0.2f),
-                                contentAlignment = Alignment.Center
+                            AppFormButton(
+                                label = "Sign Up",
+                                enabled = state.enableSendButton,
+                                enabledProgressIndicator = pageState.isLoading,
+                                onClick = {
+                                    onSendIntent(RegisterIntent.OnSendForm)
+                                }
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                Text("Or", color = Color.Gray)
+                                HorizontalDivider(modifier = Modifier.weight(0.4f))
+                                Box(
+                                    modifier = Modifier.weight(0.2f),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text("Or", color = Color.Gray)
+                                }
+                                HorizontalDivider(modifier = Modifier.weight(0.4f))
                             }
-                            HorizontalDivider(modifier = Modifier.weight(0.4f))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                AppIconButton(
+                                    painter = painterResource(Res.drawable.google),
+                                    contentDescription = "",
+                                    onclick = {
+
+                                    })
+                                AppIconButton(
+                                    painter = painterResource(Res.drawable.facebook),
+                                    contentDescription = "",
+                                    onclick = {
+
+                                    })
+                                AppIconButton(
+                                    painter = painterResource(Res.drawable.apple),
+                                    contentDescription = "",
+                                    onclick = {
+
+                                    })
+                            }
                         }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            AppIconButton(
-                                painter = painterResource(Res.drawable.google),
-                                contentDescription = "",
-                                onclick = {
 
-                                })
-                            AppIconButton(
-                                painter = painterResource(Res.drawable.facebook),
-                                contentDescription = "",
-                                onclick = {
-
-                                })
-                            AppIconButton(
-                                painter = painterResource(Res.drawable.apple),
-                                contentDescription = "",
-                                onclick = {
-
-                                })
-                        }
                     }
-
                 }
-            }
 
+            }
         }
     }
+
 }
 
 @Composable

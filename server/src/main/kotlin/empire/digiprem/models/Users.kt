@@ -10,7 +10,7 @@ import java.util.*
 
 
 @Entity(name = "user_app")
-class Users(
+data class Users(
     @Id
     val id: UUID = UUID.randomUUID(),
     val name: String = "",

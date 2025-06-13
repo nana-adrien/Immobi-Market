@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import empire.digiprem.app.service.JwtTokenService
 import empire.digiprem.data.remote.config.HttpConstants
 import empire.digiprem.data.remote.config.KtorfitServiceCreator
+import empire.digiprem.data.remote.config.provideHttpClient
 import empire.digiprem.domain.servives.IJwtTokenService
 import empire.digiprem.presentation.viewmodels.*
 import org.koin.core.KoinApplication
@@ -27,9 +28,15 @@ import empire.digiprem.presentation.viewmodels.MessengerViewModel
 
  
 import empire.digiprem.presentation.viewmodels.CompleteAccountViewModel
+import io.ktor.client.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
 
 
- val commonModules = module {
+val commonModules = module {
   viewModel { CompleteAccountViewModel() }
   viewModel { MessengerViewModel() }
   viewModel { MobileDashBoardViewModel() }
@@ -55,7 +62,8 @@ import empire.digiprem.presentation.viewmodels.CompleteAccountViewModel
 
 val appModule= module {
     single<IJwtTokenService>{JwtTokenService(get()) }
-    single <KtorfitServiceCreator>{ KtorfitServiceCreator(HttpConstants.BASE_URL,get())}
+    single<HttpClient>{ provideHttpClient(HttpConstants.BASE_URL) }
+    single <KtorfitServiceCreator>{ KtorfitServiceCreator(HttpConstants.BASE_URL,get(),get()) }
 }
 expect val initializeModules: Module
 

@@ -200,6 +200,7 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.window.Popup
 import coil3.compose.AsyncImage
+import empire.digiprem.presentation.views.onHoverReaction
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -303,6 +304,7 @@ fun getIconByName(name: String): ImageVector {
 
 @Composable
 fun RealEstateItem2(
+    modifier: Modifier=Modifier,
     location: String,
     postedAgo: String,
     title: String,
@@ -342,15 +344,15 @@ fun RealEstateItem2(
     val density = LocalDensity.current
 
     Box(
-        modifier = Modifier.width(300.dp)
+        modifier = Modifier.then(modifier).width(300.dp)
             .wrapContentHeight()
             /*.onGloballyPositioned {
                 val position = it.localToRoot(Offset.Zero)
                 val size = it.size
                 cardBounds = Rect(position, size.toSize())
             }*/
-            .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
-            .background(Color.White)
+            .onHoverReaction()
+            .background(MaterialTheme.colorScheme.background)
             .clickable(onClick = { onClick() })
     ) {
         Column(
@@ -358,7 +360,7 @@ fun RealEstateItem2(
             // verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().height(200.dp),
+                modifier = Modifier.fillMaxWidth().height(180.dp),
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize()
@@ -398,7 +400,7 @@ fun RealEstateItem2(
             }
             Column(modifier = Modifier.wrapContentSize().padding(horizontal = 10.dp).padding(bottom = 10.dp)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().height(25.dp),
+                    modifier = Modifier.fillMaxWidth().height(150.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

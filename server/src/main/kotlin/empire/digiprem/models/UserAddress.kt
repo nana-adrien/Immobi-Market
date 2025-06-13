@@ -1,17 +1,18 @@
 package empire.digiprem.models
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import java.util.*
 
 
 @Entity
-class UserAddress {
+data class UserAddress(
     @Id
-    private val id: UUID = UUID.randomUUID()
-    private var continent: String=""
-    private var country: String=""
-    private var city: String=""
-    private var region: String=""
-    private var district: String=""
-}
+    private val id: UUID = UUID.randomUUID(),
+    var continent: String = "",
+    var country: String = "",
+    var city: String = "",
+    var region: String = "",
+    var district: String = "",
+)

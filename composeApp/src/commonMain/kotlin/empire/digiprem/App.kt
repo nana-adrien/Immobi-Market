@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import empire.digiprem.navigation.AppNavigationConfig
+import octopusfx.client.mobile.core.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,7 +19,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App(   navController: NavHostController? = null, modifier: Modifier = Modifier,scrollState: ScrollState?=null) {
     val appNavController = navController ?: rememberNavController()
     val appScrollState =scrollState?:rememberScrollState(0)
-    MaterialTheme {
+    AppTheme {
         AppNavigationConfig(
             modifier=Modifier.fillMaxSize(),
             navController = appNavController,

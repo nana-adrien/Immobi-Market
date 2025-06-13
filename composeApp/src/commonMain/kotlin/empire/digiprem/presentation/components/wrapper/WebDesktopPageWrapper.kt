@@ -35,9 +35,11 @@ fun WebDesktopPageWrapper(
     modifier: Modifier = Modifier,
     view: EnumView?=null,
     state: PageWrapperState,
+    enabledTobAppBar: Boolean = true,
     containerColor: Color = Color.Transparent,
     contentColor: Color = contentColorFor(containerColor),
     actions: @Composable() (RowScope.() -> Unit) = {},
+    customTopAppBar: @Composable() (() -> Unit)? =null,
     content: @Composable() (PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -45,84 +47,88 @@ fun WebDesktopPageWrapper(
         containerColor = containerColor,
         contentColor = contentColor,
         topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets(0.dp),
-                colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
-                title = {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(5.dp)
-                    ) {
-                        if (view != null) {}
-                        view?.let{
-                            Text(
-                                "${view.getPageTitle()}",
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                            )
-                            TextButton(
-                                onClick = {
+            if(enabledTobAppBar){
+               customTopAppBar?.let {
+                   it()
+               }?: TopAppBar(
+                    windowInsets = WindowInsets(0.dp),
+                    colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
+                    title = {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(5.dp)
+                        ) {
+                            if (view != null) {}
+                            view?.let{
+                                Text(
+                                    "${view.getPageTitle()}",
+                                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                                )
+                                TextButton(
+                                    onClick = {
 
-                                }
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                    }
                                 ) {
-                                    Icon(
-                                        Icons.Filled.ArrowBackIos,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
-                                    Text(
-                                        "Dashboard",
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.primary
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                    ) {
+                                        Icon(
+                                            Icons.Filled.ArrowBackIos,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.primary
                                         )
-                                    )
-                                }
+                                        Text(
+                                            "Dashboard",
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        )
+                                    }
 
+                                }
                             }
                         }
-                    }
-                },
-                actions = actions
-                 /*   {
+                    },
+                    actions = actions
+                    /*   {
 
-                    AppIconActionButton(
-                        onClick = {
-                            //navController.navigate(ViewHome(isConnected = true))
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FilterAlt,
-                            contentDescription = "Home",
-                        )
-                    }
-                    AppIconActionButton(
-                        onClick = {
-                            //  navController.navigate(ViewHome(isConnected = true))
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Phone,
-                            contentDescription = "Home",
-                        )
-                    }
-                    AppIconActionButton(
-                        onClick = {
-                            // navController.navigate(ViewHome(isConnected = true))
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Home",
-                        )
-                    }
-                }*/
-            )
+                       AppIconActionButton(
+                           onClick = {
+                               //navController.navigate(ViewHome(isConnected = true))
+                           }
+                       ) {
+                           Icon(
+                               imageVector = Icons.Default.FilterAlt,
+                               contentDescription = "Home",
+                           )
+                       }
+                       AppIconActionButton(
+                           onClick = {
+                               //  navController.navigate(ViewHome(isConnected = true))
+                           }
+                       ) {
+                           Icon(
+                               imageVector = Icons.Default.Phone,
+                               contentDescription = "Home",
+                           )
+                       }
+                       AppIconActionButton(
+                           onClick = {
+                               // navController.navigate(ViewHome(isConnected = true))
+                           }
+                       ) {
+                           Icon(
+                               imageVector = Icons.Default.Search,
+                               contentDescription = "Home",
+                           )
+                       }
+                   }*/
+                )
+            }
         }
     ) {
-        Box(modifier = Modifier.padding(it).padding(top = 30.dp).fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.padding(it).fillMaxSize(), contentAlignment = Alignment.Center) {
             if (state.isLoading) {
                 //   CircularProgressIndicator(modifier = Modifier.size(50.dp))
                 LoadingScreen()

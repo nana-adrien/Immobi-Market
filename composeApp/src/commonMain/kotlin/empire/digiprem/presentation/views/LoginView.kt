@@ -58,7 +58,7 @@ fun LoginView(
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            painter = painterResource(Res.drawable.compose_multiplatform),
+                            painter = painterResource(Res.drawable.femme_sur_son_telephone_qui_cherche_une_maison),
                             contentDescription = ""
                         )
                     }

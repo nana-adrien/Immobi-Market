@@ -35,10 +35,15 @@ class JwtFilter(private val userDetailsService: IUserDetailService, private val 
           //  JwtFilter.log.info("Security context was null, so authorizing user")
           //  JwtFilter.log.info("User details request received for user: {}", username)
             val userDetails = userDetailsService.loadUserByIdentity(username) as Users
+
+            println("User details request received for user: ${userDetails.username}")
+
             if (jwtTokenUtil.isTokenValid(jwtToken?:"", userDetails)) {
                 val identityAndPasswordAuthenticationToken =
                     IdentityAndPasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 identityAndPasswordAuthenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+
+                println("User details request received for identityAndPasswordAuthenticationToken: ${identityAndPasswordAuthenticationToken.name}")
                 SecurityContextHolder.getContext().authentication = identityAndPasswordAuthenticationToken
             }
         }

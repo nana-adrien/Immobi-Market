@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 class UserModuleConfig {
-    fun userAccountService(
+/*    fun userAccountService(
         userAwaitingVerificationService: UserAwaitingVerificationService,
         notificationService: INotificationService,
         passwordEncoder: PasswordEncoder,
@@ -28,5 +28,5 @@ class UserModuleConfig {
             phoneNumberService,
             usersRepository
         )
-    }
+    }*/
 }

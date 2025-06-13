@@ -11,23 +11,7 @@ import empire.digiprem.domain.servives.IJwtTokenService
 import io.ktor.client.plugins.*
 import kotlinx.serialization.json.Json
 
-class KtorfitServiceCreator(val baseUrl: String, private val jwtTokenService: IJwtTokenService) {
-    private val httpClient = HttpClient {
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                    prettyPrint = true
-                }
-            )
-        }
-        defaultRequest {
-            url(baseUrl)
-            contentType(ContentType.Application.Json)
-        }
-    }
-
+class KtorfitServiceCreator(val baseUrl: String,val httpClient:HttpClient, private val jwtTokenService: IJwtTokenService) {
 
     fun HttpRequestBuilder.addHeader(header: String, value: String) {
         if (this.headers[header].isNullOrEmpty()) {
@@ -39,11 +23,11 @@ class KtorfitServiceCreator(val baseUrl: String, private val jwtTokenService: IJ
 
     }
 
-    fun addInterceptor(block: HttpSendInterceptor) {
-        httpClient.plugin(
-            HttpSend
-        ).intercept(block)
-    }
+
+
+
+
+
 
     private fun getKtorfit(): Ktorfit {
         return Ktorfit.Builder()

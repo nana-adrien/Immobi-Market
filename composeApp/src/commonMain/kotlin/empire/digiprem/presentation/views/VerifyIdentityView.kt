@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
+import composeApp.src.commonMain.ComposeResources.drawable.homme_qui_recoie_code_de_verification
 import empire.digiprem.config.Platform
 import empire.digiprem.config.getActualWindowsSize
 import empire.digiprem.config.getPlatform
@@ -69,7 +70,7 @@ fun VerifyIdentityView(
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            painter = painterResource(Res.drawable.compose_multiplatform),
+                            painter = painterResource(Res.drawable.homme_qui_recoie_code_de_verification),
                             contentDescription = ""
                         )
                     }

@@ -1,8 +1,12 @@
 package empire.digiprem.services
 
 import com.google.i18n.phonenumbers.NumberParseException
+import empire.digiprem.dto.account.CreateAccountRequestDTO
+import empire.digiprem.exception.ValidateTextFiledException
 import empire.digiprem.models.*
+import empire.digiprem.repositories.UserSettingsRepository
 import empire.digiprem.repositories.UsersRepository
+import empire.digiprem.repositories.account.UserAddressRepository
 import empire.digiprem.service.INotificationService
 import empire.digiprem.service.IUserAccountService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -14,6 +18,8 @@ class UserAccountService(
     private val userAwaitingVerificationService: UserAwaitingVerificationService,
     private val notificationService: INotificationService,
     private val passwordEncoder: PasswordEncoder,
+    private val userAddressRepository: UserAddressRepository,
+    private val userSettingsRepository: UserSettingsRepository,
     private val emailService: EmailService,
     private val passwordService: PasswordService,
     private val phoneNumberService: PhoneNumberService,
@@ -30,6 +36,40 @@ class UserAccountService(
             userPassword = passwordEncoder.encode(password)
         )
         return usersRepository.save(user)
+    }
+
+    fun createAccount(email: String, requestDTO: CreateAccountRequestDTO):Users {
+        var user = loadUserByIdentity(email, true) ?: throw ValidateTextFiledException("identity","User not found with email: $email")
+        val userAddress = userAddressRepository.findByContinentAndCountryAndCityAndRegionAndDistrict(
+            "Afrique",
+            "Cameroun",
+            requestDTO.city,
+            requestDTO.region,
+            requestDTO.district
+        ).orElse(
+            UserAddress(
+                continent = "Afrique",
+                country = "Cameroun",
+                region = requestDTO.region,
+                city = requestDTO.city,
+                district = requestDTO.district,
+            )
+        )
+        val userSettings = userSettingsRepository.save(
+            UserSettings(enabledTwoFactorAuthentication = requestDTO.enabledTwoFactorAuth)
+        )
+        val phoneNumber = createPhoneNumber(UserPhoneNumber(countryCode = "+237", phoneNumber = requestDTO.phone))
+
+        user = user.copy(
+            name = requestDTO.lastName,
+            firstName = requestDTO.firstName,
+            profileUrl = requestDTO.profileUrl?:"",
+            userAddress = userAddress,
+            settings = userSettings,
+            isEmailVerified = true,
+            userPhoneNumber = phoneNumber,
+        )
+     return   usersRepository.save(user)
     }
 
     override fun createUserAccount(user: Users): Users {
@@ -112,7 +152,7 @@ class UserAccountService(
         return userAwaitingVerificationService.sendVerificationCode(
             operation,
             identity,
-            password?:"",
+            password ?: "",
             isEmail,
             subject
         ) != null
@@ -150,8 +190,8 @@ class UserAccountService(
         identity: String,
         verificationCode: String,
         operation: VerificationOperation
-    ): UserAwaitingVerification{
-        return verifyPinCode(identity,verificationCode)
+    ): UserAwaitingVerification {
+        return verifyPinCode(identity, verificationCode)
     }
 
     override fun verifyPinCode(identity: String, verificationCode: String): UserAwaitingVerification {
@@ -180,6 +220,8 @@ class UserAccountService(
     fun resetPassword(identity: String, isEmail: Boolean, resetCode: String, newPassword: String?): Boolean {
         val userAwaitingVerification = verifyCode(identity, resetCode, VerificationOperation.NOT_VERIFY)
         val user = loadUserByIdentity(userAwaitingVerification!!.identifier, userAwaitingVerification.isEmail)
+            ?: throw ValidateTextFiledException("identity", "User not found with identifier: $identity")
+
         user.userPassword = passwordEncoder.encode(newPassword)
         usersRepository.save(user)
         val message = String.format(
@@ -201,23 +243,31 @@ class UserAccountService(
         return true
     }
 
-    override fun loadUserByIdentity(identity: String, isEmail: Boolean): Users {
+    override fun loadUserByIdentity(identity: String, isEmail: Boolean): Users? {
         val user: Optional<Users> =
             if (isEmail) usersRepository.findByEmail(identity) else usersRepository.findByPhoneNumber(identity)
         return user.orElse(null)
     }
 
     override fun loadUserByIdentityEx(identity: String, countryCode: String, isEmail: Boolean): Users? {
+
+        val phoneNumber = phoneNumberService.loadUserPhoneNumberByCountryCodeAndPhoneNumber(
+            countryCode,
+            identity.substring(countryCode.length)
+        ) ?: throw ValidateTextFiledException("phone", "Phone number $identity not found ")
         val user: Optional<Users> =
             if (isEmail) usersRepository.findByEmail(identity)
-            else usersRepository.findByUserPhoneNumber(phoneNumberService.loadUserPhoneNumberByCountryCodeAndPhoneNumber(countryCode, identity.substring(countryCode.length)))
+            else usersRepository.findByUserPhoneNumber(phoneNumber)
         return user.orElse(null)
     }
 
     override fun createPhoneNumber(userPhoneNumber: UserPhoneNumber): UserPhoneNumber {
-        if (phoneNumberService.loadUserPhoneNumberByCountryCodeAndPhoneNumber(userPhoneNumber.countryCode, userPhoneNumber.phoneNumber) != null
+        if (phoneNumberService.loadUserPhoneNumberByCountryCodeAndPhoneNumber(
+                userPhoneNumber.countryCode,
+                userPhoneNumber.phoneNumber
+            ) != null
         ) {
-            throw RuntimeException("Phone number already exists")
+            throw ValidateTextFiledException("phone", "Phone number already exists")
         }
         return phoneNumberService.savePhoneNumber(userPhoneNumber)
     }

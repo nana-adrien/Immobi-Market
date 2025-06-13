@@ -1,37 +1,49 @@
 package empire.digiprem.presentation.views
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Filter
-import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -41,10 +53,12 @@ import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
 import composeApp.src.commonMain.ComposeResources.drawable.brick_wall_watermark_background
 import empire.digiprem.config.isCompactMobilePlatform
 import empire.digiprem.app.model.components.SearchFilter
+import empire.digiprem.core.utils.pointerEvent
 import empire.digiprem.navigation.*
 import empire.digiprem.presentation.base.AppAnimations.slideInStart
 import empire.digiprem.presentation.base.AppAnimations.slideInTop
 import empire.digiprem.presentation.base.AppAnimations.slideOutStart
+import empire.digiprem.presentation.base.color.Colors
 import empire.digiprem.presentation.components.*
 import empire.digiprem.presentation.components.app.*
 import empire.digiprem.presentation.intents.HomeIntent
@@ -67,6 +81,747 @@ fun HomeView(
     val state by homeViewModel.state.collectAsState()
     val onSendIntent = homeViewModel::onIntentHandler
     val isCompactSize = isCompactMobilePlatform()
+    //  HomePage1(viewHome, navController, isCompactSize, state, onSendIntent)
+
+    var enabledMenu by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf("bonjour") }
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            AppBox(
+                modifier = Modifier.background(Colors.brushVioletLinear)
+            ) {
+                AppHeader(
+                    containerColor = Color.Transparent
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        AppIconActionButton(
+                            onClick = { navController.navigate(ViewHome()) },
+                            selected = true
+                        ) {
+                            Icon(imageVector = Icons.Default.Home, contentDescription = "", tint = Color.White)
+                        }
+                        AppIconActionButton(
+                            onClick = { },
+                            selected = true
+                        ) {
+                            Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "", tint = Color.White)
+                        }
+                    }
+                }
+            }
+        }
+    ) {
+        LazyColumn {
+            item {
+                AppBox(
+                    modifier = Modifier.background(Colors.brushVioletVertical)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                            .padding(vertical = 100.dp, horizontal = 30.dp),
+                        verticalArrangement = Arrangement.spacedBy(50.dp, alignment = Alignment.CenterVertically),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(15.dp))
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Trouvez le bien immobilier qui vous convient",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = if (isCompactSize) 30.sp else 50.sp,
+                                textAlign = TextAlign.Center,
+                                lineHeight = if (isCompactSize) 35.sp else 50.sp,
+                            )
+                        )
+                        if (!isCompactSize) {
+                            Text(
+                                text = "En quête d’un espace qui vous ressemble ? Chambre, appart ou maison? Louez ou achetez en toute simplicité, partout au Cameroun.",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                                    textAlign = TextAlign.Center,
+                                )
+                            )
+                        }
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        ) {
+                            AppButtonEx(
+                                onClick = { navController.navigate(ViewRegister()) }
+                            ) {
+                                Text("Register", color = Color.White)
+                            }
+                            AppOutinedButtonEx(onClick = { navController.navigate(ViewLogin()) }) {
+                                Text("Connexion", color = Color.White)
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                AppBox(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(450.dp).padding(50.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(25.dp, Alignment.CenterHorizontally)
+                    ) {
+                        AppCardWrapper(
+                            modifier = Modifier.onHoverReaction().background(MaterialTheme.colorScheme.surface)
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxHeight().width(350.dp).padding(20.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Bonjour le monde ", color = Color.Black)
+                            }
+                        }
+                        AppCardWrapper(
+                            modifier = Modifier.onHoverReaction()
+                                .background(MaterialTheme.colorScheme.surface)
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxHeight().width(350.dp).padding(20.dp)
+                                    .background(MaterialTheme.colorScheme.surface),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Bonjour le monde ", color = Color.Black)
+                            }
+                        }
+                        AppCardWrapper(
+                            modifier = Modifier.onHoverReaction().background(MaterialTheme.colorScheme.surface)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight().width(350.dp).padding(20.dp)
+                                    .background(MaterialTheme.colorScheme.surface),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Bonjour le monde ", color = Color.Black)
+                            }
+                        }
+                        AppCardWrapper(
+                            modifier = Modifier.onHoverReaction()
+                                .background(MaterialTheme.colorScheme.surface)
+                        ) {
+                            Box(
+                                modifier = Modifier.width(350.dp).padding(20.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Bonjour le monde ")
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                AppBox(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(vertical = 80.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                                .padding(vertical = 80.dp, horizontal = 200.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically)
+                        ) {
+                            Text(
+                                "Tous les Biens Immobiliers",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 28.sp,
+                                    color = Color.Black
+                                ),
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                "Découvrez notre sélection complète de biens immobiliers disponibles avec des filtres avancés pour trouver le logement parfait",
+                                fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                            )
+                        }
+
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            horizontalArrangement = Arrangement.spacedBy(30.dp)
+                        ) {
+                            AppCardWrapper(
+                                modifier = Modifier.shadow(elevation = 30.dp, shape = RoundedCornerShape(7.dp))
+                                    .background(MaterialTheme.colorScheme.background)
+                            ) {
+                                Column(
+                                    modifier = Modifier.width(319.dp).wrapContentHeight().padding(30.dp)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(vertical = 30.dp).height(50.dp),
+                                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                                    ) {
+                                        Text(
+                                            "Filtres de Recherche",
+                                            style = MaterialTheme.typography.titleLarge.copy(
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 20.sp,
+                                                color = Color.Black
+                                            ),
+                                            textAlign = TextAlign.Center
+                                        )
+                                        HorizontalDivider()
+                                    }
+
+                                    Section(
+                                        title = "Type de bien"
+                                    ) {
+                                        SelectContentTextField(
+                                            containerColor = Color(0xfffE9E9ED),
+                                            enabledMenu = enabledMenu,
+                                            selected = selectedText,
+                                            options = listOf("bonjour", "le monde", "encore"),
+                                            onDismissRequest = {
+                                                enabledMenu = !enabledMenu
+                                            },
+                                            onValueChange = {
+                                                selectedText = it
+                                            }
+                                        )
+                                    }
+                                    Section(
+                                        title = "Localisation"
+                                    ) {
+                                        SelectContentTextField(
+                                            containerColor = Color(0xfffE9E9ED),
+                                            enabledMenu = enabledMenu,
+                                            selected = selectedText,
+                                            options = listOf("bonjour", "le monde", "encore"),
+                                            onDismissRequest = {
+                                                enabledMenu = !enabledMenu
+                                            },
+                                            onValueChange = {
+                                                selectedText = it
+                                            }
+                                        )
+                                    }
+                                    Section(
+                                        title = "Budget (€)"
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(15.dp)
+                                        ) {
+                                            SelectContentTextField(
+                                                enabledMenu = enabledMenu,
+                                                selected = selectedText,
+                                                options = listOf("bonjour", "le monde", "encore"),
+                                                onDismissRequest = {
+                                                    enabledMenu = !enabledMenu
+                                                },
+                                                onValueChange = {
+                                                    selectedText = it
+                                                }
+                                            )
+                                            SelectContentTextField(
+                                                enabledMenu = enabledMenu,
+                                                selected = selectedText,
+                                                options = listOf("bonjour", "le monde", "encore"),
+                                                onDismissRequest = {
+                                                    enabledMenu = !enabledMenu
+                                                },
+                                                onValueChange = {
+                                                    selectedText = it
+                                                }
+                                            )
+                                        }
+
+                                    }
+                                    Section(
+                                        title = "Surface (m²)"
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(15.dp)
+                                        ) {
+                                            SelectContentTextField(
+                                                modifier = Modifier.weight(1f),
+                                                enabledMenu = enabledMenu,
+                                                selected = selectedText,
+                                                options = listOf("bonjour", "le monde", "encore"),
+                                                onDismissRequest = {
+                                                    enabledMenu = !enabledMenu
+                                                },
+                                                onValueChange = {
+                                                    selectedText = it
+                                                }
+                                            )
+                                            SelectContentTextField(
+                                                modifier = Modifier.weight(1f),
+                                                enabledMenu = enabledMenu,
+                                                selected = selectedText,
+                                                options = listOf("bonjour", "le monde", "encore"),
+                                                onDismissRequest = {
+                                                    enabledMenu = !enabledMenu
+                                                },
+                                                onValueChange = {
+                                                    selectedText = it
+                                                }
+                                            )
+                                        }
+
+                                    }
+
+                                    Section(
+                                        title = "Nombre de pièces"
+                                    ) {
+                                        SelectContentTextField(
+                                            containerColor = Color(0xfffE9E9ED),
+                                            enabledMenu = enabledMenu,
+                                            selected = selectedText,
+                                            options = listOf("bonjour", "le monde", "encore"),
+                                            onDismissRequest = {
+                                                enabledMenu = !enabledMenu
+                                            },
+                                            onValueChange = {
+                                                selectedText = it
+                                            }
+                                        )
+                                    }
+                                    Section(
+                                        title = "Équipements"
+                                    ) {
+                                        SelectContentTextField(
+                                            modifier = Modifier.width(156.dp),
+                                            enabledMenu = enabledMenu,
+                                            selected = selectedText,
+                                            options = listOf("bonjour", "le monde", "encore"),
+                                            onDismissRequest = {
+                                                enabledMenu = !enabledMenu
+                                            },
+                                            onValueChange = {
+                                                selectedText = it
+                                            }
+                                        )
+                                    }
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(
+                                            20.dp,
+                                            Alignment.CenterHorizontally
+                                        )
+                                    ) {
+                                        AppButtonEx(
+                                            modifier = Modifier.weight(1f),
+                                            onClick = {
+                                            }) { Text("Appliquer") }
+                                        AppOutinedButtonEx(
+                                            modifier = Modifier.weight(1f)
+                                                .background(MaterialTheme.colorScheme.surface),
+                                            onClick = {}
+                                        ) {
+                                            Text("Reinitialiser")
+                                        }
+                                    }
+                                }
+                            }
+
+                            var currentPage by remember { mutableStateOf(1) }
+                            val pageSize = 8
+                            val totalPages = (state.realEstates.size + pageSize - 1) / pageSize
+
+                            val currentItems = state.realEstates.paginateList(currentPage, pageSize)
+                            var componentWidth by remember { mutableStateOf(0) }
+
+                            AppCardWrapper(
+                                modifier = Modifier.shadow(elevation = 20.dp, shape = RoundedCornerShape(7.dp))
+                                    .background(MaterialTheme.colorScheme.background)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(30.dp).width(889.dp).wrapContentHeight(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(vertical = 26.dp).height(50.dp),
+                                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text("24 biens trouvés", fontSize = 16.sp)
+                                            SelectContentTextField(
+                                                modifier = Modifier.height(32.dp).width(156.dp),
+                                                enabledMenu = enabledMenu,
+                                                selected = selectedText,
+                                                options = listOf("bonjour", "le monde", "encore"),
+                                                onDismissRequest = {
+                                                    enabledMenu = !enabledMenu
+                                                },
+                                                onValueChange = {
+                                                    selectedText = it
+                                                }
+                                            )
+
+                                        }
+                                        HorizontalDivider()
+                                    }
+
+                                    AppLazyVerticalGrid(
+                                        items = currentItems,
+                                        columns = 2, verticalArrangement = Arrangement.spacedBy(30.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(30.dp),
+                                        itemHeight = 300.dp
+                                    ) { it, index ->
+                                        RealEstateItem2(
+                                            modifier = Modifier.onGloballyPositioned { coordinates ->
+                                                componentWidth = coordinates.size.width  // Largeur en pixels
+                                            },
+                                            location = it.location,
+                                            postedAgo = it.postedAgo,
+                                            price = it.price,
+                                            title = it.title,
+                                            image = it.images.first(),
+                                            categories = it.categories,
+                                            type = it.type,
+                                            equipment = it.equipment,
+                                            onClick = {
+                                                //onClickRealEstateItem(it.id)
+                                            }
+                                        )
+                                        with(LocalDensity.current) { componentWidth.toDp() }
+                                    }
+
+                                    AppPagination(
+                                        currentPage = currentPage,
+                                        totalPages = totalPages,
+                                        onPageSelected = { page -> currentPage = page }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                AppBox(
+                    modifier = Modifier.background(Colors.brushRoseLinear)
+                ) {
+                    Column(modifier = Modifier.wrapContentHeight().fillMaxWidth().padding(vertical = 60.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(30.dp)
+                        ) {
+                        Text("Propriétaires Certifiés de Confiance", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold, fontSize = 40.sp)
+                        Text("Notre processus de certification rigoureux garantit la fiabilité de chaque propriétaire sur notre plateforme", color = MaterialTheme.colorScheme.background, fontSize = 16.sp)
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().height(250.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(25.dp, Alignment.CenterHorizontally)
+                        ) {
+                            repeat(4){
+                                AppCardWrapper(
+                                    modifier = Modifier.clip(RoundedCornerShape(7.dp)).background(MaterialTheme.colorScheme.background.copy(alpha = 0.3f))
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight().weight(1f).padding(30.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.spacedBy(5.dp,Alignment.CenterVertically)
+                                    ) {
+                                        Text("2,500+", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold, fontSize = 30.sp)
+                                        Text("Propriétaires Certifiés ", color = MaterialTheme.colorScheme.background, fontSize = 14.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            item {
+                AppBox(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                ) {
+                    Column(modifier = Modifier.wrapContentHeight().fillMaxWidth().padding(vertical = 30.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(30.dp)
+                        ) {
+                        Text("Nos Meilleurs Propriétaires Certifiés", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(25.dp, Alignment.CenterHorizontally)
+                        ) {
+                            repeat(4){
+                                AppCardWrapper(
+                                    modifier = Modifier.onHoverReaction(baseElevation = 0.dp).background(Color(0xfffF8F9FA))
+                                ) {
+                                    Column(
+                                        modifier = Modifier.wrapContentHeight().weight(1f).padding(20.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                                    ) {
+                                        Box(modifier = Modifier.size(80.dp).padding(10.dp)
+                                            .clip(CircleShape)
+                                            .background(Colors.brushVioletLinear), contentAlignment = Alignment.Center){
+                                            Text("M", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.W400, fontSize = 40.sp)
+                                        }
+
+                                        Text("Marie Dupont", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold, fontSize = 30.sp)
+                                        Row(
+                                            modifier = Modifier.clip(RoundedCornerShape(15.dp)).background(Color.Green.copy(0.2f)).padding(10.dp)
+                                        ){
+                                            Text("Certifié depuis 3 ans" ,color = MaterialTheme.colorScheme.background,)
+                                        }
+
+                                        Text("12 biens immobiliers ", color = MaterialTheme.colorScheme.primary, fontSize = 16.sp)
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ){
+                                            repeat(5){
+                                                Icon(
+                                                    imageVector = Icons.Default.Star,"",
+                                                    tint = Color.Yellow
+                                                )
+                                            }
+                                            Text("(32 avis)" ,color=Color.Yellow)
+                                        }
+
+                                        AppButtonEx(onClick = {}){
+                                            Text("Voir ses biens" ,color = MaterialTheme.colorScheme.background,)
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+    }
+}
+
+
+@Composable
+fun Section(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text(
+            title,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color.Black
+            ),
+        )
+        content()
+    }
+
+}
+
+
+@Composable
+fun Modifier.onHoverReaction(
+    shape: Shape = RoundedCornerShape(7.dp),
+    hoverElevation: Dp = 30.dp,
+    baseElevation: Dp = 20.dp,
+): Modifier {
+    var hover by remember { mutableStateOf(false) }
+    val elevation by animateDpAsState(
+        targetValue = if (hover) hoverElevation else baseElevation,
+        animationSpec = tween(300),
+        label = "hoverShadow"
+    )
+    val offsetY by animateDpAsState(
+        targetValue = if (hover) (-5).dp else 0.dp,
+        animationSpec = tween(300),
+        label = "hoverOffset"
+    )
+    return this.then(
+        Modifier.offset(y = offsetY).shadow(
+            elevation = elevation,
+            shape = shape,
+            // spotColor = MaterialTheme.colorScheme.surface
+        )
+            .pointerEvent(
+                eventType = PointerEventType.Enter,
+                pass = PointerEventPass.Initial
+            ) {
+                hover = true
+            }.pointerEvent(
+                eventType = PointerEventType.Exit,
+                pass = PointerEventPass.Initial
+            ) {
+                hover = false
+            }
+    )
+
+}
+
+
+@Composable
+fun AppButtonEx(
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit
+) {
+
+    Row(
+        modifier = Modifier.then(modifier).wrapContentWidth()
+            .height(50.dp)
+            .onHoverReaction()
+            .background(MaterialTheme.colorScheme.secondary)
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        content = content
+    )
+}
+
+
+@Composable
+fun AppOutinedButtonEx(
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit
+) {
+    Row(
+        modifier = Modifier.then(modifier).wrapContentWidth()
+            //.shadow(elevation = 1.dp, shape = RoundedCornerShape(7.dp))
+            .height(50.dp)
+            .onHoverReaction(hoverElevation = 0.dp, baseElevation = 0.dp)
+            .border(
+                width = 1.dp,
+                color = Color.White,
+                shape = RoundedCornerShape(7.dp)
+            )
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        content = content
+    )
+}
+
+
+@Composable
+fun SelectContentTextField(
+    enabledMenu: Boolean = false,
+    onDismissRequest: () -> Unit,
+    containerColor: Color = Color.Transparent,
+    modifier: Modifier = Modifier,
+    options: List<String>,
+    selected: String = "",
+    onValueChange: (String) -> Unit,
+) {
+    var componentWidth by remember { mutableStateOf(0) }
+    AppCardWrapper(
+        modifier = Modifier.border(width = 1.dp, color = Color.LightGray, shape = RoundedCornerShape(7.dp))
+            .background(containerColor)
+    ) {
+        Column(
+            modifier = Modifier.then(modifier)
+                .border(width = 1.dp, color = Color.LightGray, shape = RoundedCornerShape(7.dp)).fillMaxWidth()
+                .height(41.dp)
+                .onGloballyPositioned { coordinates ->
+                    componentWidth = coordinates.size.width  // Largeur en pixels
+                }
+        ) {
+            Row(
+                modifier = Modifier.fillMaxSize().clickable { onDismissRequest() }.padding(start = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(selected, fontWeight = FontWeight.W600, fontSize = 14.sp)
+                Icon(Icons.Default.ArrowDropDown, contentDescription = "")
+
+            }
+            AnimatedVisibility(enabledMenu) {
+                DropdownMenu(
+                    modifier = Modifier.width(with(LocalDensity.current) { componentWidth.toDp() }).padding(5.dp),
+                    expanded = enabledMenu,
+                    shape = RoundedCornerShape(7.dp),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    onDismissRequest = onDismissRequest,
+                ) {
+                    options.forEach {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight().background(
+                                if (selected == it) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.surface
+                                }
+                            ).clickable {
+                                onValueChange(it)
+                                onDismissRequest()
+                            }.padding(start = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = it, fontWeight = FontWeight.W600, fontSize = 14.sp)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun AppBox(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxWidth().wrapContentHeight().then(modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(modifier = Modifier.wrapContentHeight().width(1238.dp)) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun AppCardWrapper(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier.wrapContentSize().then(modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun HomePage1(
+    viewHome: ViewHome,
+    navController: NavHostController,
+    isCompactSize: Boolean,
+    state: HomeModel,
+    onSendIntent: KFunction1<HomeIntent, Unit>
+) {
     var activeTopBarAction by remember { mutableStateOf(TopBarAction()) }
     var lamd: (String, @Composable () -> Unit) -> Unit = { title, content ->
         if (activeTopBarAction.enabled) {
@@ -201,7 +956,7 @@ fun HomeView(
                                 }
                             },
                         ) {
-                            Icon(imageVector = Icons.Outlined.Message, contentDescription = "", tint = it)
+                            Icon(imageVector = Icons.AutoMirrored.Outlined.Message, contentDescription = "", tint = it)
                         }
                     } else {
                         AppIconActionButton(
@@ -417,7 +1172,7 @@ fun HomeView(
                 }
                 item {
                     Box(
-                        modifier = Modifier.fillMaxWidth().height( 60.dp),
+                        modifier = Modifier.fillMaxWidth().height(60.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Box(
@@ -538,7 +1293,7 @@ fun ProfilMenu(navController: NavHostController) {
                 CustomExpensiveNavItem(
                     modifier = Modifier.fillMaxWidth(),
                     label = "Deconnexion",
-                    icon = Icons.Default.Logout,
+                    icon = Icons.AutoMirrored.Filled.Logout,
                     onClick = {
                         ViewHome(isConnected = false)
                     }
@@ -738,14 +1493,15 @@ fun LazyListScope.MarketplaceScreen(
                 }
             )
             AnimatedVisibility(
-                visible = state.firstVisibleItemIndex ==1,
+                visible = state.firstVisibleItemIndex == 1,
                 enter = slideInStart,
                 exit = slideOutStart,
                 modifier = Modifier.padding(start = 50.dp, top = 50.dp).wrapContentSize()
                     .align(Alignment.CenterStart)
             ) {
                 Box(
-                    modifier = Modifier.heightIn(max = 700.dp).width(300.dp).border(width = 1.dp, color = Color.LightGray)
+                    modifier = Modifier.heightIn(max = 700.dp).width(300.dp)
+                        .border(width = 1.dp, color = Color.LightGray)
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
@@ -838,7 +1594,7 @@ private fun RealEstateFilter(
                         onClick = {}
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Sort,
+                            imageVector = Icons.AutoMirrored.Filled.Sort,
                             contentDescription = ""
                         )
                     }
