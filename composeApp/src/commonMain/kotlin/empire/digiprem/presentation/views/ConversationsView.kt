@@ -2,6 +2,8 @@ package empire.digiprem.presentation.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -10,17 +12,16 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.octopusfx.mymessenger.ui.screen.Conversations
+import empire.digiprem.data.local.DataBaseTemp
+import empire.digiprem.enums.chat.ConversationTypeEnum
+import empire.digiprem.model.chat.Conversation
 import empire.digiprem.navigation.ViewConversations
 import empire.digiprem.presentation.components.*
 import empire.digiprem.presentation.viewmodels.ConversationsViewModel
@@ -32,12 +33,19 @@ fun ConversationsView(
     viewConversations: ViewConversations?=null,
     navController: NavHostController,
     enableTopBar:Boolean=true,
-    navigationRail: NavigationTypeEnum=NavigationTypeEnum.NAVIGATION_RAIL,
-    conversationsViewModel: ConversationsViewModel = koinViewModel()
+    navigationRail: NavigationTypeEnum=NavigationTypeEnum.BOTTOM_NAVIGATION,
+    conversationsViewModel: ConversationsViewModel = koinViewModel(),
+    onItemClick:()->Unit={},
 ) {
     // val conversationsViewModel:ConversationsViewModel = viewModel{ConversationsViewModel()}
     val state by conversationsViewModel.state.collectAsState()
     val onSendIntent = conversationsViewModel::onIntentHandler
+    var conversationList by remember {
+        mutableStateOf(
+            DataBaseTemp.testConversations
+        )
+    }
+
     Scaffold(
         topBar = {
             if (enableTopBar){
@@ -151,13 +159,31 @@ fun ConversationsView(
             }
         }
     ) {
-        Column(
-            modifier = Modifier.padding(it)
+        /*LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+
         ) {
-            Conversations(navController)
-        }
-
-
+            items(items = conversationList , key = { it.id }) {
+                //ReorderableItem(state , key = it) { isDragging ->
+                //    val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
+                ConversationItem(
+                    modifier = Modifier,
+                    //   .shadow(elevation.value)
+                    //  .animateItemPlacement() ,
+                    selected = it.selected ,
+                    online = it.online ,
+                    title = it.title ,
+                    sender = it.sender ,
+                    conversationType = it.conversationType ,
+                    status = it.status ,
+                    timeIndicator = it.timeIndicator ,
+                    onClick = onItemClick,
+                    onLongClick = {
+                    }
+                )
+            }
+        }*/
     }
 
 }

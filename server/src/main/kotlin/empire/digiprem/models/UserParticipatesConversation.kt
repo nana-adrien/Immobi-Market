@@ -1,5 +1,6 @@
 package empire.digiprem.models
 
+import empire.digiprem.models.database.User
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
@@ -14,20 +15,20 @@ class UserParticipatesConversation {
     private val id: UUID = UUID.randomUUID()
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private var participate: Users? = null
+    private var participate: User? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private var conversation: ConversationGroup? = null
+    private var conversation: ConversationsGroup? = null
     private var addedAt: LocalDateTime? = null
     private var leaveAt: LocalDateTime? = null
     private var role: RoleEnum? = null
     private var status: StatutEnum? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private var excludedByUser: Users? = null
+    private var excludedByUser: User? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private var addedByUser: Users? = null
+    private var addedByUser: User? = null
 
     enum class RoleEnum {
         ADMIN,

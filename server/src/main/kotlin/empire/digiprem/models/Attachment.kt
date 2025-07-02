@@ -16,7 +16,7 @@ class Attachment(
     private
     var type: TypeEnum = TypeEnum.DOCUMENT,
     @ManyToOne(fetch = FetchType.LAZY)
-    private var message: Message,
+    private var messages: Messages,
     private var description: String="",
     private var url: String=""
 ) {

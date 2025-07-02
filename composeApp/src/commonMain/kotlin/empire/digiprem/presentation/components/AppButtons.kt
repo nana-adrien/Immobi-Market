@@ -29,9 +29,9 @@ import empire.digiprem.config.isCompactMobilePlatform
  ) {
     Row(
         modifier = Modifier.then(modifier).fillMaxWidth().height(40.dp)
-            .border(width = 1.dp, color = if(enabled) MaterialTheme.colorScheme.primary else Color.Gray,RoundedCornerShape(8.dp))
+            .border(width = 1.dp, color = if(enabled) MaterialTheme.colorScheme.secondary else Color.Gray,RoundedCornerShape(8.dp))
             .clip(RoundedCornerShape(8.dp))
-            .background( if(enabled) MaterialTheme.colorScheme.primary else Color.LightGray).clickable(enabled=enabled, onClick =onClick),
+            .background( if(enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary).clickable(enabled=enabled, onClick =onClick),
         verticalAlignment = verticalAlignment,
         horizontalArrangement =horizontalArrangement
     ) {
@@ -70,7 +70,7 @@ import empire.digiprem.config.isCompactMobilePlatform
  ) {
     Row(
         modifier = Modifier.then(modifier).fillMaxWidth().height(40.dp)
-            .border(0.7.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+            .border(0.7.dp, color = MaterialTheme.colorScheme.background, shape = RoundedCornerShape(8.dp))
             .clip(RoundedCornerShape(8.dp))
             .clickable(enabled=enabled){ onClick() },
         verticalAlignment = verticalAlignment,

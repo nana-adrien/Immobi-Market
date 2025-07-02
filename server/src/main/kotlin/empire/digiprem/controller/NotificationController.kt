@@ -6,8 +6,8 @@ import empire.digiprem.dto.NotificationResponse
 import empire.digiprem.extension.Api200
 import empire.digiprem.extension.successResponse
 import empire.digiprem.model.ApiResponse2
-import empire.digiprem.services.FCMService
-import empire.digiprem.services.FCMService2
+import empire.digiprem.services.alert.FCMService
+import empire.digiprem.services.alert.FCMService2
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

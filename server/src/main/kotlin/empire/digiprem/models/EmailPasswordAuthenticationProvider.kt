@@ -1,6 +1,6 @@
 package empire.digiprem.models
 
-import empire.digiprem.service.IUserDetailService
+import empire.digiprem.service.IUserDetailService2
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service
 @Service
 class EmailPasswordAuthenticationProvider(
     private val passwordEncoder: PasswordEncoder,
-    userDetailsService: IUserDetailService
+    userDetailsService: IUserDetailService2
 ) :
     AuthenticationProvider {
-    private val userDetailsService: IUserDetailService = userDetailsService
+    private val userDetailsService: IUserDetailService2 = userDetailsService
 
     @Throws(AuthenticationException::class)
     override fun authenticate(authentication: Authentication): Authentication {

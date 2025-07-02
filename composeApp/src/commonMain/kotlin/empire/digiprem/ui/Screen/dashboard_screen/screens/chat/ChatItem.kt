@@ -1,40 +1,35 @@
 package com.octopusfx.mymessenger.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import empire.digiprem.model.chat.Message
 import empire.digiprem.presentation.views.ReplayMessage
 
 
-data class ChatMessage(
+/*data class ChatMessage(
     val id: String = "1",
     val userName: String = "",
     val content: String = "",
     val imageUrl: String? = null,
     val replyTo: ChatMessage? = null,
     val isSender: Boolean = false
-)
+)*/
 
 @Composable
-fun ChatMessageItem(
-    message: ChatMessage,
+fun MessageItem(
+    message: Message,
     modifier: Modifier = Modifier,
     onReply: () -> Unit = {},
 ) {
@@ -179,8 +174,8 @@ fun ChatMessageItem(
 }
 
 
-fun generateRandomMessages(): List<ChatMessage> {
-    val messages = mutableListOf<ChatMessage>()
+fun generateRandomMessages(): List<Message> {
+    val messages = mutableListOf<Message>()
 
     val sampleTitles = listOf(
         "Salut", "Info", "Réunion", "Tâche", "Projet", "OK", "Urgent", "Notes", "Dispo ?", "Merci"
@@ -203,7 +198,7 @@ fun generateRandomMessages(): List<ChatMessage> {
         } else null
 
         messages.add(
-            ChatMessage(
+            Message(
                 id = index.toString(),
                 userName = title,
                 content = content,

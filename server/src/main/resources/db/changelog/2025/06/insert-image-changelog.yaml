@@ -1,0 +1,148 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1751172836954-1
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_image
+                  name: id
+                  type: bytea
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_principal
+                  type: BOOLEAN
+            tableName: image
+  - changeSet:
+      id: 1751148091021-1
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_offreimmobiliere
+                  name: caracteristique_id
+                  type: bytea
+              - column:
+                  name: titre
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: superficie
+                  type: DOUBLE
+              - column:
+                  name: type_de_bien
+                  type: INT
+              - column:
+                  name: etat
+                  type: INT
+              - column:
+                  name: type_doffre
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: prix
+                  type: INT
+              - column:
+                  name: createur_id
+                  type: bytea
+              - column:
+                  name: date_creation
+                  type: DATETIME
+              - column:
+                  name: date_publication
+                  type: DATETIME
+              - column:
+                  name: date_expiration
+                  type: DATETIME
+            tableName: offre_immobiliere
+  - changeSet:
+      id: 1751148091021-2
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: offre_immobiliere_caracteristique_id
+                  type: bytea
+              - column:
+                  constraints:
+                    nullable: false
+                  name: liste_images_id
+                  type: bytea
+            tableName: offre_immobiliere_liste_images
+  - changeSet:
+      id: 1751148091021-3
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: liste_images_id
+            constraintName: uc_offre_immobiliere_liste_images_listeimages
+            tableName: offre_immobiliere_liste_images
+  - changeSet:
+      id: 1751148091021-4
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: caracteristique_id
+            baseTableName: offre_immobiliere
+            constraintName: FK_OFFREIMMOBILIERE_ON_CARACTERISTIQUE
+            referencedColumnNames: id
+            referencedTableName: offre_carateristiques
+  - changeSet:
+      id: 1751148091021-5
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: createur_id
+            baseTableName: offre_immobiliere
+            constraintName: FK_OFFREIMMOBILIERE_ON_CREATEUR
+            referencedColumnNames: id
+            referencedTableName: user
+  - changeSet:
+      id: 1751148091021-6
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: liste_images_id
+            baseTableName: offre_immobiliere_liste_images
+            constraintName: fk_offimmlisima_on_image
+            referencedColumnNames: id
+            referencedTableName: image
+  - changeSet:
+      id: 1751148091021-7
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: offre_immobiliere_caracteristique_id
+            baseTableName: offre_immobiliere_liste_images
+            constraintName: fk_offimmlisima_on_offre_immobiliere
+            referencedColumnNames: caracteristique_id
+            referencedTableName: offre_immobiliere
+

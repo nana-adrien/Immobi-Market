@@ -1,14 +1,14 @@
 package empire.digiprem.service
 
-import empire.digiprem.models.UserAwaitingVerification
-import empire.digiprem.models.UserPhoneNumber
-import empire.digiprem.models.Users
-import empire.digiprem.models.VerificationOperation
+import empire.digiprem.models.database.UserAwaitingVerification
+import empire.digiprem.models.database.UserPhoneNumber
+import empire.digiprem.models.database.User
+import empire.digiprem.enums.VerificationOperation
 
 
 interface IUserAccountService {
-    fun createUserAccount(email: String, password: String): Users
-    fun createUserAccount(user: Users): Users
+    fun createUserAccount(email: String, password: String): User
+    fun createUserAccount(user: User): User
     fun validateEmail(email: String): Boolean
 
     fun validateEmail2(email: String): String
@@ -53,8 +53,8 @@ interface IUserAccountService {
 
     fun verifyPinCode(identity: String, verificationCode: String): UserAwaitingVerification?
 
-    fun loadUserByIdentity(identity: String, isEmail: Boolean): Users?
-    fun loadUserByIdentityEx(identity: String, countryCode: String, isEmail: Boolean): Users?
+    fun loadUserByIdentity(identity: String, isEmail: Boolean): User?
+    fun loadUserByIdentityEx(identity: String, countryCode: String, isEmail: Boolean): User?
 
     fun createPhoneNumber(userPhoneNumber: UserPhoneNumber): UserPhoneNumber?
 }

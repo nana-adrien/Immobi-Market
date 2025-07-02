@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1751143213611-1
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_usersettings
+                  name: id
+                  type: bytea
+              - column:
+                  constraints:
+                    nullable: false
+                  name: enabled_two_factor_authentication
+                  type: BOOLEAN
+              - column:
+                  name: prefer_language_tag
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: enable_light_mode
+                  type: BOOLEAN
+              - column:
+                  name: notification_canal
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_can_change_notification_canal
+                  type: BOOLEAN
+            tableName: user_settings
+  - changeSet:
+      id: 1751143213611-2
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id
+            baseTableName: user_settings
+            constraintName: FK_USERSETTINGS_ON_ID
+            referencedColumnNames: id
+            referencedTableName: user
+

@@ -1,0 +1,165 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1751147030773-1
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_carateristiques_offre_construction
+                  name: id
+                  type: bytea
+            tableName: carateristiques_offre_construction
+  - changeSet:
+      id: 1751147030773-2
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_carateristiques_offre_construction_habitation
+                  name: id
+                  type: bytea
+            tableName: carateristiques_offre_construction_habitation
+  - changeSet:
+      id: 1751147030773-3
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_carateristiques_offre_terrain
+                  name: id
+                  type: bytea
+            tableName: carateristiques_offre_terrain
+  - changeSet:
+      id: 1751147030773-4
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_offre_carateristiques
+                  name: id
+                  type: bytea
+            tableName: offre_carateristiques
+  - changeSet:
+      id: 1751147030773-5
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_studio
+                  name: id
+                  type: bytea
+              - column:
+                  constraints:
+                    nullable: false
+                  name: superficie
+                  type: DOUBLE
+              - column:
+                  name: typedhabitation
+                  type: INT
+            tableName: studio
+  - changeSet:
+      id: 1751147030773-6
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id
+            baseTableName: carateristiques_offre_construction_habitation
+            constraintName: FK_CARATERISTIQUES_OFFRE_CONSTRUCTION_HABITATION_ON_ID
+            referencedColumnNames: id
+            referencedTableName: carateristiques_offre_construction
+  - changeSet:
+      id: 1751147030773-7
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id
+            baseTableName: carateristiques_offre_construction
+            constraintName: FK_CARATERISTIQUES_OFFRE_CONSTRUCTION_ON_ID
+            referencedColumnNames: id
+            referencedTableName: offre_carateristiques
+  - changeSet:
+      id: 1751147030773-8
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id
+            baseTableName: carateristiques_offre_terrain
+            constraintName: FK_CARATERISTIQUES_OFFRE_TERRAIN_ON_ID
+            referencedColumnNames: id
+            referencedTableName: offre_carateristiques
+  - changeSet:
+      id: 1751147030773-9
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id
+            baseTableName: studio
+            constraintName: FK_STUDIO_ON_ID
+            referencedColumnNames: id
+            referencedTableName: carateristiques_offre_construction_habitation
+  - changeSet:
+      id: insert-studio
+      author: digiprem
+      changes:
+        - insert:
+            tableName: offre_carateristiques
+            columns:
+              - column:
+                  name: id
+                  value: 123e4567-e89b-12d3-a456-426614174999
+
+        - insert:
+            tableName: carateristiques_offre_construction
+            columns:
+              - column:
+                  name: id
+                  value: 123e4567-e89b-12d3-a456-426614174999
+
+        - insert:
+            tableName: carateristiques_offre_construction_habitation
+            columns:
+              - column:
+                  name: id
+                  value: 123e4567-e89b-12d3-a456-426614174999
+
+        - insert:
+            tableName: studio
+            columns:
+              - column:
+                  name: id
+                  value: 123e4567-e89b-12d3-a456-426614174999
+              - column:
+                  name: superficie
+                  valueNumeric: 30.5
+              - column:
+                  name: typedhabitation
+                  valueNumeric: 1

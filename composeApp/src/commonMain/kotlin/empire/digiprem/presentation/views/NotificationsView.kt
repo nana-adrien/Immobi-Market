@@ -1,23 +1,26 @@
 package empire.digiprem.presentation.views
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Loop
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import composeApp.src.commonMain.ComposeResources.drawable.Res
@@ -25,13 +28,17 @@ import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
 import composeApp.src.commonMain.ComposeResources.drawable.images
 import empire.digiprem.config.isCompactMobilePlatform
 import empire.digiprem.config.isCompactPlatform
+import empire.digiprem.navigation.EnumView
 import empire.digiprem.navigation.ViewNotifications
 import empire.digiprem.navigation.ViewProfil
 import empire.digiprem.presentation.components.*
+import empire.digiprem.presentation.components.wrapper.PageWrapperState
+import empire.digiprem.presentation.components.wrapper.WebDesktopPageWrapper
 import empire.digiprem.presentation.viewmodels.NotificationsViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsView(
     viewNotifications: ViewNotifications,
@@ -41,8 +48,17 @@ fun NotificationsView(
     // val notificationsViewModel:NotificationsViewModel = viewModel{NotificationsViewModel()}
     val state by notificationsViewModel.state.collectAsState()
     val onSendIntent = notificationsViewModel::onIntentHandler
+    WebDesktopPageWrapper(
+        modifier = Modifier,
+        view = EnumView.ViewNotifications,
+        state = PageWrapperState(isSuccess = true)
+    ) {
+        NotificationScreenPreview()
+    }
 
-    val stateE = rememberLazyListState()
+
+
+   /* val stateE = rememberLazyListState()
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         modifier = Modifier.fillMaxSize(),
@@ -96,7 +112,7 @@ fun NotificationsView(
             modifier = Modifier.fillMaxSize().padding(it),
             state = stateE,
         ) {
-            /* item {
+            *//* item {
                  Column {
                      Row(
                          modifier = Modifier.fillParentMaxWidth().padding(start = 10.dp, end = 10.dp),
@@ -145,7 +161,7 @@ fun NotificationsView(
                      }
                  }
 
-             }*/
+             }*//*
             val text =
                 "Oui, Kotlin Multiplatform (KMP) prend en charge les flow grâce à Kotlin Coroutines, qui est entièrement compatible avec les plateformes cibles, y compris Android, iOS et JavaScript.\n" +
                         "\n" +
@@ -168,9 +184,124 @@ fun NotificationsView(
                 )
             }
         }
-        /*AppVerticalScrollBar(
+        *//*AppVerticalScrollBar(
             modifier = Modifier.align(Alignment.CenterEnd),
             lazyListState = state
-        )*/
+        )*//*
+    }*/
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NotificationScreen(
+    notifications: List<NotificationItem>,
+    onDeleteSelected: (List<NotificationItem>) -> Unit
+) {
+    var selectedItems by remember {mutableStateOf(setOf<Int>()) }
+
+    val isSelectionMode = selectedItems.isNotEmpty()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    if (isSelectionMode) {
+                        Text("${selectedItems.size} selected")
+                    } else {
+                        Text("Notifications")
+                    }
+                },
+                actions = {
+                    if (isSelectionMode) {
+                        IconButton(onClick = {
+                            val toDelete = notifications.filter { selectedItems.contains(it.id) }
+                            onDeleteSelected(toDelete)
+                            selectedItems = emptySet()
+                        }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        }
+                    }
+                },
+                navigationIcon = {
+                    if (isSelectionMode) {
+                        IconButton(onClick = { selectedItems = emptySet() }) {
+                            Icon(Icons.Default.Close, contentDescription = "Cancel")
+                        }
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            contentPadding = paddingValues,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(notifications) { notification ->
+                val isSelected = selectedItems.contains(notification.id)
+                NotificationRow(
+                    notification = notification,
+                    isSelected = isSelected,
+                    onClick = {
+                        if (isSelectionMode) {
+                            selectedItems = if (isSelected) {
+                                selectedItems - notification.id
+                            } else {
+                                selectedItems + notification.id
+                            }
+                        }
+                    },
+                    onLongClick = {
+                        selectedItems = selectedItems + notification.id
+                    }
+                )
+            }
+        }
     }
+}
+
+
+@Composable
+fun NotificationRow(
+    notification: NotificationItem,
+    isSelected: Boolean = false,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
+            .background(if (isSelected) Color(0xFFE0F7FA) else Color.Transparent)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(notification.title, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(notification.body, color = Color.Gray)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(notification.time, fontSize = 12.sp, color = Color.LightGray)
+        }
+    }
+}
+data class NotificationItem(
+    val id: Int,
+    val title: String,
+    val body: String,
+    val time: String,
+    val isRead:Boolean=false,
+)
+@Composable
+fun NotificationScreenPreview() {
+    val sampleNotifications = listOf(
+        NotificationItem(1, "New Message", "You have a new message from John", "5 mins ago"),
+        NotificationItem(2, "App Update", "Version 2.0 is available", "1 hour ago"),
+        NotificationItem(3, "Reminder", "Meeting at 3PM today", "Yesterday")
+    )
+    NotificationScreen(notifications = sampleNotifications, onDeleteSelected = {})
 }

@@ -1,7 +1,7 @@
 package empire.digiprem.repository
 
-import empire.digiprem.models.Message
+import empire.digiprem.models.Messages
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface MessageRepository : JpaRepository<Message?, UUID?>
+interface MessageRepository : JpaRepository<Messages?, UUID?>

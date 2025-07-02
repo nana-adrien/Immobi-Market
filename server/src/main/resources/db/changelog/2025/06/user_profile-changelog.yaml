@@ -1,0 +1,116 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1751144594655-1
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_userphonenumber
+                  name: user_profile_id
+                  type: bytea
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+              - column:
+                  name: country_code
+                  type: VARCHAR(255)
+              - column:
+                  name: region
+                  type: VARCHAR(255)
+            tableName: user_phone_number
+  - changeSet:
+      id: 1751144594655-2
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_userprofile
+                  name: id
+                  type: bytea
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: prenom
+                  type: VARCHAR(255)
+              - column:
+                  name: url_profil
+                  type: VARCHAR(255)
+              - column:
+                  name: date_naissance
+                  type: DATETIME
+              - column:
+                  name: numero_telephone
+                  type: VARCHAR(255)
+              - column:
+                  name: genre
+                  type: VARCHAR(255)
+              - column:
+                  name: telephone_utilisateur_user_profile_id
+                  type: bytea
+              - column:
+                  constraints:
+                    nullable: false
+                  name: telephone_verifie
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: profil_complet
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: en_ligne
+                  type: BOOLEAN
+              - column:
+                  name: date_creation
+                  type: DATETIME
+              - column:
+                  name: dernier_temps_connexion
+                  type: DATETIME
+            tableName: user_profile
+  - changeSet:
+      id: 1751144594655-3
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_profile_id
+            baseTableName: user_phone_number
+            constraintName: FK_USERPHONENUMBER_ON_USERPROFILE
+            referencedColumnNames: id
+            referencedTableName: user_profile
+  - changeSet:
+      id: 1751144594655-4
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id
+            baseTableName: user_profile
+            constraintName: FK_USERPROFILE_ON_ID
+            referencedColumnNames: id
+            referencedTableName: user
+  - changeSet:
+      id: 1751144594655-5
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: telephone_utilisateur_user_profile_id
+            baseTableName: user_profile
+            constraintName: FK_USERPROFILE_ON_TELEPHONEUTILISATEUR_USERPROFILE
+            referencedColumnNames: user_profile_id
+            referencedTableName: user_phone_number
+

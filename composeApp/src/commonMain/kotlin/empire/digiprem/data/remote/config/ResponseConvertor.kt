@@ -81,8 +81,8 @@ class ApiResponse2ConverterFactory : Converter.Factory {
         typeData: TypeData,
         ktorfit: Ktorfit
     ): Converter.SuspendResponseConverter<HttpResponse, ApiResponse2<*>>? {
-        when(typeData.typeInfo.type){
-            ApiResponse2::class->{
+        when (typeData.typeInfo.type) {
+            ApiResponse2::class -> {
                 return object : Converter.SuspendResponseConverter<HttpResponse, ApiResponse2<*>> {
                     override suspend fun convert(result: KtorfitResult): ApiResponse2<*> {
                         return when (result) {
@@ -100,24 +100,60 @@ class ApiResponse2ConverterFactory : Converter.Factory {
                             }
 
                             is KtorfitResult.Success -> {
-                                val body = result.response.body(typeData.typeInfo) as Any
-                                Log.i("KtorfitResult.Success", "body=$body")
-                                Log.i("KtorfitResult.Success", "typeData.typeInfo=${typeData.typeInfo.type}")
-                                if (result.response.status.value in 200..299) {
-                                    (body as ApiResponse2<*>)
-                                } else {
-                                    ApiResponse2(
-                                        payload = null,
-                                        success = false,
-                                        errorMessages = (body as ApiResponse2<*>).errorMessages
-                                    )
+
+                                val body = result.response.body( typeData.typeInfo) as Any
+                                when (body) {//as Any
+                                    is ApiResponse2<*> -> {
+                                        if (result.response.status.value in 200..299) {
+                                            (body as ApiResponse2<*>)
+                                        } else {
+                                            ApiResponse2(
+                                                payload = null,
+                                                success = false,
+                                                errorMessages = body.errorMessages
+                                            )
+                                        }
+                                    }
+                                    is ApiError->{
+                                        ApiResponse2(
+                                            payload = null,
+                                            success = false,
+                                            errorMessages = listOf(
+                                                ApiResponse2.ErrorMessage(
+                                                    field = "throwable",
+                                                    message = body.message
+                                                        ?: body.errorMessages.map { it.message }.first(),
+                                                )
+                                            )
+                                        )
+                                    }
+                                    else -> {
+                                        ApiResponse2(
+                                            payload = null,
+                                            success = false,
+                                            errorMessages = listOf(
+                                                ApiResponse2.ErrorMessage(
+                                                    field = "throwable",
+                                                    message =body.toString(),
+                                                )
+                                            )
+                                        )
+                                    }
+
                                 }
+
+                                /*  Log.i("KtorfitResult.Success", "body=$body")
+                                  Log.i("KtorfitResult.Success", "typeData.typeInfo=${typeData.typeInfo.type}")
+                              */
+
+
                             }
                         }
                     }
                 }
             }
-            ApiError::class->{
+
+            ApiError::class -> {
                 return object : Converter.SuspendResponseConverter<HttpResponse, ApiResponse2<*>> {
                     override suspend fun convert(result: KtorfitResult): ApiResponse2<*> {
                         return when (result) {
@@ -138,22 +174,31 @@ class ApiResponse2ConverterFactory : Converter.Factory {
                                 val body = result.response.body(typeData.typeInfo) as ApiError
                                 Log.i("KtorfitResult.Success", "body=$body")
 
-                                Log.i("KtorfitResult.Success", " (body as ApiError).message=${(body as ApiError).message}")
+                                Log.i(
+                                    "KtorfitResult.Success",
+                                    " (body as ApiError).message=${(body as ApiError).message}"
+                                )
                                 ApiResponse2(
                                     payload = null,
                                     success = false,
-                                    errorMessages = (body as ApiError).errorMessages
+                                    errorMessages = listOf(
+                                        ApiResponse2.ErrorMessage(
+                                            field = "throwable",
+                                            message = (body as ApiError).message
+                                                ?: body.errorMessages.map { it.message }.first(),
+                                        )
+                                    )
                                 )
                             }
                         }
                     }
                 }
             }
+
             else -> {
                 Log.e("ApiResponse2ConverterFactory", "Unsupported type: ${typeData.typeInfo.type}")
             }
         }
-
 
         /*   if (typeData.typeInfo.type == ApiError::class) {
                return object : Converter.SuspendResponseConverter<HttpResponse, ApiResponse2<*>> {
@@ -196,5 +241,6 @@ class ApiResponse2ConverterFactory : Converter.Factory {
         return null
     }
 }
+
 
 

@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,19 +40,23 @@ fun WebDesktopPageWrapper(
     containerColor: Color = Color.Transparent,
     contentColor: Color = contentColorFor(containerColor),
     actions: @Composable() (RowScope.() -> Unit) = {},
-    customTopAppBar: @Composable() (() -> Unit)? =null,
+    customTopAppBar: @Composable() ((TopAppBarScrollBehavior?) -> Unit)? =null,
     content: @Composable() (PaddingValues) -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
     Scaffold(
-        modifier = Modifier.then(modifier).padding(30.dp),
+        modifier = Modifier.padding(top = 50.dp).then(modifier).nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = containerColor,
         contentColor = contentColor,
         topBar = {
             if(enabledTobAppBar){
                customTopAppBar?.let {
-                   it()
+                   it(scrollBehavior)
                }?: TopAppBar(
+                   modifier = Modifier.height(80.dp),
                     windowInsets = WindowInsets(0.dp),
+                   //scrollBehavior = scrollBehavior,
                     colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
                     title = {
                         Column(

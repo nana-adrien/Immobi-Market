@@ -5,12 +5,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
+import empire.digiprem.app.model.components.Utilisateur
 import empire.digiprem.presentation.base.color.Colors
+import empire.digiprem.presentation.viewmodels.componenet.SessionManager
+import org.koin.compose.viewmodel.koinViewModel
 
 private val DarkColorScheme = darkColorScheme(
     primary = PurpleGrey80,
@@ -36,6 +37,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun AppTheme(
+    sessionManager: SessionManager = koinViewModel(),
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
@@ -48,34 +50,20 @@ fun AppTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    /*val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
-    }*/
-  //  val appSettings by remember { mutableStateOf() }
-/*    val appTools by remember { mutableStateOf(AppTools()) }
-    //val appConfiguration by remember { mutableStateOf(getAppConfiguration()) }
-    ResponsiveScreenComponent(
- //       appSettings = appSettings,
-        appConfiguration = getAppConfiguration(),
-        appTools = appTools
-    ) {
+   ResponsiveScreenComponent(sessionManager) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = FokoTrialTypography(),
+            typography = typography,
             content = content
         )
-    }*/
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = typography,
-        content = content
-
-    )
+    }
 }
-
+@Composable
+fun ResponsiveScreenComponent(sessionManager: SessionManager, content:@Composable () -> Unit) {
+    val utilisateurState = sessionManager.utilisateur.collectAsState()
+    CompositionLocalProvider(LocalUtilisateur provides utilisateurState, LocalSessionManager provides sessionManager) {
+        content()
+    }
+}
+val LocalUtilisateur = compositionLocalOf<State<Utilisateur?>> {  error("Utilisateur non initialisé") }
+val LocalSessionManager = compositionLocalOf<SessionManager> {  error("SessionManager non initialisé") }

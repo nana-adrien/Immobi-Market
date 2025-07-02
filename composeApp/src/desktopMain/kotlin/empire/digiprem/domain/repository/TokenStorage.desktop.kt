@@ -1,19 +1,30 @@
 package empire.digiprem.domain.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import empire.digiprem.enums.TokenEnum
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.File
 
-class DesktopTokenStorage: TokenStorage {
-    private val file = File("token.txt")
-    override suspend fun saveToken(token: String) {
-      file.writeText(token)
+class DesktopTokenStorage(private val dataSource: DataStore<Preferences>): TokenStorage {
+   override suspend fun saveToken(key: TokenEnum, token: String) {
+       dataSource.edit { preferences ->
+           preferences[stringPreferencesKey(key.name)] = token
+       }
+   }
+    override suspend fun getToken(key: TokenEnum): String? {
+        return dataSource.data.map { preferences -> preferences[stringPreferencesKey(key.name)] }.first()
     }
-    override suspend fun getToken(): String? {
-        return if (file.exists()) file.readText() else null
+    override suspend fun isValidToken(token: String): Boolean {
+        TODO("Not yet implemented")
     }
-    override suspend fun clearToken() {
-        if(!file.exists()) file.delete()
+    override suspend fun clearToken(key: TokenEnum) {
+        dataSource.edit { preferences ->
+            preferences.remove(stringPreferencesKey(key.name))
+        }
     }
 
 }

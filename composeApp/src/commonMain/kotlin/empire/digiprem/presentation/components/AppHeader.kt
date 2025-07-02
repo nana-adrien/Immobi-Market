@@ -13,20 +13,17 @@ import empire.digiprem.config.isCompactMobilePlatform
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppHeader(
+    containerColor : Color = Color.Transparent,
     modifier:Modifier=Modifier,
-    containerColor : Color = Color.White,
     navigationIcon: @Composable () -> Unit = {},
+    title: @Composable () -> Unit={},
     actions: @Composable ( RowScope.() -> Unit )
 ) {
-    val isCompactSize = isCompactMobilePlatform()
     TopAppBar(
         modifier=modifier,
         colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = containerColor),
         navigationIcon = navigationIcon,
-        title = { Text("IMMOBI Market" , style = MaterialTheme.typography.titleLarge.copy(
-            fontWeight = FontWeight.Bold,
-            fontSize = if(isCompactSize) 19.sp else 22.sp
-        )) },
+        title = title,
         actions = actions
     )
 }

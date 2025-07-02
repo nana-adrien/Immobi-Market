@@ -1,0 +1,103 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: admin
+      changes:
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 123e4567-e89b-12d3-a456-426614174000
+              - column:
+                  name: email
+                  value: kako2@gmail.com
+              - column:
+                  name: mot_de_passe
+                  value: $2a$10$rUE5eCv2MysEozlxl.CiE.v0QEVdAbyNwltcvOegE4PKUvHO7JVm2  # hash de Pa$$w0rd
+              - column:
+                  name: role
+                  valueNumeric: 200
+        - insert:
+            tableName: user_settings
+            columns:
+              - column:
+                  name: id
+                  value: 6e20b6f0-5c1e-47a4-97dc-b2cb269a0099
+              - column:
+                  name: enabled_two_factor_authentication
+                  valueBoolean: true
+              - column:
+                  name: prefer_language_tag
+                  value: fr-CM
+              - column:
+                  name: enable_light_mode
+                  valueBoolean: false
+              - column:
+                  name: notification_canal
+                  valueNumeric: 10
+              - column:
+                  name: user_can_change_notification_canal
+                  valueBoolean: true
+        - insert:
+            tableName: user_phone_number
+            columns:
+              - column:
+                  name: user_profile_id
+                  value: 123e4567-e89b-12d3-a456-426614174000
+              - column:
+                  name: phone_number
+                  value: "+237650000000"
+              - column:
+                  name: country_code
+                  value: "CM"
+              - column:
+                  name: region
+                  value: "CM-NO"
+
+        - changeSet:
+            id: insert-user-profile-kako
+            author: digiprem
+            changes:
+              - insert:
+                  tableName: user_profile
+                  columns:
+                    - column:
+                        name: id
+                        value: 123e4567-e89b-12d3-a456-426614174000
+                    - column:
+                        name: nom
+                        value: "Kako"
+                    - column:
+                        name: prenom
+                        value: "Jean"
+                    - column:
+                        name: url_profil
+                        value: "https://example.com/kako.jpg"
+                    - column:
+                        name: date_naissance
+                        valueDate: "1990-01-01T00:00:00"
+                    - column:
+                        name: numero_telephone
+                        value: "+237650000000"
+                    - column:
+                        name: genre
+                        value: "Homme"
+                    - column:
+                        name: telephone_utilisateur_user_profile_id
+                        value: 123e4567-e89b-12d3-a456-426614174000
+                    - column:
+                        name: telephone_verifie
+                        valueBoolean: true
+                    - column:
+                        name: profil_complet
+                        valueBoolean: true
+                    - column:
+                        name: en_ligne
+                        valueBoolean: false
+                    - column:
+                        name: date_creation
+                        valueDate: "2024-01-01T00:00:00"
+                    - column:
+                        name: dernier_temps_connexion
+                        valueDate: "2024-01-15T12:00:00"

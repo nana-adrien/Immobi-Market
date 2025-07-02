@@ -263,19 +263,22 @@ kotlin {
         val desktopMain by getting
         val jsMain by getting
         val wasmJsMain by getting
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
-            implementation("androidx.datastore:datastore:1.1.0")
-            implementation("androidx.datastore:datastore-preferences:1.1.0")
+            // DataStore library
+            implementation("androidx.datastore:datastore:1.1.7")
+            // The Preferences DataStore library
+            implementation("androidx.datastore:datastore-preferences:1.1.7")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation("androidx.datastore:datastore:1.1.0")
-            implementation("androidx.datastore:datastore-preferences:1.1.0")
+            // DataStore library
+            implementation("androidx.datastore:datastore:1.1.7")
+            // The Preferences DataStore library
+            implementation("androidx.datastore:datastore-preferences:1.1.7")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -305,7 +308,7 @@ kotlin {
             implementation(libs.ktorfit.converters.response)
             implementation("io.insert-koin:koin-compose-viewmodel:4.0.4")
             implementation("io.insert-koin:koin-compose:4.0.4")
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            implementation(libs.kotlinx.datetime)
             //  implementation("octopusfx.client.mobile.core:octopusfx-core:0.0.2")
             // implementation("io.insert-koin:koin-androidx-compose:4.0.4")
         }
@@ -314,6 +317,11 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.java)
+
+            // DataStore library
+            implementation("androidx.datastore:datastore:1.1.7")
+            // The Preferences DataStore library
+            implementation("androidx.datastore:datastore-preferences:1.1.7")
             runtimeOnly("org.jetbrains.compose.hot-reload:core:1.0.0-alpha08")
             implementation("io.insert-koin:koin-core-jvm:4.0.4")
         }
@@ -326,6 +334,7 @@ kotlin {
         wasmJsMain.dependencies {
             //  implementation("org.jetbrains.compose.web:web-core:1.8.0-beta02")
             //implementation("io.insert-koin:koin-core-wasm-js:4.0.4")
+       // implementation("org.jetbrains.kotlinx:kotlinx-datetime-wasm-js:0.6.2")
         }
     }
    /* sourceSets.commonMain.dependencies {
@@ -363,6 +372,7 @@ android {
 dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.constraintlayout.core)
+    implementation(libs.androidx.ui.text.android)
     add("kspCommonMainMetadata","de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
     add("kspDesktop", "de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
     add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")

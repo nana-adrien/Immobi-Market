@@ -200,6 +200,8 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.window.Popup
 import coil3.compose.AsyncImage
+import empire.digiprem.enums.TypeDeBien
+import empire.digiprem.enums.TypeDoffre
 import empire.digiprem.presentation.views.onHoverReaction
 import kotlinx.serialization.Serializable
 
@@ -261,12 +263,37 @@ enum class RealEstateType {
     STUDIO,
     APPARTEMENT,
     BUREAU,
-    BOUTIQUE
+    BOUTIQUE;
+
+    companion object {
+        fun getType(typeDeBien: TypeDeBien): RealEstateType {
+            return when(typeDeBien){
+                TypeDeBien.MAISON->MAISON
+                TypeDeBien.CHAMBRE -> CHAMBRE
+                TypeDeBien.STUDIO -> STUDIO
+                TypeDeBien.APPARTEMENT -> APPARTEMENT
+                TypeDeBien.VILLA -> MAISON
+                TypeDeBien.TERRAIN -> TERRAIN
+                TypeDeBien.BUREAU -> BUREAU
+                TypeDeBien.ESPACE_COMMERCIAL ->BOUTIQUE
+                else ->MAISON
+            }
+        }
+    }
 }
 
 enum class RealEstateCategories {
     A_VENDRE,
-    A_LOUER
+    A_LOUER;
+
+    companion object {
+        fun getCategories(typeDoffre: TypeDoffre): RealEstateCategories {
+            return when(typeDoffre){
+                TypeDoffre.A_VENDRE->A_VENDRE
+                    else->A_LOUER
+            }
+        }
+    }
 }
 
 enum class RealEstateState{
@@ -279,16 +306,16 @@ enum class RealEstateState{
 
 @Serializable
 data class RealEstateData(
-    val id: String,
-    val title: String,
-    val location: String,
-    val price: String,
-    val postedAgo: String,
-    val type: RealEstateType,
-    val state: RealEstateState,
-    val categories: RealEstateCategories,
-    val equipment: List<Equipment>,
-    val images: List<String>,
+    val id: String="",
+    val title: String="",
+    val location: String="",
+    val price: String="",
+    val postedAgo: String="",
+    val type: RealEstateType=RealEstateType.MAISON,
+    val state: RealEstateState=RealEstateState.ACTIVE,
+    val categories: RealEstateCategories=RealEstateCategories.A_VENDRE,
+    val equipment: List<Equipment> = emptyList(),
+    val images: List<String> = emptyList(),
 )
 
 fun getIconByName(name: String): ImageVector {

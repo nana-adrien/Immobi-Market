@@ -1,3 +1,4 @@
+/*
 package empire.digiprem.controller.auth
 
 import empire.digiprem.dto.auth.*
@@ -8,13 +9,14 @@ import empire.digiprem.dto.auth.login.LoginResponseDTO
 import empire.digiprem.dto.auth.register.RegisterRequestDTO
 import empire.digiprem.dto.auth.register.RegisterResponseDTO
 import empire.digiprem.dto.auth.register.registerRequestDTOValidation
+import empire.digiprem.enums.VerificationOperation
 import empire.digiprem.extension.error
 import empire.digiprem.extension.success
 import empire.digiprem.model.ApiResponse2
 import empire.digiprem.models.*
 import empire.digiprem.services.CodeVerificationService
-import empire.digiprem.services.TwoFactorAuthenticationService
-import empire.digiprem.services.UserDetailServiceImpl
+import empire.digiprem.services.auth.TwoFactorAuthenticationService
+import empire.digiprem.services.UserDetailService2Impl
 import empire.digiprem.utils.JwtTokenUtil
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -27,10 +29,10 @@ import java.time.LocalDateTime
 
 @Tag(name = "0auth")
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("api/v3/auth")
 class AuthController(
     private val jwtTokenUtil: JwtTokenUtil,
-    private val userDetailService: UserDetailServiceImpl,
+    private val userDetailService: UserDetailService2Impl,
     private val authenticationManager: AuthenticationManager,
     private val twoFactorAuthenticationService: TwoFactorAuthenticationService,
     private val codeVerificationService: CodeVerificationService
@@ -69,7 +71,7 @@ class AuthController(
             )
         )
         SecurityContextHolder.getContext().authentication = authentication
-        val user = userDetailService.loadUserByUsername(authReqDto.identity) as Users
+        val user = userDetailService.loadUserByUsername(authReqDto.identity) as User
         if (user.settings?.enabledTwoFactorAuthentication == true) {
             return towFactorAuth(user)
         }
@@ -94,7 +96,7 @@ class AuthController(
             )
         )
         SecurityContextHolder.getContext().authentication = authentication
-        val user = userDetailService.loadUserByIdentity(authenticationRequestDTO.identity) as Users
+        val user = userDetailService.loadUserByIdentity(authenticationRequestDTO.identity) as User
         if (user.settings?.enabledTwoFactorAuthentication==true) {
             val userAwaitingVerification = userDetailService.verifyIdentity(
                 authenticationRequestDTO.identity,
@@ -109,7 +111,7 @@ class AuthController(
                 )
             )
         }
-        val token = jwtTokenUtil.generateToken(user)
+        val token = jwtTokenUtil.generateAccessToken(user,"1")
         return ApiResponse2.success(
             AuthenticationResponseDTO(isVerifier = false, accessKey = LoginResponseDTO(token, ""))
         )
@@ -142,18 +144,20 @@ class AuthController(
         val userAwaitingVerification =
             userDetailService.verifyPinCode(loginRequestDTO.identity, loginRequestDTO.pinCode)
                 ?: throw RuntimeException("user not found")
-        var users: Users?
+        var user: User?
         if (userAwaitingVerification.operation == VerificationOperation.REGISTRATION) {
-            users =
+            user =
                 userDetailService.createAccount(userAwaitingVerification) ?: throw RuntimeException("user not Create")
         } else {
-            users = userDetailService.loadUserByIdentity(userAwaitingVerification.identifier) as Users
-            if (users == null) {
+            user = userDetailService.loadUserByIdentity(userAwaitingVerification.identifier) as User
+           */
+/* if (users == null) {
                 throw RuntimeException("user not found")
-            }
+            }*//*
+
         }
         userDetailService.deleteUserAwaitingVerification(userAwaitingVerification)
-        val token = jwtTokenUtil.generateToken(users)
+        val token = jwtTokenUtil.generateAccessToken(user,"1")
         return ApiResponse2.success(LoginResponseDTO(token, ""))
     }
 
@@ -201,7 +205,7 @@ class AuthController(
 
 
     private fun generateTokenAuthenticationResponse(userDetails: UserDetails): ApiResponse2<AuthRespDto> {
-        val token = jwtTokenUtil.generateToken(userDetails)
+        val token = jwtTokenUtil.generateAccessToken(userDetails,"1")
         return ApiResponse2.success(AuthRespDto(token = token, username = userDetails.username))
     }
 
@@ -222,7 +226,7 @@ class AuthController(
         )
     }
 
-    private fun towFactorAuth(userDetails: Users): ApiResponse2<AuthRespDto> {
+    private fun towFactorAuth(userDetails: User): ApiResponse2<AuthRespDto> {
         val codeVerification = CodeVerification(
             identifier = userDetails.email,
             generatedAt = LocalDateTime.now(),
@@ -238,4 +242,4 @@ class AuthController(
             )
         )
     }
-}
+}*/

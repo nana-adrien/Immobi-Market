@@ -49,6 +49,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.4")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    //implementation("org.flywaydb:flyway-core:11.9.1")
+    implementation("org.liquibase:liquibase-core:4.28.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.googlecode.libphonenumber:libphonenumber:8.13.24")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
@@ -65,6 +67,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("io.konform:konform-jvm:0.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
     testImplementation(libs.kotlin.test.junit)
 }
 

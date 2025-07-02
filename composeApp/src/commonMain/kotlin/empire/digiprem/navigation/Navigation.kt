@@ -282,7 +282,7 @@ fun AppNavigation(
         chat.getName(),
         annonceParcourrue.getName()
     )
-    Box(modifier = Modifier.fillMaxSize()) {
+   /* Box(modifier = Modifier.fillMaxSize()) {
         NavigationRailWithPopupDrawer(
             enableNavRail = enableNavRail,
             enabledExpensiveMenu = true,
@@ -299,7 +299,7 @@ fun AppNavigation(
                     }
                 }
             },
-            navigationItems = DashboardNavigation1
+            navigationItems = DashboardNavigation1,
         ) {
             NavHost(
                 navController,
@@ -364,16 +364,16 @@ fun AppNavigation(
                 composable<MyRealEstate> {
                     Box(modifier = Modifier.fillMaxSize().background(Color.Red))
                 }
-               /* composable<Dashboard2.annonces> {
+               *//* composable<Dashboard2.annonces> {
                     CreerUneAnnonce()
-                }*/
-                /*composable< Dashboard2.notifications> {
+                }*//*
+                *//*composable< Dashboard2.notifications> {
                     Box(modifier = Modifier.fillMaxSize().background(Color.Blue))
-                }*/
+                }*//*
 
             }
         }
-    }
+    }*/
 }
 /*
 @OptIn(ExperimentalMaterial3Api::class)

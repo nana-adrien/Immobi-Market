@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
+import empire.digiprem.enums.chat.ConversationTypeEnum
+import empire.digiprem.enums.chat.MessageStatusEnum
+import empire.digiprem.enums.chat.MessageTypeEnum
 import org.jetbrains.compose.resources.painterResource
 
 
@@ -372,24 +375,4 @@ fun AsyncImageSection(
     }
 }
 
-enum class MessageStatusEnum {
-    NOT_SEND,
-    SENDING,
-    SEND,
-    RECEIVED,
-    READ,
-    NONE
-}
 
-enum class ConversationTypeEnum {
-    GROUP,
-    PRIVATE
-}
-
-enum class MessageTypeEnum {
-    TEXT,
-    VOCAL,
-    VIDEO,
-    AUDIO,
-    FILE
-}

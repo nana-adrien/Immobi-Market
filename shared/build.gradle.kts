@@ -46,7 +46,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+            implementation(libs.kotlinx.datetime)
             implementation("io.konform:konform:0.11.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1") // ou plus récent
         }

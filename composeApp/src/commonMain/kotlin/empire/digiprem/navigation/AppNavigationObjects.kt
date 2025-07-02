@@ -2,7 +2,17 @@
               /*@Auto import file*/
               import kotlinx.serialization.Serializable
               
-                                                                                                                                                                                                                                                                                                                                              /*@Auto Generate Composable*/
+                                                                                                                                                                                                                                                                                                                                                                                                                              /*@Auto Generate Composable*/
+                @Serializable
+data class ViewSuccessfulAuth(val scrollPosition: Int = 0)
+                @Serializable
+data class ViewClaims(val scrollPosition: Int = 0)
+                @Serializable
+data class ViewOwnerCertifier(val scrollPosition: Int = 0)
+                @Serializable
+data class ViewAllRealEstate(val scrollPosition: Int = 0)
+                @Serializable
+data class ViewRequestsValidation(val scrollPosition: Int = 0)
                 @Serializable
 data class ViewCompleteAccount(val scrollPosition: Int = 0,val email: String="")
                 @Serializable
@@ -26,7 +36,7 @@ data class ViewNegotiations(val scrollPosition: Int = 0)
                 @Serializable
 data class ViewDetailRealEstateItem( val realEstateId: String = "" ,val scrollPosition: Int = 0)
                 @Serializable
-data class ViewVerifyIdentity(val scrollPosition: Int = 0,val email:String="")
+data class ViewVerifyIdentity(val scrollPosition: Int = 0,val email:String="",val operationType:String)
                 @Serializable
 data class ViewResetPassword(val scrollPosition: Int = 0)
                 @Serializable

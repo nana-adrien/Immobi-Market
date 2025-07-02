@@ -1,6 +1,6 @@
 package empire.digiprem.repositories
 
-import empire.digiprem.models.UserPhoneNumber
+import empire.digiprem.models.database.UserPhoneNumber
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 

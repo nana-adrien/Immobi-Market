@@ -1,8 +1,5 @@
 package empire.digiprem.controller
 
-import empire.digiprem.extension.success
-import empire.digiprem.model.ApiResponse2
-import empire.digiprem.models.Users
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
@@ -12,12 +9,12 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/v1/settings")
 class UserSettingsControllers {
-    @get:GetMapping("/get-user-settings")
-    val userSettings: ApiResponse2<Users>
-        get() = ApiResponse2.success(Users())
+    /*@get:GetMapping("/get-user-settings")
+    val userSettings: ApiResponse2<User>
+        get() = ApiResponse2.success(User())
 
     @PostMapping("/save-user-Settings")
-    fun saveUserSettings(@RequestBody user: String?): ApiResponse2<Users> {
-        return ApiResponse2.success(Users())
-    }
+    fun saveUserSettings(@RequestBody user: String?): ApiResponse2<User> {
+        return ApiResponse2.success(User())
+    }*/
 }

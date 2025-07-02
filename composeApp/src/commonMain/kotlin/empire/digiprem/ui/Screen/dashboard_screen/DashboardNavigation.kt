@@ -175,6 +175,7 @@ fun DashboardNavigation(navController: NavHostController, dashboardState: Dashbo
 
                 ){ }
             },
+            navigationContent = {},
             navigationItems = navigation1
         ) {
             Box(modifier = Modifier.fillMaxSize().background(Color.LightGray.copy(alpha = 0.3f))) {

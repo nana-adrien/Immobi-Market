@@ -10,6 +10,7 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,7 +42,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import composeApp.src.commonMain.ComposeResources.drawable.*
 import empire.digiprem.config.getActualWindowsSize
+import empire.digiprem.config.isCompactPlatform
 import empire.digiprem.core.utils.pointerEvent
+import empire.digiprem.presentation.base.color.Colors
+import empire.digiprem.presentation.base.color.Colors.background
+import empire.digiprem.presentation.views.AppBox
+import empire.digiprem.presentation.views.AppCardWrapperEx
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.material3.MaterialTheme as Material1Theme
@@ -169,7 +175,7 @@ fun WrapperPage(
     val modifier = if (enabled) Modifier.fillMaxSize().shadow(
         elevation = 2.dp,
         shape = RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)
-    )else Modifier.fillMaxSize()
+    ) else Modifier.fillMaxSize()
     Box(
         modifier = modifier.background(Material1Theme.colorScheme.surfaceVariant)
     ) {
@@ -177,12 +183,16 @@ fun WrapperPage(
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(Res.drawable.Copilot),
             contentDescription = "",
-            contentScale = ContentScale.FillBounds ,
+            contentScale = ContentScale.FillBounds,
         )
         Box(modifier = Modifier.fillMaxSize().background(Material1Theme.colorScheme.surface.copy(alpha = 0.4f)))
-        Box(modifier = Modifier.fillMaxSize().background( brush = Brush.horizontalGradient(
-            colors = listOf(Material1Theme.colorScheme.surface, Color.Transparent)
-        )))
+        Box(
+            modifier = Modifier.fillMaxSize().background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Material1Theme.colorScheme.surface, Color.Transparent)
+                )
+            )
+        )
         content.invoke()
     }
 }
@@ -190,7 +200,7 @@ fun WrapperPage(
 
 @Composable
 fun NavigationApp(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     navigationRail: NavigationTypeEnum,
     firstContent: @Composable() (() -> Unit?)? = null,
     secondContent: @Composable() (() -> Unit?)? = null,
@@ -351,21 +361,21 @@ data class NavigationItem(
 fun NavigationRailWithPopupDrawer(
     enableNavRail: Boolean = true,
     enabledExpensiveMenu: Boolean = false,
+    // drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
     isPopupOpen: Boolean = false,
     navigationItems: List<NavigationItem>,
     onClickFloatingActionButton: () -> Unit = {},
     topBar: @Composable () -> Unit,
+    navigationContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     // var isPopupOpen by remember { mutableStateOf(false) }
-
 
     val targetWidth = if (isPopupOpen) 150.dp else 50.dp
     val width by animateDpAsState(
         targetValue = targetWidth,
         animationSpec = tween(durationMillis = 500),
     )
-
     val windowSizeClass = getActualWindowsSize().widthSizeClass
 
     val appContent = @Composable {
@@ -381,151 +391,44 @@ fun NavigationRailWithPopupDrawer(
             content()
         }
     }
-
     Column(Modifier.fillMaxSize()) {
         when (windowSizeClass) {
-            WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded -> {
+            WindowWidthSizeClass.Medium, WindowWidthSizeClass.Expanded, WindowWidthSizeClass.Compact -> {
                 var showPopup by remember { mutableStateOf(false) }
                 var buttonPosition by remember { mutableStateOf(Offset.Zero) }
                 var popupData by remember { mutableStateOf(PopupData()) }
                 var popupContent by remember { mutableStateOf<List<NavigationItem>>(emptyList()) }
                 var popupTitle by remember { mutableStateOf("") }
 
-                Row /*(Modifier.padding(3.dp))*/{
-                    if (enableNavRail) {
-                        topBar.invoke()
-                    }
-                }
-
-                Box(modifier = Modifier.wrapContentSize()) {
+                topBar.invoke()
+                AppBox(
+                    enabled = enableNavRail,
+                    modifier = Modifier.background(Material1Theme.colorScheme.surface)
+                ) {
                     Row(
-                        modifier = Modifier.background(Color.White),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = if (enableNavRail) 30.dp else 0.dp),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.spacedBy(25.dp)
                     ) {
-                        Box(modifier = Modifier.wrapContentSize()) {
-                            if (enableNavRail) {
-                                AppNavigationRail {
-                                    navigationItems.forEach {
-                                        var offset = Offset.Zero
-                                        CustomNavigationRailItem(
-                                            modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
-                                                offset = layoutCoordinates.localToWindow(Offset.Zero)
-                                            }.pointerEvent(PointerEventType.Enter) { ti ->
-                                                popupData = popupData.copy(
-                                                    enable = true,
-                                                    offset = Offset(x = offset.x + 60, y = offset.y - 80),
-                                                    content = {
-                                                        Column(
-                                                            modifier = Modifier.wrapContentWidth(),
-                                                            verticalArrangement = Arrangement.spacedBy(10.dp)
-                                                        ) {
-                                                            Text(
-                                                                it.label, style = TextStyle(
-                                                                    color = Material1Theme.colorScheme.primary.copy(
-                                                                        alpha = 0.8f
-                                                                    ),
-                                                                    fontWeight = FontWeight.Bold
-                                                                )
-                                                            )
-                                                            if (it.subNavigationItem.isNotEmpty()) {
-                                                                it.subNavigationItem.forEach { item ->
-                                                                    CustomExpensiveNavItem(
-                                                                        modifier = item.modifier,
-                                                                        label = item.label,
-                                                                        selected = item.selected,
-                                                                        icon = item.icon,
-                                                                        badgeContent = item.badgeContent,
-                                                                        // contentColor = item.contentColor,
-                                                                        badgeColor = item.badgeColor,
-                                                                        badgeTextStyle = item.badgeTextStyle,
-                                                                        // textStyle = item.textStyle,
-                                                                        onClick = {
-                                                                            item.onClick()
-                                                                            popupData = popupData.copy(
-                                                                                enable = false,
-                                                                            )
-                                                                        }
-                                                                    )
-
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                )
-                                            }.pointerEvent(PointerEventType.Exit) {
-                                                popupData = popupData.copy(
-                                                    enable = false,
-                                                )
-                                            },
-                                            selected = if (it.subNavigationItem.isNotEmpty()) it.subNavigationItem.any { it.selected } else it.selected,
-                                            icon = it.icon,
-                                            badgeContent = it.badgeContent,
-                                            // contentColor = it.contentColor,
-                                            badgeColor = it.badgeColor,
-                                            badgeTextStyle = it.badgeTextStyle,
-                                            onClick = it.onClick,
-                                        )
-                                    }
-                                }
-                                if (width > 50.dp) {
-                                    AppNavigationRail(
-                                        modifier = Modifier.width(width)
-                                    ) {
-                                        navigationItems.forEach {
-                                            if (!it.enableExpenciveItem) {
-                                                CustomNavigationRailItem(
-                                                    modifier = it.modifier,
-                                                    selected = if (it.subNavigationItem.isNotEmpty()) it.subNavigationItem.any { it.selected } else it.selected,
-                                                    icon = it.icon,
-                                                    badgeContent = it.badgeContent,
-                                                    //contentColor = it.contentColor,
-                                                    badgeColor = it.badgeColor,
-                                                    badgeTextStyle = it.badgeTextStyle,
-                                                    onClick = it.onClick
-                                                )
-                                            } else {
-                                                CustomExpensiveNavItem(
-                                                    modifier = it.modifier,
-                                                    label = it.label,
-                                                    selected = if (it.subNavigationItem.isNotEmpty()) it.subNavigationItem.any { it.selected } else it.selected,
-                                                    icon = it.icon,
-                                                    badgeContent = it.badgeContent,
-                                                    // contentColor = it.contentColor,
-                                                    // badgeColor = it.badgeColor,
-                                                    badgeTextStyle = it.badgeTextStyle,
-                                                    //textStyle = it.textStyle,
-                                                    onClick = it.onClick,
-                                                    subNavItem = if (it.subNavigationItem.isEmpty()) null else {
-                                                        {
-                                                            it.subNavigationItem.forEach { item ->
-                                                                CustomExpensiveNavItem(
-                                                                    modifier = item.modifier,
-                                                                    isSubMenuItem = true,
-                                                                    label = item.label,
-                                                                    selected = item.selected,
-                                                                    icon = item.icon,
-                                                                    badgeContent = item.badgeContent,
-                                                                    // contentColor = item.contentColor,
-                                                                    badgeColor = item.badgeColor,
-                                                                    badgeTextStyle = item.badgeTextStyle,
-                                                                    // textStyle = item.textStyle,
-                                                                    onClick = item.onClick
-                                                                )
-                                                            }
-                                                        }
-                                                    }
-                                                )
-                                            }
-
-                                        }
-                                    }
-                                }
+                        if (!isCompactPlatform() && enableNavRail) {
+                            AppCardWrapperEx(
+                                modifier = Modifier.width(300.dp)
+                                    .shadow(elevation = 0.5.dp, shape = RoundedCornerShape(7.dp))
+                                    .background(Material1Theme.colorScheme.background)
+                            ) {
+                                navigationContent()
                             }
                         }
-                        WrapperPage(
-                            enabled = enableNavRail
-                        ) {
-                            content()
+                        val content2 = @Composable {
+                            AppCardWrapperEx(
+                                enabled = enableNavRail,
+                                modifier = Modifier.shadow(elevation = 0.5.dp, shape = RoundedCornerShape(7.dp))
+                                    .background(Material1Theme.colorScheme.background)
+                            ) {
+                                content()
+                            }
                         }
+                        content2()
                     }
 
                     popupTitle = ""
@@ -555,7 +458,7 @@ fun NavigationRailWithPopupDrawer(
 
             }
 
-            WindowWidthSizeClass.Compact -> {
+            /*WindowWidthSizeClass.Compact -> {
                 Scaffold(
                     topBar = {
                         if (enableNavRail) {
@@ -613,7 +516,7 @@ fun NavigationRailWithPopupDrawer(
                 ) {
                     appContent()
                 }
-            }
+            }*/
 
         }
     }
@@ -683,17 +586,20 @@ fun AppBottomBar(
 }
 
 @Composable
-private fun AppNavigationRail(
+fun AppNavigationRail(
     containerColor: Color = Color.White,
     contentColor: Color = Color.Black,
     containerModifier: Modifier = Modifier.padding(3.dp),
     modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(5.dp),
-    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     content: @Composable () -> Unit,
 ) {
     // Box(modifier=Modifier.wrapContentSize().background(Color.Gray).padding(top = 1.dp, end = 1.dp)){
-    Box(modifier = Modifier.border(width = 0.3.dp, color = Color.LightGray).background(Color.White).padding(start = 10.dp, end = 20.dp)){
+    Box(
+        modifier = Modifier.background(Color.White)
+            .padding(30.dp)
+    ) {
         NavigationRail(
             modifier = Modifier.then(modifier).offset(x = 0.dp)
                 .width(45.dp)
@@ -702,7 +608,7 @@ private fun AppNavigationRail(
             contentColor = contentColor
         ) {
             Column(
-                modifier =Modifier.then(containerModifier) ,
+                modifier = Modifier.then(containerModifier),
                 horizontalAlignment = horizontalAlignment,
                 verticalArrangement = verticalArrangement
             ) {
@@ -857,7 +763,8 @@ fun CustomExpensiveNavItem(
     }
     Column {
         Row(
-            modifier = Modifier.then(modifier).padding(start = if (isSubMenuItem) 10.dp else 0.dp).height(35.dp).width(200.dp)
+            modifier = Modifier.then(modifier).padding(start = if (isSubMenuItem) 10.dp else 0.dp).height(35.dp)
+                .fillMaxWidth()
                 .clip(RoundedCornerShape(5.dp))
                 .background(if (selected) Material1Theme.colorScheme.primary.copy(alpha = if (isSubMenuItem) 0.5f else 1f) /*Color.Gray.copy(0.5f)*/ else Color.Transparent)
                 .clickable(onClick = onClickItem),

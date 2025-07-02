@@ -1,6 +1,6 @@
 package empire.digiprem.interceptor
 
-import empire.digiprem.service.IUserDetailService
+import empire.digiprem.service.IUserDetailService2
 import empire.digiprem.utils.JwtTokenUtil
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 
 class WebSocketAuthenticationInterceptor(
     private val jwtTokenUtil: JwtTokenUtil,
-    private val userDetailService: IUserDetailService
+    private val userDetailService: IUserDetailService2
 ) :
     ChannelInterceptor {
     override fun preSend(message: Message<*>, channel: MessageChannel): Message<*>? {

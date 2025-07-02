@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.octopusfx.mymessenger.ui.screen.Conversations
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.background_immeuble
 import empire.digiprem.config.getActualWindowsSize
@@ -296,9 +295,9 @@ fun HomeScreen(
 
 
                                                }
-                                               Conversations(
+                                              /* Conversations(
                                                    navController = navController
-                                               )
+                                               )*/
                                            }
 
                                        }

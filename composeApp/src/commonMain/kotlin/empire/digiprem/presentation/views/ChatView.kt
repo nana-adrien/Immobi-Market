@@ -1,13 +1,10 @@
 package empire.digiprem.presentation.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,19 +26,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
-import com.octopusfx.mymessenger.ui.screen.ChatMessage
-import com.octopusfx.mymessenger.ui.screen.ChatMessageItem
-import com.octopusfx.mymessenger.ui.screen.Conversation
+import com.octopusfx.mymessenger.ui.screen.MessageItem
 import com.octopusfx.mymessenger.ui.screen.generateRandomMessages
-import composeApp.src.commonMain.ComposeResources.drawable.Res
-import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
+import empire.digiprem.model.chat.Conversation
+import empire.digiprem.model.chat.Message
 import empire.digiprem.navigation.ViewChat
 import empire.digiprem.presentation.components.*
 import empire.digiprem.presentation.components.app.RealEstateData
+import empire.digiprem.presentation.intents.MessengerIntent
 import empire.digiprem.presentation.viewmodels.ChatViewModel
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
+import kotlinx.datetime.LocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,16 +53,31 @@ fun ChatView(
     // val chatViewModel:ChatViewModel = viewModel{ChatViewModel()}
     val state by chatViewModel.state.collectAsState()
     val onSendIntent = chatViewModel::onIntentHandler
-    var message by remember { mutableStateOf(ChatMessage()) }
-    val scrolableState= rememberLazyListState()
+    var message by remember { mutableStateOf(Message()) }
+    val scrolableState = rememberLazyListState()
     val realEstateData by remember {
         mutableStateOf<RealEstateData?>(/*if (viewChat != null) Json.decodeFromString<RealEstateData>(viewChat.content) else*/
             null
         )
     }
-    val scope= rememberCoroutineScope()
-    var messages by remember { mutableStateOf(generateRandomMessages() ) }
+
+    val scope = rememberCoroutineScope()
+    var messages by remember { mutableStateOf(generateRandomMessages()) }
     var textfield by remember { mutableStateOf(viewChat?.message ?: "") }
+
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
+@Composable
+fun ChatScreen(
+    conversation: Conversation,
+    navigationRail: NavigationTypeEnum = NavigationTypeEnum.BOTTOM_NAVIGATION,
+    onSendMessage: (Int, Message) -> Unit,
+) {
+    val scrolableState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    var message by remember { mutableStateOf(Message(isSender = true)) }
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
@@ -79,7 +92,7 @@ fun ChatView(
                         ) {
                             if (navigationRail == NavigationTypeEnum.BOTTOM_NAVIGATION) {
                                 IconButton(onClick = {
-                                    navController.popBackStack()
+                                    // navController.popBackStack()
                                 }
                                 ) {
                                     Icon(
@@ -150,151 +163,127 @@ fun ChatView(
 
         },
         bottomBar = {
-           /* Row(
-                modifier = Modifier.padding(bottom = 12.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {*/
-                Column(
-                    modifier = Modifier
-                        //.weight(4f)
-                        .fillMaxWidth()
-                        //.height(65.dp)
-                        .padding(horizontal = 10.dp, vertical = 1.dp)
-                        .clip(RoundedCornerShape(size = 15.dp))
-                        .background(Color.LightGray.copy(0.3f))
-                ) {
-                    if (message.replyTo != null) {
-                        ReplayMessage(message.replyTo!!, enableDeleteButton = true){
-                            message=message.copy(replyTo = null)
-                        }
+            Column(
+                modifier = Modifier
+                    //.weight(4f)
+                    .fillMaxWidth()
+                    //.height(65.dp)
+                    .padding(horizontal = 10.dp, vertical = 1.dp).padding(bottom = 10.dp)
+                    .clip(RoundedCornerShape(size = 15.dp))
+                    .background(Color.LightGray.copy(0.3f))
+            ) {
+                if (message.replyTo != null) {
+                    ReplayMessage(message.replyTo!!, enableDeleteButton = true) {
+                        message = message.copy(replyTo = null)
                     }
+                }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.Bottom
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Box(
+                        modifier = Modifier.wrapContentWidth(),
+                        contentAlignment = Alignment.CenterStart
                     ) {
-                        Box(
-                            modifier = Modifier.wrapContentWidth(),
-                            contentAlignment = Alignment.CenterStart
+                        IconButton(
+                            onClick = {}
                         ) {
-                            IconButton(
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Search,
-                                    contentDescription = ""
-                                )
-                            }
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(7.dp),
-                            // contentAlignment = Alignment.Top
-                        ) {
-                            BasicTextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Start),
-
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                                keyboardActions = KeyboardActions(
-                                    onSend = {
-                                        scope.launch{
-                                        messages+=message.copy(isSender = true,content = message.content.trim())
-                                        message= ChatMessage()
-                                            scrolableState.scrollToItem((messages.size-1))
-                                        }
-                                    }
-                                ),
-                                maxLines = 5,
-                                value = message.content,
-                                onValueChange = {
-                                    message = message.copy(content = it)
-                                })
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .height(2.dp)
-                                    .padding(bottom = 12.dp),
-                                color = Color.Gray
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = ""
                             )
                         }
-                        Row(
-                            modifier = Modifier.wrapContentWidth()
-                                .padding(2.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(
-                                onClick = { }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.AttachFile,
-                                    contentDescription = ""
-                                )
-                            }
-                            IconButton(
-                                enabled = !message.content.trim().equals(""),
-                                onClick = {
-                                    scope.launch{
-                                        messages+=message.copy(isSender = true, content = message.content.trim())
-                                        message= ChatMessage()
-                                        scrolableState.scrollToItem((messages.size-1))
+                    }
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(7.dp),
+                        // contentAlignment = Alignment.Top
+                    ) {
+                        BasicTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Start),
+
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                            keyboardActions = KeyboardActions(
+                                onSend = {
+                                    scope.launch {
+                                        message = Message()
+                                        scrolableState.scrollToItem((conversation.messages.size - 1))
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Send,
-                                    contentDescription = ""
-                                )
-                            }
-                        }
-                    }
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .height(2.dp)
-                            .padding(horizontal = 13.dp),
-                        color = Color.LightGray
-                    )
-                }
-               /* Box(
-                    modifier = Modifier.weight(0.7f)
-                ) {
-                    FloatingActionButton(
-                        shape = CircleShape,
-                        onClick = {
-                            messages+=message.copy(isSender = true)
-                            message= ChatMessage()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Send,
-                            contentDescription = ""
+                            ),
+                            maxLines = 5,
+                            value = message.content,
+                            onValueChange = {
+                                message = message.copy(content = it)
+                            })
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .height(2.dp)
+                                .padding(bottom = 12.dp),
+                            color = Color.Gray
                         )
                     }
-                }*/
-          //  }
-        }
-    ) {
-        Column(
-            modifier = Modifier.padding(it).padding(horizontal = 20.dp)
-        ) {
-            LazyColumn(
-                state =scrolableState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(messages) {
-                    ChatMessageItem(message = it){
-                        message=message.copy(replyTo = it)
+                    Row(
+                        modifier = Modifier.wrapContentWidth()
+                            .padding(2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.AttachFile,
+                                contentDescription = ""
+                            )
+                        }
+                        IconButton(
+                            enabled = !message.content.trim().equals(""),
+                            onClick = {
+                                scope.launch {
+                                    message = message.copy()
+                                    onSendMessage(conversation.id, message)
+                                    message = Message()
+                                    scrolableState.scrollToItem((conversation.messages.size - 1))
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Send,
+                                contentDescription = ""
+                            )
+                        }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
+                HorizontalDivider(
+                    modifier = Modifier
+                        .height(2.dp)
+                        .padding(horizontal = 13.dp),
+                    color = Color.LightGray
+                )
             }
         }
+    ) {
+      /*  LazyColumn(
+            state = scrolableState,
+            modifier = Modifier.fillMaxSize().padding(it).padding(30.dp)
+        ) {
+            items(conversation.messages) {
+                MessageItem(message = it) {
+                    message = message.copy(replyTo = it)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }*/
     }
 }
 
+
 @Composable
-fun ReplayMessage(message: ChatMessage,enableDeleteButton:Boolean=false, onClickDeleteButton:()->Unit={}) {
+fun ReplayMessage(message: Message, enableDeleteButton: Boolean = false, onClickDeleteButton: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -322,7 +311,7 @@ fun ReplayMessage(message: ChatMessage,enableDeleteButton:Boolean=false, onClick
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = if (message.isSender) "vous"  else message.userName,
+                        text = if (message.isSender) "vous" else message.userName,
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                         maxLines = 1,
@@ -353,7 +342,7 @@ fun ReplayMessage(message: ChatMessage,enableDeleteButton:Boolean=false, onClick
                     contentScale = ContentScale.Crop,
                     contentDescription = ""
                 )
-               if (enableDeleteButton){
+                if (enableDeleteButton) {
                     IconButton(
                         modifier = Modifier.align(Alignment.TopEnd),
                         onClick = onClickDeleteButton

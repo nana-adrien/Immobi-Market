@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import empire.digiprem.data.config.DataSourceEventHandlerDecorator
 import empire.digiprem.data.remote.service.OAuthEndPointEndPointService
 import empire.digiprem.dto.auth.register.RegisterResponseDTO
+import empire.digiprem.enums.VerificationOperation
 import empire.digiprem.model.ApiResponse2
 import empire.digiprem.navigation.ViewVerifyIdentity
 import empire.digiprem.presentation.intents.RegisterIntent
@@ -126,7 +127,7 @@ class RegisterViewModel(val navController: NavController) : AbstractViewModel<Re
                         )
                     }
                     CoroutineScope(Dispatchers.Main).launch {
-                        navController.navigate(ViewVerifyIdentity(email = data.email))
+                        navController.navigate(ViewVerifyIdentity(email = data.email, operationType = VerificationOperation.REGISTRATION.name))
                     }
                 }
 

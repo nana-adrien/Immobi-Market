@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1751139983440-1
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user
+                  name: id
+                  type: bytea
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: mot_de_passe
+                  type: VARCHAR(255)
+              - column:
+                  name: role
+                  type: INT
+            tableName: user
+

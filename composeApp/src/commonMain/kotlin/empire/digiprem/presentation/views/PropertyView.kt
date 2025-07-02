@@ -49,7 +49,7 @@ fun PropertyView(
     var selectedIndex by remember { mutableStateOf(0) }
 
     val HorizontalPagerContent: @Composable (RealEstateState) -> Unit = {realEstateState->
-        LazyColumn(
+      /*  LazyColumn(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -75,7 +75,7 @@ fun PropertyView(
                     }
                 )
             }
-        }
+        }*/
     }
 
 

@@ -83,7 +83,8 @@ fun MesAnnoncesScreen(navController: NavHostController) {
                     }
                 ),
             ),
-            topBar = {}
+            topBar = {},
+            navigationContent = {}
         ) {
             NavHost(
                 modifier = Modifier.fillMaxSize().background(Color.LightGray.copy(alpha = 0.3f)),

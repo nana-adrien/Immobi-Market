@@ -1,5 +1,6 @@
 package empire.digiprem.models
 
+import empire.digiprem.models.database.User
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.Id
@@ -14,9 +15,9 @@ class UserReadMessage {
     private val id: UUID = UUID.randomUUID()
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private var user: Users? = null
+    private var user: User? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private var message: Message? = null
+    private var messages: Messages? = null
     private var readAt: LocalDateTime? = null
 }

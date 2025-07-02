@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: admin
+      changes:
+        - insert:
+            tableName: user_settings
+            columns:
+              - column:
+                  name: id
+                  value: 6e20b6f0-5c1e-47a4-97dc-b2cb269a0099
+              - column:
+                  name: enabled_two_factor_authentication
+                  valueBoolean: true
+              - column:
+                  name: prefer_language_tag
+                  value: fr-CM
+              - column:
+                  name: enable_light_mode
+                  valueBoolean: false
+              - column:
+                  name: notification_canal
+                  valueNumeric: 10
+              - column:
+                  name: user_can_change_notification_canal
+                  valueBoolean: true
+

@@ -1,7 +1,11 @@
 package empire.digiprem.navigation
 
 /*@Auto import file*/
-import empire.digiprem.presentation.views.CompleteAccountView
+import empire.digiprem.presentation.views.Authentication.SuccessfulAuthView
+import empire.digiprem.presentation.views.ClaimsView
+import empire.digiprem.presentation.views.OwnerCertifierView
+import empire.digiprem.presentation.views.AllRealEstateView
+import empire.digiprem.presentation.views.RequestsValidationView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -9,8 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import empire.digiprem.config.isCompactMobilePlatform
-import empire.digiprem.presentation.components.NavigationTypeEnum
 import empire.digiprem.presentation.views.*
+import empire.digiprem.presentation.views.Authentication.*
 
 /*@Auto Generate*/
 @Composable
@@ -27,6 +31,31 @@ fun AppNavigation(
         startDestination = startDestination,
     ) {
         /*@Auto Generate Composable*/
+        composable<ViewSuccessfulAuth> {
+            onNavigate(EnumView.ViewSuccessfulAuth)
+            val viewSuccessfulAuth = it.toRoute<ViewSuccessfulAuth>()
+            SuccessfulAuthView(viewSuccessfulAuth = viewSuccessfulAuth, navController = navController)
+        }
+        composable<ViewClaims> {
+            onNavigate(EnumView.ViewClaims)
+            val viewClaims = it.toRoute<ViewClaims>()
+            ClaimsView(viewClaims = viewClaims, navController = navController)
+        }
+        composable<ViewOwnerCertifier> {
+            onNavigate(EnumView.ViewOwnerCertifier)
+            val viewOwnerCertifier = it.toRoute<ViewOwnerCertifier>()
+            OwnerCertifierView(viewOwnerCertifier = viewOwnerCertifier, navController = navController)
+        }
+        composable<ViewAllRealEstate> {
+            onNavigate(EnumView.ViewAllRealEstate)
+            val viewAllRealEstate = it.toRoute<ViewAllRealEstate>()
+            AllRealEstateView(viewAllRealEstate = viewAllRealEstate, navController = navController)
+        }
+        composable<ViewRequestsValidation> {
+            onNavigate(EnumView.ViewRequestsValidation)
+            val viewRequestsValidation = it.toRoute<ViewRequestsValidation>()
+            RequestsValidationView(viewRequestsValidation = viewRequestsValidation, navController = navController)
+        }
         composable<ViewCompleteAccount> {
             onNavigate(EnumView.ViewCreateAccount)
             val viewCompleteAccount = it.toRoute<ViewCompleteAccount>()
@@ -121,14 +150,6 @@ fun AppNavigation(
             MessengerView(
                 viewMessenger = viewMessenger,
                 navController = navController,
-                firstContent = { ConversationsView(navController = navController, enableTopBar = false) },
-                secondContent = {
-                    ChatView(
-                        viewChat = null,
-                        navController = navController,
-                        navigationRail = NavigationTypeEnum.NAVIGATION_RAIL
-                    )
-                }
             )
         }
         if (!isCompactMobilePlatform) {

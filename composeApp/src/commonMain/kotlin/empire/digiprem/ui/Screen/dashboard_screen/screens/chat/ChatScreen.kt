@@ -1,4 +1,4 @@
-package com.octopusfx.mymessenger.ui.screen
+package empire.digiprem.ui.Screen.dashboard_screen.screens.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
+import empire.digiprem.model.chat.Conversation
 import empire.digiprem.navigation.ViewChat
 import empire.digiprem.presentation.components.ImageSection
 import empire.digiprem.presentation.components.NavigationTypeEnum

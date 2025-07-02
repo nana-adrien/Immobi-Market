@@ -1,0 +1,1 @@
+DROP TABLE offre_immobiliere_liste_images CASCADE;

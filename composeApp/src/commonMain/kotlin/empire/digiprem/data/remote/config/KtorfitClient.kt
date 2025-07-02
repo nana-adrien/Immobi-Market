@@ -20,14 +20,7 @@ class KtorfitServiceCreator(val baseUrl: String,val httpClient:HttpClient, priva
             this.headers.remove(header)
             this.headers.append(header, value)
         }
-
     }
-
-
-
-
-
-
 
     private fun getKtorfit(): Ktorfit {
         return Ktorfit.Builder()

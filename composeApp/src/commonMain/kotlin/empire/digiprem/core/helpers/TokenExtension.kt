@@ -8,7 +8,10 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 
 fun TokensResult.Companion.getAccessTokenClaims(encodeToken: String = "", claims: String): String {
     return try {
-        decodeToken(encodeToken).replace("\"", "")
+        decodeToken(encodeToken)
+            .replace("\"", "")
+            .replace("{", "")
+            .replace("}", "")
             .split(",")
             .filter { it.contains("$claims:") }
             .first()

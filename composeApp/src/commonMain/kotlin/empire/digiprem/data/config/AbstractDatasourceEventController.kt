@@ -73,9 +73,9 @@ abstract class AbstractDatasourceEventController{
                 emit(DataSourceEvent.OnSuccessDataSourceConnexionEvent(key = key, data = it as T))
             } ?:emit(DataSourceEvent.OnErrorDataSourceConnexionEvent(messages =result.errorMessages))
         } else {
-            if (result.errorMessages.get(0).field.equals("throwable")){
-               throw  Exception(result.errorMessages.get(0).message.toString())
-                println("${result.payload}")
+            if (result.errorMessages.first().field.equals("throwable")){
+                emit(DataSourceEvent.OnFailureDataSourceConnexionEvent(result.errorMessages.first().message))
+               // throw  Exception()
             } else {
                 emit(DataSourceEvent.OnErrorDataSourceConnexionEvent(messages =result.errorMessages))
             }

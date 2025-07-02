@@ -1,0 +1,286 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1751177765550-1
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_arrondissement
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: ville_id
+                  type: UUID
+            tableName: arrondissement
+  - changeSet:
+      id: 1751177765550-2
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_departement
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: region_id
+                  type: UUID
+            tableName: departement
+  - changeSet:
+      id: 1751177765550-3
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_pays
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+            tableName: pays
+  - changeSet:
+      id: 1751177765550-4
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_quartier
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: arrondissement_id
+                  type: UUID
+            tableName: quartier
+  - changeSet:
+      id: 1751177765550-5
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_region
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: pays_id
+                  type: UUID
+            tableName: region
+  - changeSet:
+      id: 1751177765550-6
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_rue
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: quartier_id
+                  type: UUID
+            tableName: rue
+  - changeSet:
+      id: 1751177765550-7
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_useraddress
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: latitude
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: longitude
+                  type: DOUBLE
+              - column:
+                  name: rue_id
+                  type: UUID
+            tableName: user_address
+  - changeSet:
+      id: 1751177765550-8
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_usertoken
+                  name: id
+                  type: VARCHAR(255)
+              - column:
+                  name: access_token
+                  type: text
+              - column:
+                  name: refresh_token
+                  type: text
+              - column:
+                  name: user_id
+                  type: bytea
+            tableName: user_token
+  - changeSet:
+      id: 1751177765550-9
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ville
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: departement_id
+                  type: UUID
+            tableName: ville
+  - changeSet:
+      id: 1751177765550-10
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: ville_id
+            baseTableName: arrondissement
+            constraintName: FK_ARRONDISSEMENT_ON_VILLE
+            referencedColumnNames: id
+            referencedTableName: ville
+  - changeSet:
+      id: 1751177765550-11
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: region_id
+            baseTableName: departement
+            constraintName: FK_DEPARTEMENT_ON_REGION
+            referencedColumnNames: id
+            referencedTableName: region
+  - changeSet:
+      id: 1751177765550-12
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: arrondissement_id
+            baseTableName: quartier
+            constraintName: FK_QUARTIER_ON_ARRONDISSEMENT
+            referencedColumnNames: id
+            referencedTableName: arrondissement
+  - changeSet:
+      id: 1751177765550-13
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: pays_id
+            baseTableName: region
+            constraintName: FK_REGION_ON_PAYS
+            referencedColumnNames: id
+            referencedTableName: pays
+  - changeSet:
+      id: 1751177765550-14
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: quartier_id
+            baseTableName: rue
+            constraintName: FK_RUE_ON_QUARTIER
+            referencedColumnNames: id
+            referencedTableName: quartier
+  - changeSet:
+      id: 1751177765550-15
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: rue_id
+            baseTableName: user_address
+            constraintName: FK_USERADDRESS_ON_RUE
+            referencedColumnNames: id
+            referencedTableName: rue
+  - changeSet:
+      id: 1751177765550-16
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_token
+            constraintName: FK_USERTOKEN_ON_USER
+            referencedColumnNames: id
+            referencedTableName: user
+  - changeSet:
+      id: 1751177765550-17
+      author: LENOVO P51S
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: departement_id
+            baseTableName: ville
+            constraintName: FK_VILLE_ON_DEPARTEMENT
+            referencedColumnNames: id
+            referencedTableName: departement
+

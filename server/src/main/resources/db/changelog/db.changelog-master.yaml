@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: admin
+      changes:
+        -
+#  - include:
+#      file: db/changelog/2025/user/28-01-changelog.yaml
+#  - include:
+#      file: db/changelog/2025/user/insert_user.yaml
+#  - include:
+#      file: db/changelog/2025/user_settings/user_settings-changelog.yaml
+#  - include:
+#      file: db/changelog/2025/user_settings/insert_test_user_settings-changelog.yaml
+#  - include:
+#      file: db/changelog/2025/06/user_profile-changelog.yaml
+#  - include:
+#      file: db/changelog/2025/06/offre_caracteristiques-changelog.yaml
+#  - include:
+#      file: db/changelog/2025/06/insert-image-changelog.yaml
+#  - include:
+#      file: db/changelog/2025/06/29-01-changelog.yaml
+#  - include:
+#      file: db/changelog/2025/06/29-02-changelog.yaml
+  - include:
+      file: db/changelog/2025/06/immobi-market-table-changelog.sql

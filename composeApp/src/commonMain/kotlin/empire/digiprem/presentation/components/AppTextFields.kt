@@ -39,6 +39,7 @@ data class AppTextFieldState(
 @Composable
 fun AppTextField(
     modifier: Modifier = Modifier,
+    textFieldModifier: Modifier=Modifier.wrapContentHeight(),
     value: String,
     errorMessage: String = "Cependant, pour une gestion plus avancée et optimisée ",
     placeholder: String? = null,
@@ -54,12 +55,14 @@ fun AppTextField(
     onValueChange: (String) -> Unit,
 ) {
     var isFocus by remember { mutableStateOf(false) }
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         label?.let {
             Box(Modifier.wrapContentHeight()) { it() }
         }
         Row(
-            modifier = Modifier.then(modifier).height(45.dp).clip(RoundedCornerShape(8.dp)).background(Color.White)
+            modifier = Modifier.wrapContentWidth().height(45.dp).clip(RoundedCornerShape(8.dp)).background(Color.White)
                 .border(
                     width = if (isError || isFocus) 0.7.dp else 0.4.dp,
                     color = if (isError) Color.Red else if (isFocus) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
@@ -87,7 +90,7 @@ fun AppTextField(
                     }
                 }
                 BasicTextField(
-                    modifier = Modifier.wrapContentHeight().fillMaxWidth().padding(horizontal = 3.dp),
+                    modifier = textFieldModifier.fillMaxWidth().padding(horizontal = 3.dp),
                     singleLine = singleLine,
                     enabled = enabled,
                     value = value,

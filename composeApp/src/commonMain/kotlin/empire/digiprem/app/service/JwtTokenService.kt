@@ -13,7 +13,7 @@ class JwtTokenService(private val tokenStorage: TokenStorage) : IJwtTokenService
     override suspend fun saveCurrentRequest(url: String) {
     }
     override suspend fun getGetCurrentRequestKey(): String? {
-        return tokenStorage.getToken()
+    return null //  return tokenStorage.getToken()
     }
     override suspend fun saveSubscriptionKey(key: String) {
 
@@ -22,11 +22,11 @@ class JwtTokenService(private val tokenStorage: TokenStorage) : IJwtTokenService
         return null
     }
     override suspend fun saveToken(tokenResult: TokensResult) {
-        tokenStorage.saveToken(Json.encodeToString(tokenResult))
+       // tokenStorage.saveToken(Json.encodeToString(tokenResult))
     }
     override suspend fun getToken(): TokensResult? {
         try {
-            return tokenStorage.getToken()?.let {Json.decodeFromString<TokensResult>(it)}
+            return null//"tokenStorage.getToken()?.let {Json.decodeFromString<TokensResult>(it)}"
         }catch (e: Exception){
             e.printStackTrace()
             return null
@@ -64,6 +64,6 @@ class JwtTokenService(private val tokenStorage: TokenStorage) : IJwtTokenService
         }
     }
     override suspend fun removeTokens() {
-         tokenStorage.clearToken()
+       //  tokenStorage.clearToken()
     }
 }

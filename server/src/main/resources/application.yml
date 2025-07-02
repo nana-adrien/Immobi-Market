@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8090
 
 spring:
   application:
@@ -9,7 +9,22 @@ spring:
     username: spring
     password: spring
     driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
 
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.monprojet: TRACE
 
   mail:
     host: smtp.gmail.com
@@ -25,15 +40,13 @@ spring:
 
 
 
-
-
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    show_sql: true
+    show_sql: false
 
 jwt:
   secret-key: Application de test

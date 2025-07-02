@@ -3,15 +3,16 @@ package empire.digiprem.data.remote.service
 import empire.digiprem.data.config.AbstractDatasourceEventController
 import empire.digiprem.data.config.DataSourceEvent
 import empire.digiprem.data.remote.repository.oauth.OAuthEndPointRepositories
-import empire.digiprem.domain.repository.remote.IRegisterEndpoint
-import empire.digiprem.domain.servives.oauth.IOAuthEndPointService
+import empire.digiprem.domain.repository.remote.IOAuthEndPointRepository
+import empire.digiprem.domain.servives.remote.IOAuthEndPointService
 import empire.digiprem.dto.auth.login.LoginRequestDTO2
+import empire.digiprem.dto.auth.refresh_token.RefreshTokenReqDTO
 import empire.digiprem.dto.auth.register.RegisterRequestDTO2
 import empire.digiprem.dto.auth.verify_identity.VerifyIdentityRequestDto
 import kotlinx.coroutines.flow.Flow
 
 class OAuthEndPointEndPointService:AbstractDatasourceEventController(), IOAuthEndPointService {
-    private val repository: IRegisterEndpoint = OAuthEndPointRepositories()
+    private val repository: IOAuthEndPointRepository = OAuthEndPointRepositories()
     override fun register(
         identity: String,
         password: String,
@@ -27,6 +28,9 @@ class OAuthEndPointEndPointService:AbstractDatasourceEventController(), IOAuthEn
 
     override fun login(email: String, password: String): Flow<DataSourceEvent> {
         return dataSourceEventControllerEx { repository.login(  LoginRequestDTO2(email = email,password= password,IsEmailIdentity = true)) }
+    }
+    override fun refreshToken(refreshToken: String): Flow<DataSourceEvent> {
+        return dataSourceEventControllerEx { repository.refreshToken(RefreshTokenReqDTO(refreshToken)) }
     }
 
 }

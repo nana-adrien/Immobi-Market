@@ -1,7 +1,7 @@
 package empire.digiprem.services
 
 import empire.digiprem.models.CodeVerification
-import empire.digiprem.models.NotificationCanal
+import empire.digiprem.enums.NotificationCanal
 import empire.digiprem.repositories.CodeVerificationRepository
 import empire.digiprem.service.INotificationService
 import jakarta.transaction.Transactional

@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1751141247227-2
+      author: LENOVO P51S
+      changes:
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: "6e20b6f0-5c1e-47a4-97dc-b2cb269a0099"
+              - column:
+                  name: email
+                  value: "kako@gmail.com"
+              - column:
+                  name: mot_de_passe
+                  value: "$2a$10$rUE5eCv2MysEozlxl.CiE.v0QEVdAbyNwltcvOegE4PKUvHO7JVm2"  # hash de "Pa$$w0rd"
+              - column:
+                  name: role
+                  valueNumeric: 100

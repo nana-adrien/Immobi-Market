@@ -14,12 +14,12 @@ class CodeVerificationScheduled {
 
     @Scheduled(fixedRate = 60000)
     fun deleteExpiredCodes() {
-        val now = LocalDateTime.now()
+       /* val now = LocalDateTime.now()
         val expiredCodes = codeVerificationRepository.findByExpiresAtBefore(now)
 
         if (!expiredCodes!!.isEmpty()) {
             codeVerificationRepository.deleteAll(expiredCodes)
             println("Codes expirés supprimés : " + expiredCodes.size)
-        }
+        }*/
     }
 }

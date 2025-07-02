@@ -1,3 +1,6 @@
 package empire.digiprem.dto.image
 
-data class UploadProfileResponseDTO(val imageUrl: String)
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class UploadProfileResponseDTO( val message:String , val imageUrl: String)
