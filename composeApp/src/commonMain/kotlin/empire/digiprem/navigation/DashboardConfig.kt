@@ -88,7 +88,8 @@ fun AppWebDesktopNavigationConfig(
     val navigationItems = mutableListOf<NavigationItem>(
         /* Auto config NavigationItem Content*/
         NavigationItem(
-            label = "Statistics",
+            position = 0,
+            label = "Statistiques",
             icon = Icons.Default.QueryStats,
             selected = selectedNavItem == EnumView.ViewStatistics,
             onClick = {
@@ -100,6 +101,7 @@ fun AppWebDesktopNavigationConfig(
             )
         ),
         NavigationItem(
+            position = 4,
             label = "Profil",
             icon = Icons.Default.Person,
             selected = selectedNavItem == EnumView.ViewProfil,
@@ -112,6 +114,7 @@ fun AppWebDesktopNavigationConfig(
             )
         ),
         NavigationItem(
+            position = 5,
             label = "Negotiations",
             icon = Icons.Default.Handshake,
             selected = selectedNavItem == EnumView.ViewNegotiations,
@@ -124,6 +127,7 @@ fun AppWebDesktopNavigationConfig(
             )
         ),
         NavigationItem(
+            position = 6,
             label = "Messages",
             icon = Icons.Default.Chat,
             selected = selectedNavItem == EnumView.ViewMessenger,
@@ -136,6 +140,7 @@ fun AppWebDesktopNavigationConfig(
             )
         ),
         NavigationItem(
+            position = 7,
             label = "Notifications",
             icon = Icons.Default.Notifications,
             selected = selectedNavItem == EnumView.ViewNotifications,
@@ -148,6 +153,7 @@ fun AppWebDesktopNavigationConfig(
             )
         ),
         NavigationItem(
+            position = 8,
             label = "Paramètre",
             icon = Icons.Default.Settings,
             selected = selectedNavItem == EnumView.ViewSettings,
@@ -161,9 +167,11 @@ fun AppWebDesktopNavigationConfig(
         ),
 
     )
+
     utilisateur?.let {
         if (it.role==Role.PROPRIETAIRE) {
             navigationItems += NavigationItem(
+                position = 3,
                 label = "Mes biens",
                 icon = Icons.Default.Home,
                 selected = selectedNavItem == EnumView.ViewProperty,
@@ -173,6 +181,7 @@ fun AppWebDesktopNavigationConfig(
                 subNavigationItem = listOf(
                     /* Auto config ViewProperty section subNavigationItems Content*/
                     NavigationItem(
+                        position = 0,
                         label = "Tous mes biens",
                         icon = Icons.Default.SelectAll,
                         selected = selectedNavItem == EnumView.ViewPropertyALLProperty,
@@ -182,6 +191,7 @@ fun AppWebDesktopNavigationConfig(
                         },
                     ),
                     NavigationItem(
+                        position = 1,
                         label = "Ajouter un bien",
                         icon = Icons.Default.AddHome,
                         selected = selectedNavItem == EnumView.ViewPropertyAddProperty,
@@ -195,6 +205,7 @@ fun AppWebDesktopNavigationConfig(
         }
         if (it.role==Role.ADMINISTRATEUR) {
             navigationItems += NavigationItem(
+                position = 2,
                     label = "Gerer les reclamations",
                     icon = Icons.Default.Edit,
                     selected = selectedNavItem == EnumView.ViewRequestsValidation,
@@ -208,6 +219,7 @@ fun AppWebDesktopNavigationConfig(
                 )
         }
     }
+
     val navigation = @Composable {
         LazyColumn(
             Modifier.fillMaxHeight().width(300.dp),
@@ -221,7 +233,7 @@ fun AppWebDesktopNavigationConfig(
                 AppNavigationRail(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                 ) {
-                    navigationItems.forEach {
+                    navigationItems.sortedBy{ it.position}.forEach {
                         if (!it.enableExpenciveItem) {
                             CustomNavigationRailItem(
                                 modifier = it.modifier,
@@ -247,7 +259,7 @@ fun AppWebDesktopNavigationConfig(
                                 onClick = it.onClick,
                                 subNavItem = if (it.subNavigationItem.isEmpty()) null else {
                                     {
-                                        it.subNavigationItem.forEach { item ->
+                                        it.subNavigationItem.sortedBy{ it.position}.forEach { item ->
                                             CustomExpensiveNavItem(
                                                 modifier = item.modifier,
                                                 isSubMenuItem = true,
@@ -269,7 +281,6 @@ fun AppWebDesktopNavigationConfig(
                     }
                 }
             }
-
         }
     }
 

@@ -2,12 +2,14 @@ package empire.digiprem.presentation.viewmodels.componenet
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import empire.digiprem.app.model.components.Utilisateur
+import empire.digiprem.app.config.Log
+import empire.digiprem.data.local.entities.Utilisateur
 import empire.digiprem.core.helpers.getAccessTokenClaims
 import empire.digiprem.data.config.BaseDataSourceEventHandler
 import empire.digiprem.data.config.DataSourceEventCollector
-import empire.digiprem.data.local.DataBaseTemp.token
+import empire.digiprem.data.local.repository.UserRepository
 import empire.digiprem.data.remote.service.OAuthEndPointEndPointService
+import empire.digiprem.domain.repository.IUserRepository
 import empire.digiprem.domain.repository.TokenStorage
 import empire.digiprem.dto.auth.refresh_token.RefreshTokenResponseDTO
 import empire.digiprem.enums.TokenEnum
@@ -20,13 +22,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.KoinApplication.Companion.init
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-class SessionManager(val tokenStorage: TokenStorage,val oAuthEndPointEndPointService:OAuthEndPointEndPointService): ViewModel(), KoinComponent {
+class SessionManager(val userRepository: IUserRepository, private val tokenStorage: TokenStorage, private val oAuthEndPointEndPointService:OAuthEndPointEndPointService): ViewModel(), KoinComponent {
     private val _utilisateur = MutableStateFlow<Utilisateur?>(null)
     val utilisateur: StateFlow<Utilisateur?> = _utilisateur.asStateFlow()
     private val _isStarted = MutableStateFlow(false)
@@ -36,18 +36,26 @@ class SessionManager(val tokenStorage: TokenStorage,val oAuthEndPointEndPointSer
 
   private  val dataSourceEventCollector=DataSourceEventCollector()
 
-
     init {
         viewModelScope.launch {
             while (true) {
                 val token = getToken()
                 if (token != null) {
                     if (!isTokenExpired(token)) {
-                        _isStarted.value = true
+                        if (userRepository.getUser()!=null){
+                            _utilisateur.value=userRepository.getUser()
+                            _isStarted.value = true
+                        }
                     } else {
                         val refreshToken=getRefreshToken()
-                        if (refreshToken!=null && !isTokenExpired(refreshToken)){
-                            refreshToken(refreshToken)
+                        if (refreshToken!=null){
+                            Log.e("refreshtoken",refreshToken.toString())
+                            if (!isTokenExpired(refreshToken)){
+                                Log.e("refreshtoken",refreshToken.toString())
+                                refreshToken(refreshToken)
+                            }else{
+                                logOut()
+                            }
                         } else{
                             logOut()
                         }
@@ -64,9 +72,11 @@ class SessionManager(val tokenStorage: TokenStorage,val oAuthEndPointEndPointSer
                 override suspend fun onLoading() {
                 }
                 override suspend fun onFailConnexion(message: String) {
+                    Log.e("refreshToken",message)
                     logOut()
                 }
                 override suspend fun onErrorConnexion(code: Int, messages: List<ApiResponse2.ErrorMessage>) {
+                    Log.e("refreshToken",messages.toString())
                     logOut()
                 }
                 override suspend fun onFailProcess() {
@@ -97,40 +107,44 @@ class SessionManager(val tokenStorage: TokenStorage,val oAuthEndPointEndPointSer
         return false
     }
 
-    fun setUtilisateur(user: Utilisateur) {
+    suspend fun setUtilisateur(user: Utilisateur) {
+        _isStarted.value = true
         _utilisateur.value = user
+        userRepository.saveUser(user)
     }
 
     fun updateNom(nouveauNom: String) {
         _utilisateur.update { it?.copy(nom = nouveauNom) }
     }
-
     fun  logOut(){
         viewModelScope.launch {
             _isStarted.value = false
             if (_utilisateur.value != null) {
                 _utilisateur.value = null
                 _enabledLogOutDialog.value=true
+                userRepository.deleteUser()
             }
             clearTokens()
         }
-
     }
     fun diseableDialogSessionExpirateMessage(){
         _enabledLogOutDialog.value=false
     }
-
     fun clear() {
         _utilisateur.value = null
     }
     suspend fun getToken(): String? {
         return tokenStorage.getToken(TokenEnum.ACCESS_TOKEN)
     }
-    suspend fun getRefreshToken():String?{
+    private suspend fun getRefreshToken():String?{
         return tokenStorage.getToken(TokenEnum.REFRESH_TOKEN)
     }
     suspend fun saveToken(tokensResult: TokensResult){
         tokenStorage.saveToken(TokenEnum.ACCESS_TOKEN,tokensResult.accessToken)
         tokenStorage.saveToken(TokenEnum.REFRESH_TOKEN,tokensResult.refreshToken)
+    }
+
+    suspend fun getUser(){
+        _utilisateur.value=userRepository.getUser()
     }
 }

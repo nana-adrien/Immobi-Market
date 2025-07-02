@@ -47,6 +47,7 @@ import empire.digiprem.presentation.components.wrapper.PageWrapperState
 import empire.digiprem.presentation.components.wrapper.WebDesktopPageWrapper
 import empire.digiprem.presentation.intents.HomeIntent
 import empire.digiprem.presentation.viewmodels.PropertyAddPropertyViewModel
+import empire.digiprem.presentation.views.Authentication.FormErrorMessageSection
 import empire.digiprem.ui.Screen.DetailRealEstateItemScreen
 import empire.digiprem.ui.Screen.dashboard_screen.PageSection
 import empire.digiprem.ui.Screen.dashboard_screen.screens.mes_annonces.BienImmobilierViewModel
@@ -68,228 +69,259 @@ fun PropertyAddPropertyView(
     val state by addpropertyViewModel.state.collectAsState()
     val onSendIntent = addpropertyViewModel::onIntentHandler
     val scrollState = rememberScrollState(0)
-    val typeDeBien: TypeDeBien? by remember { mutableStateOf(null) }
+    var enabledTypeDoffreMenu by remember { mutableStateOf(false) }
+    var enabledTypeDeBienMenu by remember { mutableStateOf(false) }
+    var typeDeBien: String by remember { mutableStateOf(TypeDeBien.NONE.name) }
+    var typeDoffre: String by remember { mutableStateOf(TypeDoffre.NONE.name) }
+    val typeDHabitation: TypeDHabitation? by remember { mutableStateOf(null) }
     WebDesktopPageWrapper(
         modifier = Modifier,
+        topBarModifier = Modifier.wrapContentHeight(),
         view = EnumView.ViewPropertyAddProperty,
         actions = {
-            Row(modifier=Modifier.height(45.dp).wrapContentWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.wrapContentSize().padding(vertical = 8.dp).padding(end=20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                 AppOutinedButtonEx(
                     onClick = {}
-                ){
+                ) {
                     Text("Annuler", color = MaterialTheme.colorScheme.onBackground)
                 }
-                AppButtonEx(onClick = {}){
+                AppButtonEx(onClick = {}) {
                     Text("Ajouter", color = MaterialTheme.colorScheme.background)
                 }
             }
         },
         state = PageWrapperState(isSuccess = true)
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-            if (utilisateur != null || utilisateur?.role!=Role.PROPRIETAIRE) {
-                AbonnementRequisCard(
-                    onAbonnerClick = {},
-                    onAnnulerClick = {
-                        navController.popBackStack()
-                    }
-                )
-            } else{
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(30.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(25.dp)
-                ) {
-                    item {
-                        ColumRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+        Column(modifier = Modifier.fillMaxSize().padding(30.dp),){
+            FormErrorMessageSection(
+                enabled = true,
+                errorMessage = "message d'erreur"
+            )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(30.dp)
+            ) {
+                item {
+                    ColumRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        FormContentWrapper(
+                            "Entrer"
                         ) {
-                            FormContentWrapper(
-                                "Entrer"
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
+                                Section("Titre de l'offre") {
                                     AppTextField(
-                                        label = { Text("Titre") },
                                         value = "",
                                         onValueChange = {}
                                     )
-                                    Row(
-                                        modifier = Modifier.wrapContentHeight(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(20.dp)
-                                    ) {
-                                        Box(modifier = Modifier.weight(1f)) {
+                                }
+                                Row(
+                                    modifier = Modifier.wrapContentHeight(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                                ) {
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        Section("Type d'offre") {
                                             SelectContentTextField(
-                                                enabledMenu = false,
-                                                onDismissRequest = {},
-                                                selected = TypeDoffre.A_LOUER.name,
+                                                enabledMenu = enabledTypeDoffreMenu,
+                                                onDismissRequest = {enabledTypeDoffreMenu=!enabledTypeDoffreMenu},
+                                                selected = typeDoffre,
                                                 options = TypeDoffre.entries.map { it.name },
-                                                onValueChange = { }
+                                                onValueChange = { typeDoffre=it}
                                             )
                                         }
-                                        Box(modifier = Modifier.weight(1f)) {
+                                    }
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        Section("type de bien") {
                                             SelectContentTextField(
-                                                enabledMenu = false,
-                                                onDismissRequest = {},
-                                                selected = TypeDeBien.APPARTEMENT.name,
+                                                enabledMenu = enabledTypeDeBienMenu,
+                                                onDismissRequest = {enabledTypeDeBienMenu=!enabledTypeDeBienMenu},
+                                                selected = typeDeBien,
                                                 options = TypeDeBien.entries.map { it.name },
-                                                onValueChange = { }
+                                                onValueChange = { typeDeBien=it}
+                                            )
+                                        }
+
+                                    }
+                                }
+                                Row(
+                                    modifier = Modifier.wrapContentHeight(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                                ) {
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        Section("Superficie en m2") {
+                                            AppTextField(
+                                                value = "",
+                                                onValueChange = {},
+                                                trailingIcon = {Text("/m2")}
                                             )
                                         }
                                     }
-                                    Row(modifier = Modifier.fillMaxWidth()) {
-                                        Box(modifier = Modifier.weight(1f)) {
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        Section("Prix en Fcfa") {
                                             AppTextField(
-                                                label = { Text("Superficie en m2") },
                                                 value = "",
-                                                onValueChange = {}
-                                            )
-                                        }
-                                        Box(modifier = Modifier.weight(1f)) {
-                                            AppTextField(
-                                                label = { Text("Prix en Fcfa") },
-                                                value = "",
-                                                onValueChange = {}
+                                                onValueChange = {},
+                                                trailingIcon = {Text("/Mois")}
                                             )
                                         }
                                     }
+                                }
+
+                                Section(
+                                    title = "Description du bien",
+                                ) {
                                     AppTextField(
-                                        textFieldModifier = Modifier.height(150.dp),
-                                        label = { Text("Description du bien") },
+                                        modifier = Modifier.height(150.dp),
                                         value = "",
                                         onValueChange = {}
                                     )
                                 }
                             }
-                            val typeDHabitation by remember { mutableStateOf(TypeDHabitation.MODERNE.name) }
-                            typeDeBien?.let {
-                                FormContentWrapper(
-                                    "Caracteristiques"
+                        }
+                    }
+                }
+                item {
+                    var typeDHabitation by remember { mutableStateOf(TypeDHabitation.MODERNE.name) }
+                    typeDeBien?.let {
+                        FormContentWrapper(
+                            "Caracteristiques"
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Section(
+                                    title = "Type de $it",
                                 ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                                    ) {
-                                        RadioTextField(
-                                            label = "Type de $it",
-                                            selectedOption = TypeDHabitation.MODERNE.name,
-                                            onSelectOption = {},
-                                            option = TypeDHabitation.entries.filter { it != TypeDHabitation.NONE }
-                                                .map { e -> e.name }
-                                        )
-                                        when (it) {
-                                            TypeDeBien.CHAMBRE -> {
-                                                if (typeDHabitation == TypeDHabitation.MODERNE.name || typeDHabitation == TypeDHabitation.MEUBLER.name) {
-                                                    CheckTextField(
-                                                        label = "Avec Douche",
-                                                        value = false,
-                                                        onValueChange = {}
-                                                    )
-                                                    CheckTextField(
-                                                        label = "Avec un petit espace de cuisine",
-                                                        value = false,
-                                                        onValueChange = {}
-                                                    )
-                                                }
-                                            }
+                                    RadioTextField(
+                                        label = "Selectionner un type",
+                                        selectedOption = typeDHabitation,
+                                        onSelectOption = {
+                                            typeDHabitation = it
+                                        },
+                                        option = TypeDHabitation.entries.filter { it != TypeDHabitation.NONE }
+                                            .map { e -> e.name }
+                                    )
+                                }
 
-                                            TypeDeBien.MAISON -> {
-                                                IncrementeDecrementValue(
-                                                    label = "Nombre de chambre",
-                                                    value = 0,
-                                                    onValueChange = {}
-                                                )
-                                                if (typeDHabitation == TypeDHabitation.MODERNE.name || typeDHabitation == TypeDHabitation.MEUBLER.name) {
-                                                    IncrementeDecrementValue(
-                                                        label = "Nombre de sale de bain ",
-                                                        value = 0,
-                                                        onValueChange = {}
-                                                    )
-                                                }
-                                                IncrementeDecrementValue(
-                                                    label = "Nombre de salon",
-                                                    value = 0,
-                                                    onValueChange = {}
-                                                )
-                                                CheckTextField(
-                                                    label = "chambre avec Douche",
-                                                    value = false,
-                                                    onValueChange = {}
-                                                )
-                                            }
+                                when (it) {
+                                    TypeDeBien.CHAMBRE.name -> {
+                                        if (typeDHabitation == TypeDHabitation.MODERNE.name || typeDHabitation == TypeDHabitation.MEUBLER.name) {
 
-                                            else -> {
-                                                Text("Aucune caracteristique assossier a se bien ")
-                                            }
+                                            CheckTextField(
+                                                label = "Avec Douche",
+                                                value = false,
+                                                onValueChange = {}
+                                            )
+                                            CheckTextField(
+                                                label = "Avec un petit espace de cuisine",
+                                                value = false,
+                                                onValueChange = {}
+                                            )
                                         }
                                     }
-                                }
-                            }
 
-                        }
-                        ColumRow {
-                            var images by remember { mutableStateOf(listOf<Any>()) }
-                            var selectedImage by remember { mutableStateOf<Any?>(null) }
-
-                            FormContentWrapper(
-                                title = " ajouter des immages "
-                            ) {
-                                Box(Modifier.height(250.dp)){
-                                    FormSelectImages(
-                                        selectedImage = selectedImage,
-                                        images = images,
-                                        onSelectImages = { images += it },
-                                        onSelectedImageChange = {
-                                            selectedImage = it
-                                        },
-                                        onRemoveImage = {
-                                            it?.let { images -= it }
+                                    TypeDeBien.MAISON.name -> {
+                                        IncrementeDecrementValue(
+                                            label = "Nombre de chambre",
+                                            value = 0,
+                                            onValueChange = {}
+                                        )
+                                        if (typeDHabitation == TypeDHabitation.MODERNE.name || typeDHabitation == TypeDHabitation.MEUBLER.name) {
+                                            IncrementeDecrementValue(
+                                                label = "Nombre de sale de bain ",
+                                                value = 0,
+                                                onValueChange = {}
+                                            )
                                         }
+                                        IncrementeDecrementValue(
+                                            label = "Nombre de salon",
+                                            value = 0,
+                                            onValueChange = {}
+                                        )
+                                        CheckTextField(
+                                            label = "chambre avec Douche",
+                                            value = false,
+                                            onValueChange = {}
+                                        )
+                                    }
 
-                                    )
+                                    else -> {
+                                        Text("Aucune caracteristique assossier a se bien ")
+                                    }
                                 }
                             }
                         }
                     }
-                    item {
-                        ColumRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                }
+                item {
+                    ColumRow {
+                        var images by remember { mutableStateOf(listOf<Any>()) }
+                        var selectedImage by remember { mutableStateOf<Any?>(null) }
+
+                        FormContentWrapper(
+                            title = "Ajouter des immages "
                         ) {
-                            Box(modifier = Modifier) {
-                                AddRealStateFormItem1()
+                            Box(Modifier) {
+                                FormSelectImages(
+                                    selectedImage = selectedImage,
+                                    images = images,
+                                    onSelectImages = { images += it },
+                                    onSelectedImageChange = {
+                                        selectedImage = it
+                                    },
+                                    onRemoveImage = {
+                                        it?.let { images -= it }
+                                    }
+
+                                )
                             }
-                            Box(modifier = Modifier) {
-                                AddRealStateFormItem2()
-                            }
+                        }
+                    }
+                }
+
+                item {
+                    ColumRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Box(modifier = Modifier) {
+                            AddRealStateFormItem1()
+                        }
+                        Box(modifier = Modifier) {
+                            AddRealStateFormItem2()
                         }
                     }
                 }
             }
         }
+
     }
 }
 
 @Composable
 fun AbonnementRequisCard(
-    titre:String="🔒 Abonnement requis",
-    message: String="Pour publier un bien, vous devez disposer d’un abonnement actif. Abonnez-vous maintenant pour profiter de tous les avantages.",
+    titre: String = "🔒 Abonnement requis",
+    message: String = "Pour publier un bien, vous devez disposer d’un abonnement actif. Abonnez-vous maintenant pour profiter de tous les avantages.",
     onAbonnerClick: () -> Unit,
     onAnnulerClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .wrapContentHeight().width(300.dp)
+            .height(600.dp).width(400.dp)
             .padding(16.dp),
         shape = RoundedCornerShape(7.dp),
         elevation = CardDefaults.cardElevation(5.dp),
@@ -304,7 +336,7 @@ fun AbonnementRequisCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text =message ,
+                text = message,
                 style = MaterialTheme.typography.bodyMedium
             )
 
@@ -330,8 +362,6 @@ fun AbonnementRequisCard(
         }
     }
 }
-
-
 
 
 @Composable

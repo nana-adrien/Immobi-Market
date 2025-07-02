@@ -3,10 +3,13 @@ package empire.digiprem.core.di
 
 import androidx.navigation.NavController
 import empire.digiprem.app.service.JwtTokenService
+import empire.digiprem.data.local.DataBaseStorage
+import empire.digiprem.data.local.repository.UserRepository
 import empire.digiprem.data.remote.config.HttpConstants
 import empire.digiprem.data.remote.config.KtorfitServiceCreator
 import empire.digiprem.data.remote.config.provideHttpClient
 import empire.digiprem.data.remote.service.OAuthEndPointEndPointService
+import empire.digiprem.domain.repository.IUserRepository
 import empire.digiprem.domain.servives.IJwtTokenService
 import empire.digiprem.presentation.viewmodels.*
 import org.koin.core.KoinApplication
@@ -85,7 +88,7 @@ val commonModules = module {
     viewModel { HomeViewModel() }
     viewModel { SettingsViewModel() }
     viewModel { NotificationsViewModel() }
-    viewModel { SessionManager(get(),get()) }
+    viewModel { SessionManager(get(),get(),get()) }
 }
 
 val appModule= module {
@@ -93,6 +96,8 @@ val appModule= module {
     single<HttpClient>{ provideHttpClient(HttpConstants.BASE_URL,get()) }
     single <KtorfitServiceCreator>{ KtorfitServiceCreator(HttpConstants.BASE_URL,get(),get()) }
     single <OAuthEndPointEndPointService>{OAuthEndPointEndPointService()}
+    single <DataBaseStorage>{DataBaseStorage(get())}
+    single <IUserRepository>{UserRepository(get())}
 }
 expect val initializeModules: Module
 

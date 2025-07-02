@@ -338,6 +338,7 @@ fun ExpandingRailDrawer(navigationRail: NavigationTypeEnum) {
 
 
 data class NavigationItem(
+    val position:Int,
     val label: String,
     val selected: Boolean = false,
     val enableExpenciveItem: Boolean = true,
@@ -406,7 +407,7 @@ fun NavigationRailWithPopupDrawer(
                     modifier = Modifier.background(Material1Theme.colorScheme.surface)
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = if (enableNavRail) 30.dp else 0.dp),
+                        modifier = Modifier.fillMaxWidth().padding(top = if (enableNavRail) 30.dp else 0.dp).padding(vertical =10.dp),
                         verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.spacedBy(25.dp)
                     ) {

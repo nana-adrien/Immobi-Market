@@ -25,7 +25,6 @@ class OAuthEndPointEndPointService:AbstractDatasourceEventController(), IOAuthEn
     override fun verifyIdentity(identity: String, pinCode: String): Flow<DataSourceEvent> {
         return dataSourceEventControllerEx { repository.verifyIdentity( VerifyIdentityRequestDto(email = identity,pinCode= pinCode,isEmailIdentity = true)) }
     }
-
     override fun login(email: String, password: String): Flow<DataSourceEvent> {
         return dataSourceEventControllerEx { repository.login(  LoginRequestDTO2(email = email,password= password,IsEmailIdentity = true)) }
     }

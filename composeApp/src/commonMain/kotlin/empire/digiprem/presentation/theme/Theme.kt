@@ -7,8 +7,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
-import empire.digiprem.app.model.components.Utilisateur
+import empire.digiprem.data.local.entities.Utilisateur
 import empire.digiprem.presentation.base.color.Colors
 import empire.digiprem.presentation.viewmodels.componenet.SessionManager
 import org.koin.compose.viewmodel.koinViewModel

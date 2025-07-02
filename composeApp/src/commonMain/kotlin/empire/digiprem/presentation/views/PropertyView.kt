@@ -36,6 +36,7 @@ data class TabItem(
 */
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PropertyView(
     viewProperty: ViewProperty,
@@ -83,10 +84,11 @@ fun PropertyView(
         mutableListOf(
             HorizontalPagerItem(
                 empire.digiprem.presentation.components.NavigationItem(
+                    position = 0,
                     label = "All",
                     icon = Icons.Default.List,
                     onClick = {
-                    },
+                    }
                 ),
                 {
                     HorizontalPagerContent(RealEstateState.All)
@@ -98,6 +100,7 @@ fun PropertyView(
             ),
             HorizontalPagerItem(
                 empire.digiprem.presentation.components.NavigationItem(
+                    position = 1,
                     label = "On Hold",
                     icon = Icons.Default.Pending,
                     onClick = {},
@@ -108,6 +111,7 @@ fun PropertyView(
             ),
             HorizontalPagerItem(
                 empire.digiprem.presentation.components.NavigationItem(
+                    position = 2,
                     label = "active",
                     icon = Icons.Default.HourglassTop,
                     onClick = {},
@@ -118,6 +122,7 @@ fun PropertyView(
             ),
             HorizontalPagerItem(
                 empire.digiprem.presentation.components.NavigationItem(
+                    position = 3,
                     label = "Expired",
                     icon = Icons.Default.HourglassDisabled,
                     onClick = {},
@@ -180,9 +185,6 @@ fun PropertyView(
                 .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(2.dp))
         )
     }
-
-
-
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,

@@ -46,23 +46,21 @@ import org.jetbrains.compose.resources.painterResource
 fun FormContentWrapper(title: String = "", cardModifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         if (title.isNotEmpty()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().height(30.dp)
-
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(start = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(7.dp)
             ) {
-                Box(Modifier.width(5.dp).fillMaxHeight() .clip(RoundedCornerShape(topEnd = 7.dp, bottomEnd = 7.dp)).background(MaterialTheme.colorScheme.primary))
                 Text(
                     title,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 10.dp)
                 )
+                Box(Modifier.height(3.dp).width(60.dp) .clip(RoundedCornerShape(topEnd = 7.dp, bottomEnd = 7.dp)).background(MaterialTheme.colorScheme.secondary.copy(0.5f)))
             }
         }
-
         AppCardWrapperEx(
             modifier = cardModifier.clip(RoundedCornerShape(10.dp)).background(Color.LightGray.copy(alpha = 0.2f))
                 .padding(20.dp),

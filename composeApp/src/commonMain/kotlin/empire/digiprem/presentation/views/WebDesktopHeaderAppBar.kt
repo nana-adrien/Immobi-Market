@@ -34,6 +34,7 @@ import composeApp.src.commonMain.ComposeResources.drawable.IM_Plan_de_travail_1
 import composeApp.src.commonMain.ComposeResources.drawable.IM_Plan_de_travail_3
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import empire.digiprem.config.isCompactApplication
+import empire.digiprem.enums.Role
 import empire.digiprem.navigation.*
 import empire.digiprem.presentation.base.color.Colors
 import empire.digiprem.presentation.components.AppHeader
@@ -280,10 +281,13 @@ fun WebDesktopHeaderAppBar(
                         }
                         AppIconActionButton(
                             selected = activeTopBarAction.currentActionName.equals("profil") && activeTopBarAction.enabled,
-                            onClick = { lamd("profil") { ProfilMenu(navController) {
-                                activeTopBarAction = activeTopBarAction.copy(enabled = false)
-                            }
-                            } },
+                            onClick = {
+                                lamd("profil") {
+                                    ProfilMenu(navController) {
+                                        activeTopBarAction = activeTopBarAction.copy(enabled = false)
+                                    }
+                                }
+                            },
                         ) {
                             utilisateur?.let {
                                 AsyncImage(
@@ -354,10 +358,14 @@ fun WebDesktopHeaderAppBar(
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
-                Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     TextButton(
                         onClick = {
-                           sessionManager.diseableDialogSessionExpirateMessage()
+                            sessionManager.diseableDialogSessionExpirateMessage()
                             navController.navigate(ViewHome())
                         }
                     ) {
@@ -380,10 +388,11 @@ fun WebDesktopHeaderAppBar(
 
 
 @Composable
-fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit={}) {
+fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit = {}) {
     val sessionManager = LocalSessionManager.current
     val utilisateur by sessionManager.utilisateur.collectAsState()
     var enabledLogOutDialog by remember { mutableStateOf(false) }
+    var enabledAddPropertyPermission by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.wrapContentHeight().width(300.dp).padding(10.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp),
@@ -445,8 +454,12 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit={}) {
                 label = "Publier un bien",
                 icon = Icons.Default.Publish,
                 onClick = {
+                    if (utilisateur?.role != Role.PROPRIETAIRE) {
+                        enabledAddPropertyPermission=true
+                    } else {
+                        navController.navigate(ViewPropertyAddProperty())
+                    }
                     onClickItem()
-                    navController.navigate(ViewPropertyAddProperty())
                 }
             )
         }
@@ -457,7 +470,6 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit={}) {
                 modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 CustomExpensiveNavItem(
                     modifier = Modifier.fillMaxWidth(),
                     label = "Mon Profile",
@@ -492,7 +504,7 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit={}) {
                     icon = Icons.AutoMirrored.Filled.Logout,
                     onClick = {
                         onClickItem()
-                        enabledLogOutDialog = !enabledLogOutDialog
+                        enabledLogOutDialog =true
                     }
                 )
             }
@@ -507,32 +519,52 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit={}) {
             onDismissRequest = { enabledLogOutDialog = false },
         ) {
             Column(
-                modifier = Modifier.height(250.dp).width(300.dp).padding(horizontal = 20.dp)
+                modifier = Modifier.height(600.dp).width(400.dp).padding(horizontal = 10.dp)
                     .clip(RoundedCornerShape(7.dp)).background(Color.White).padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text("Deconnection", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text("Vous allez etre deconnecter voulez vous continuer l'operation ? ?", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    "Vous allez etre deconnecter voulez vous continuer l'operation ? ?",
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row {
                     TextButton(
                         onClick = {
                             enabledLogOutDialog = false
                         }
-                    ){
+                    ) {
                         Text("Annuler")
                     }
                     TextButton(
                         onClick = {
                             enabledLogOutDialog = false
                             sessionManager.logOut()
-                            navController.navigate(ViewHome())}
-                    ){
+                            navController.navigate(ViewHome())
+                        }
+                    ) {
                         Text("Continuer")
                     }
                 }
             }
+        }
+    }
+    AnimatedVisibility(
+        enabledAddPropertyPermission
+    ) {
+        Dialog(
+            onDismissRequest = { enabledAddPropertyPermission = false },
+        ) {
+            AbonnementRequisCard(
+                onAbonnerClick = {
+                    enabledAddPropertyPermission = false
+                },
+                onAnnulerClick = {
+                    enabledAddPropertyPermission = false
+                }
+            )
         }
     }
 }

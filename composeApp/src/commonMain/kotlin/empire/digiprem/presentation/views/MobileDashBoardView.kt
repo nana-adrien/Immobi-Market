@@ -49,6 +49,7 @@ fun MobileDashBoardView(
     val views: MutableList<HorizontalPagerItem> = mutableListOf(
        HorizontalPagerItem(
             NavigationItem(
+                position = 0,
                 label = "Market",
                 icon = Icons.Default.ShoppingCart,
                 onClick = {},
@@ -60,6 +61,7 @@ fun MobileDashBoardView(
         views += listOf(
             HorizontalPagerItem(
                 NavigationItem(
+                    position = 1,
                     label = "Property",
                     icon = Icons.Default.Home,
                     onClick = {
@@ -70,6 +72,7 @@ fun MobileDashBoardView(
             ),
             HorizontalPagerItem(
                 NavigationItem(
+                    position = 2,
                     label = "Statistics",
                     icon = Icons.Default.QueryStats,
                     onClick = {},
@@ -79,6 +82,7 @@ fun MobileDashBoardView(
 
             HorizontalPagerItem(
                 NavigationItem(
+                    position = 3,
                     label = "Chat",
                     icon = Icons.Default.Chat,
                     onClick = { },
@@ -89,6 +93,7 @@ fun MobileDashBoardView(
             ),
             HorizontalPagerItem(
                 NavigationItem(
+                    position = 4,
                     label = "Settings",
                     icon = Icons.Default.Settings,
                     onClick = { },

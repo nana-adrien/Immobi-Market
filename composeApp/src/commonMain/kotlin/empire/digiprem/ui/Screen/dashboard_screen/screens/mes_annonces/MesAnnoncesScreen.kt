@@ -34,6 +34,7 @@ sealed class MesAnnoncesNavigationContainer(val route: String) {
     object AnnonceSuivi : MesAnnoncesNavigationContainer("AnnonceSuivi")
 }
 
+/*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,10 +100,12 @@ fun MesAnnoncesScreen(navController: NavHostController) {
                 composable(MesAnnoncesNavigationContainer.Annonces.route) {
                     Box(modifier = Modifier.fillMaxSize().background(Color.Red))
                 }
-                /*
+                */
+/*
                 composable(MesAnnoncesNavigationContainer.Annonces.route) {
                     MesAnnoncesScreen(navController)
-                }*/
+                }*//*
+
             }
         }
 
@@ -123,3 +126,4 @@ fun MesAnnoncesScreen(navController: NavHostController) {
 
 
 }
+*/

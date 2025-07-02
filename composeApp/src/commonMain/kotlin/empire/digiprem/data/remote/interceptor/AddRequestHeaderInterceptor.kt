@@ -28,7 +28,9 @@ class AddRequestHeaderInterceptor(
         val isLoginEndpoint =
             urlPath.contains("/login") ||
                     urlPath.contains("/register") ||
-                    urlPath.contains("/verify-identity")
+                    urlPath.contains("/verify-identity")||
+                    urlPath.contains("/refresh-token")||
+                    urlPath.contains("offre-immobiliere/get-all")
 
         if (!isLoginEndpoint) {
             val accessToken = tokenStorage.getToken(TokenEnum.ACCESS_TOKEN)

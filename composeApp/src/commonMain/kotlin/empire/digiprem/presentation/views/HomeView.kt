@@ -943,7 +943,7 @@ fun AppButtonEx(
     Row(
         modifier = Modifier.then(modifier).wrapContentWidth()
             .height(50.dp)
-            .onHoverReaction()
+            .onHoverReaction(baseElevation = 2.dp, hoverElevation = 10.dp)
             .background(MaterialTheme.colorScheme.secondary)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 20.dp),
@@ -994,15 +994,15 @@ fun SelectContentTextField(
 
 
     Column(
-        modifier = Modifier
-            .border(width = 1.dp, color = Color.LightGray, shape = RoundedCornerShape(7.dp)).fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
+            .border(width = 1.dp, color = Color.LightGray, shape = RoundedCornerShape(7.dp))
             .height(41.dp)
             .onGloballyPositioned { coordinates ->
                 componentWidth = coordinates.size.width  // Largeur en pixels
             }
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().clickable { onDismissRequest() }.padding(start = 16.dp),
+            modifier = Modifier.fillMaxSize().background(containerColor).clickable { onDismissRequest() }.padding(start = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -1022,7 +1022,7 @@ fun SelectContentTextField(
                     Row(
                         modifier = Modifier.fillMaxWidth().wrapContentHeight().background(
                             if (selected == it) {
-                                MaterialTheme.colorScheme.primary
+                                MaterialTheme.colorScheme.primary.copy(0.5f)
                             } else {
                                 MaterialTheme.colorScheme.surface
                             }
@@ -1032,7 +1032,7 @@ fun SelectContentTextField(
                         }.padding(start = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = it, fontWeight = FontWeight.W600, fontSize = 14.sp)
+                        Text(text = it, fontWeight = FontWeight.W600, fontSize = 14.sp, color =  if (selected == it) MaterialTheme.colorScheme.surface else Color.Black)
                     }
                 }
             }

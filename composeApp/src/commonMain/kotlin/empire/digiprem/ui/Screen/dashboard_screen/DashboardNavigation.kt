@@ -24,6 +24,7 @@ import empire.digiprem.presentation.components.NavigationItem
 import empire.digiprem.presentation.components.NavigationRailWithPopupDrawer
 import empire.digiprem.presentation.components.TopBarAction
 
+/*
 
 @Composable
 fun DashboardNavigation(navController: NavHostController, dashboardState: Dashboard) {
@@ -122,7 +123,8 @@ fun DashboardNavigation(navController: NavHostController, dashboardState: Dashbo
                 // selectedItem = Messages.route
             }
         ),
-        /*NavigationItem(
+        */
+/*NavigationItem(
             label = "Annonces Pacouru",
             icon = Icons.Default.Traffic,
             //  selected = selectedItem == DashboardNavigationContainer.AnnonceSuivi.route,
@@ -132,9 +134,11 @@ fun DashboardNavigation(navController: NavHostController, dashboardState: Dashbo
                 navigationController.navigate(AnnonceSuivi)
                 // selectedItem = DashboardNavigationContainer.AnnonceSuivi.route
             }
-        ),*/
+        ),*//*
+
     )
-    /*
+    */
+/*
     val navigation2 = listOf(
         NavigationItem(
             label = "Market Place",
@@ -164,7 +168,8 @@ fun DashboardNavigation(navController: NavHostController, dashboardState: Dashbo
                 selectedItem = DashboardNavigationContainer.Messages.route
             }
         ),
-    )*/
+    )*//*
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         NavigationRailWithPopupDrawer(
@@ -207,3 +212,4 @@ fun DashboardNavigation(navController: NavHostController, dashboardState: Dashbo
 
 
 }
+*/

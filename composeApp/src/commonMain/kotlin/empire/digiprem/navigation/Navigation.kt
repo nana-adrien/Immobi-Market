@@ -32,12 +32,6 @@ import androidx.savedstate.read
 import androidx.savedstate.write
 import empire.digiprem.core.utils.getName
 import empire.digiprem.presentation.components.*
-import empire.digiprem.presentation.views.AuthenticateScreen.*
-import empire.digiprem.ui.Screen.dashboard_screen.DashboardNavigation
-import empire.digiprem.ui.Screen.dashboard_screen.HomeScreen
-import empire.digiprem.ui.Screen.dashboard_screen.screens.AnnonceSuiviScreen
-import empire.digiprem.ui.Screen.dashboard_screen.screens.MessagesScreen
-import empire.digiprem.ui.Screen.dashboard_screen.screens.NotificationsScreen
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -185,7 +179,7 @@ fun AppNavigation(
             }
         ),
     )*/
-    val DashboardNavigation1 = listOf(
+    /*val DashboardNavigation1 = listOf(
         NavigationItem(
             label = "Market Place",
             icon = Icons.Default.ShoppingCart,
@@ -205,7 +199,7 @@ fun AppNavigation(
             onClick = {
                 navController.navigate(annonces)
             },
-            /* subNavigationItem = listOf(
+            *//* subNavigationItem = listOf(
                 NavigationItem(
                     label = "Retour Dashboard",
                     icon = Icons.Default.ArrowBack,
@@ -238,7 +232,7 @@ fun AppNavigation(
                         navController.navigate(dashboardState.copy(section = SectionEnum.annonceParcourrue.name))
                     }
                 ),
-            )*/
+            )*//*
         ),
         NavigationItem(
             label = "Notifications",
@@ -259,7 +253,7 @@ fun AppNavigation(
                 // selectedItem = Messages.route
             }
         ),
-        /*NavigationItem(
+        *//*NavigationItem(
             label = "Annonces Pacouru",
             icon = Icons.Default.Traffic,
             //  selected = selectedItem == DashboardNavigationContainer.AnnonceSuivi.route,
@@ -269,13 +263,13 @@ fun AppNavigation(
                 navigationController.navigate(AnnonceSuivi)
                 // selectedItem = DashboardNavigationContainer.AnnonceSuivi.route
             }
-        ),*/
+        ),*//*
 
 
 
 
 
-    )
+    )*/
     val listRoute = listOf(
         annonces.getName(),
         notifications.getName(),

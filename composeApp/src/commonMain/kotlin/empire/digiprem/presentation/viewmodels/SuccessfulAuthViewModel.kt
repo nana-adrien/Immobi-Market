@@ -2,19 +2,16 @@ package empire.digiprem.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import empire.digiprem.app.model.components.Utilisateur
+import empire.digiprem.data.local.entities.Utilisateur
 import empire.digiprem.data.config.DataSourceEventHandlerDecorator
-import empire.digiprem.data.local.DataBaseTemp
 import empire.digiprem.data.remote.service.ProfileService
 import empire.digiprem.dto.profile.GetProfileResponse
-import empire.digiprem.enums.Role
 import empire.digiprem.model.ApiResponse2
 import empire.digiprem.navigation.ViewHome
 import empire.digiprem.presentation.viewmodels.base.AbstractViewModel
 import empire.digiprem.presentation.intents.SuccessfulAuthIntent
 import empire.digiprem.presentation.models.SuccessfulAuthModel
 import empire.digiprem.presentation.viewmodels.componenet.SessionManager
-import empire.digiprem.presentation.views.Authentication.SuccessfulAuthView
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -58,7 +55,8 @@ class SuccessfulAuthViewModel(val navController: NavController,val sessionManage
                                 nom = data.name,
                                 email = data.email,
                                 photo = data.profileUrl,
-                                role = data.role,))
+                                role = data.role,)
+                        )
                         navController.navigate(ViewHome()) // Navigate to home screen
                     }
                 }

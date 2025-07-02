@@ -1,8 +1,9 @@
-package empire.digiprem.app.model.components
+package empire.digiprem.data.local.entities
 
-import androidx.compose.runtime.compositionLocalOf
 import empire.digiprem.enums.Role
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Utilisateur(
     val nom: String,
     val email: String,

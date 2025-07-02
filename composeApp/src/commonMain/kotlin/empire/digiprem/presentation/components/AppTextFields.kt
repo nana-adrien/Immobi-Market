@@ -38,8 +38,8 @@ data class AppTextFieldState(
 
 @Composable
 fun AppTextField(
-    modifier: Modifier = Modifier,
-    textFieldModifier: Modifier=Modifier.wrapContentHeight(),
+    modifier: Modifier = Modifier.wrapContentWidth().heightIn(min=45.dp),
+    textFieldModifier: Modifier=Modifier.fillMaxHeight(),
     value: String,
     errorMessage: String = "Cependant, pour une gestion plus avancée et optimisée ",
     placeholder: String? = null,
@@ -56,13 +56,13 @@ fun AppTextField(
 ) {
     var isFocus by remember { mutableStateOf(false) }
     Column(
-        modifier = modifier
+        modifier = Modifier.wrapContentSize()
     ) {
         label?.let {
-            Box(Modifier.wrapContentHeight()) { it() }
+            Box(Modifier.fillMaxHeight()) { it() }
         }
         Row(
-            modifier = Modifier.wrapContentWidth().height(45.dp).clip(RoundedCornerShape(8.dp)).background(Color.White)
+            modifier = modifier.clip(RoundedCornerShape(8.dp)).background(Color.White)
                 .border(
                     width = if (isError || isFocus) 0.7.dp else 0.4.dp,
                     color = if (isError) Color.Red else if (isFocus) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
@@ -78,19 +78,19 @@ fun AppTextField(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             leadingIcon?.let {
-                Box(Modifier.wrapContentHeight()) { it() }
+                Box(Modifier.fillMaxHeight()) { it() }
             }
 
             Box(Modifier.weight(1f).wrapContentHeight()) {
                 if (!isFocus && value.isEmpty() || (isFocus && value.isEmpty())) {
                     placeholder?.let {
-                        Box(modifier = Modifier.wrapContentHeight().padding(horizontal = 3.dp)) {
+                        Box(modifier = Modifier.fillMaxHeight().padding(horizontal = 3.dp)) {
                             Text(text = it.toString(), style = textStyle.copy(color = Color.Gray), maxLines = 1)
                         }
                     }
                 }
                 BasicTextField(
-                    modifier = textFieldModifier.fillMaxWidth().padding(horizontal = 3.dp),
+                    modifier =  Modifier.fillMaxHeight().fillMaxWidth().padding(horizontal = 3.dp),
                     singleLine = singleLine,
                     enabled = enabled,
                     value = value,
@@ -101,7 +101,7 @@ fun AppTextField(
                 )
             }
             trailingIcon?.let {
-                Box(Modifier.wrapContentHeight()) { it() }
+                Box(Modifier.fillMaxHeight()) { it() }
             }
         }
     }

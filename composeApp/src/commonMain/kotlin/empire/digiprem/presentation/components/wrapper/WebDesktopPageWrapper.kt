@@ -34,6 +34,7 @@ data class PageWrapperState(
 @Composable
 fun WebDesktopPageWrapper(
     modifier: Modifier = Modifier,
+    topBarModifier: Modifier= Modifier.height(80.dp),
     view: EnumView?=null,
     state: PageWrapperState,
     enabledTobAppBar: Boolean = true,
@@ -41,20 +42,21 @@ fun WebDesktopPageWrapper(
     contentColor: Color = contentColorFor(containerColor),
     actions: @Composable() (RowScope.() -> Unit) = {},
     customTopAppBar: @Composable() ((TopAppBarScrollBehavior?) -> Unit)? =null,
+    secondTopBar: @Composable() () -> Unit={},
     content: @Composable() (PaddingValues) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+   // val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier.padding(top = 50.dp).then(modifier).nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.padding(top = 50.dp).then(modifier),//.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = containerColor,
         contentColor = contentColor,
         topBar = {
             if(enabledTobAppBar){
                customTopAppBar?.let {
-                   it(scrollBehavior)
+                 //  it(scrollBehavior)
                }?: TopAppBar(
-                   modifier = Modifier.height(80.dp),
+                   modifier =Modifier.padding(vertical = 20.dp).then(topBarModifier) ,
                     windowInsets = WindowInsets(0.dp),
                    //scrollBehavior = scrollBehavior,
                     colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
@@ -133,61 +135,67 @@ fun WebDesktopPageWrapper(
             }
         }
     ) {
-        Box(modifier = Modifier.padding(it).fillMaxSize(), contentAlignment = Alignment.Center) {
-            if (state.isLoading) {
-                //   CircularProgressIndicator(modifier = Modifier.size(50.dp))
-                LoadingScreen()
-            } else {
-                if (state.isSuccess && !state.isFailure) {
-                    content.invoke(PaddingValues(0.dp))
-                }
-                AnimatedVisibility(!state.isSuccess && state.isFailure) {
-                    Column(
-                        modifier = Modifier.width(400.dp).height(500.dp)
-                            .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp)).background(Color.White),
-                    ) {
-                        Box(
-                            modifier = Modifier.weight(0.6f).fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                modifier = Modifier.fillMaxSize(0.7f),
-                                imageVector = Icons.Filled.BreakfastDining,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+        Column(modifier=Modifier.fillMaxSize().padding(it), verticalArrangement = Arrangement.Top){
+            secondTopBar()
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                if (state.isLoading) {
+                    //   CircularProgressIndicator(modifier = Modifier.size(50.dp))
+                    LoadingScreen()
+                } else {
+                    if (state.isSuccess && !state.isFailure) {
+                        Column(Modifier.fillMaxSize()){
+                            content.invoke(PaddingValues(0.dp))
                         }
-                        Box(modifier = Modifier.weight(0.4f), contentAlignment = Alignment.Center) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.spacedBy(20.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+
+                    }
+                    androidx.compose.animation.AnimatedVisibility(!state.isSuccess && state.isFailure) {
+                        Column(
+                            modifier = Modifier.width(400.dp).height(500.dp)
+                                .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp)).background(Color.White),
+                        ) {
+                            Box(
+                                modifier = Modifier.weight(0.6f).fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
                             ) {
+                                Icon(
+                                    modifier = Modifier.fillMaxSize(0.7f),
+                                    imageVector = Icons.Filled.BreakfastDining,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            Box(modifier = Modifier.weight(0.4f), contentAlignment = Alignment.Center) {
                                 Column(
-                                    modifier = Modifier.fillMaxWidth().padding(10.dp),
-                                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.spacedBy(20.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(
-                                        "Ooops une erreur est survenue lors du chargement de la page\n cause probable :",
-                                        style = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center)
-                                    )
-                                    Text(
-                                        "<<${state.errorMessage}>>",
-                                        style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.error)
-                                    )
-                                }
-                                Button(
-                                    onClick = state.onRefresh
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth().padding(10.dp),
+                                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            "Ooops une erreur est survenue lors du chargement de la page\n cause probable :",
+                                            style = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center)
+                                        )
+                                        Text(
+                                            "<<${state.errorMessage}>>",
+                                            style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.error)
+                                        )
+                                    }
+                                    Button(
+                                        onClick = state.onRefresh
 
-                                ) {
-                                    Text("Retry")
-                                    Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                                    ) {
+                                        Text("Retry")
+                                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                                    }
                                 }
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }
