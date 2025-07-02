@@ -6,7 +6,7 @@ import empire.digiprem.enums.chat.MessageStatusEnum
 import empire.digiprem.enums.chat.MessageTypeEnum
 import empire.digiprem.model.chat.Conversation
 import empire.digiprem.model.chat.Message
-import empire.digiprem.presentation.views.NotificationItem
+import empire.digiprem.model.NotificationItem
 
 object DataBaseTemp {
     var tokenTable: Map<String, String> = emptyMap()
@@ -300,42 +300,4 @@ object DataBaseTemp {
     var isConnected = false
     var token=""
     var userProfile: GetProfileResponse?=null
-    val notifications = listOf(
-        NotificationItem(
-            id = 1,
-            title = "Bienvenue sur DigiPrem !",
-            body = "Votre inscription a été complétée avec succès.",
-            time = "2025-06-29 08:15",
-            isRead = false
-        ),
-        NotificationItem(
-            id = 2,
-            title = "Nouvelle offre disponible",
-            body = "Une nouvelle offre de studio est disponible à Bonamoussadi.",
-            time = "2025-06-29 10:42",
-            isRead = false
-        ),
-        NotificationItem(
-            id = 3,
-            title = "Mot de passe changé",
-            body = "Votre mot de passe a été modifié avec succès.",
-            time = "2025-06-28 17:00",
-            isRead = true
-        ),
-        NotificationItem(
-            id = 4,
-            title = "Paiement reçu",
-            body = "Votre paiement pour l'abonnement premium a été reçu.",
-            time = "2025-06-27 14:23",
-            isRead = true
-        ),
-        NotificationItem(
-            id = 5,
-            title = "Message de l'administrateur",
-            body = "Merci d’utiliser nos services. Nous restons à votre disposition.",
-            time = "2025-06-26 09:00",
-            isRead = false
-        )
-    )
-
 }

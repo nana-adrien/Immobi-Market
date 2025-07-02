@@ -1,4 +1,4 @@
-package empire.digiprem.controller
+package empire.digiprem.controller.notification
 
 import com.google.firebase.messaging.FirebaseMessagingException
 import empire.digiprem.dto.NotificationRequest
@@ -19,8 +19,9 @@ import java.util.concurrent.ExecutionException
 
 @Tag(name = "notification")
 @RestController
-@RequestMapping("api/v1/notification")
+@RequestMapping("api/v2/notification")
 class NotificationController(private val fcmService: FCMService, private val fcmService2: FCMService2) {
+
     /*
        * Nous avons exposé un point de terminaison /notification qui acceptera un objet NotificationRequest et appellera la méthode sendMessageToToken() de notre classe de service pour envoyer la notification push.
         * */
@@ -30,7 +31,6 @@ class NotificationController(private val fcmService: FCMService, private val fcm
         fcmService.sendMessageToken(request)
         return ApiResponse2.successResponse(NotificationResponse(HttpStatus.OK.value(), "Notification has been sent."))
     }
-
     @Api200
     @PostMapping("/send2")
     @Throws(

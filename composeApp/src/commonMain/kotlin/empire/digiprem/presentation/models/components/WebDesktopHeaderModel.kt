@@ -1,7 +1,7 @@
 package empire.digiprem.presentation.models.components
 
 import empire.digiprem.model.chat.Conversation
-import empire.digiprem.presentation.views.NotificationItem
+import empire.digiprem.model.NotificationItem
 
 data class WebDesktopHeaderModel(
     val notifications:List<NotificationItem> = emptyList(),

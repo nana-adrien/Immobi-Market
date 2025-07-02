@@ -20,9 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import composeApp.src.commonMain.ComposeResources.drawable.IM_Plan_de_travail_1
 import composeApp.src.commonMain.ComposeResources.drawable.Res
-import composeApp.src.commonMain.ComposeResources.drawable.images
 import empire.digiprem.presentation.components.AppVerticalScrollBar
-import empire.digiprem.presentation.views.NotificationItem
+import empire.digiprem.model.NotificationItem
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

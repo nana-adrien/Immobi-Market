@@ -48,7 +48,7 @@ fun WebDesktopPageWrapper(
    // val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier.padding(top = 50.dp).then(modifier),//.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.padding(top = 20.dp, start = 10.dp).then(modifier),//.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = containerColor,
         contentColor = contentColor,
         topBar = {

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import empire.digiprem.navigation.ViewPropertyALLProperty
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -201,8 +203,10 @@ fun PropertyALLPropertyView(
         modifier = Modifier,
         view = EnumView.ViewPropertyALLProperty,
         state = PageWrapperState(isSuccess = true),
-        secondTopBar = {
+        actions = {
             ScrollableTabRow(
+                modifier = Modifier.width(150.dp),
+                containerColor = MaterialTheme.colorScheme.background,
                 selectedTabIndex = selectedIndex
             ) {
                 listTab.forEachIndexed { index, it ->
@@ -222,7 +226,7 @@ fun PropertyALLPropertyView(
                     )
                 }
             }
-        }
+        },
     ) {
         HorizontalPager(
             state = pageState,
@@ -233,15 +237,20 @@ fun PropertyALLPropertyView(
     }
 
     AnimatedVisibility(currentRealEstateData!=null){
+
+
         Dialog(
             onDismissRequest = {currentRealEstateData = null}
         ) {
-            DetailRealEstateItemView(
-                viewDetailRealEstateItem =ViewDetailRealEstateItem(),
-                navController =navController,
-                realEstateData = currentRealEstateData,
-                onClose = { currentRealEstateData = null },
-            )
+            Box(modifier = Modifier.height( 800.dp).width(600.dp).clip(RoundedCornerShape(10.dp))) {
+                DetailRealEstateItemView(
+                    viewDetailRealEstateItem =ViewDetailRealEstateItem(),
+                    navController =navController,
+                    realEstateData = currentRealEstateData,
+                    onClose = { currentRealEstateData = null },
+                )
+            }
+
         }
     }
 

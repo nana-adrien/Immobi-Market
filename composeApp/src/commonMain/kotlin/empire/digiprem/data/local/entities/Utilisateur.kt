@@ -8,6 +8,7 @@ data class Utilisateur(
     val nom: String,
     val email: String,
     val photo: String,
+    val enabledlightMode: Boolean=true,
     val role: Role
 )
 

@@ -55,7 +55,7 @@ fun DetailRealEstateItemView(
 
     val pagerState = rememberPagerState(initialPage = 0) { realEstateData?.images?.size?:0 }
     val scope = rememberCoroutineScope()
-    LazyColumn(modifier = Modifier.height( 800.dp).width(600.dp)) {
+    LazyColumn(modifier =Modifier.fillMaxSize()) {
         realEstateData?.images?.let {
             item {
                 Box(modifier = Modifier.height(500.dp).fillMaxWidth()) {

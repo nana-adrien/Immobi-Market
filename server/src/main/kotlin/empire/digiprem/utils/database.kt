@@ -5,6 +5,7 @@ import empire.digiprem.dto.bien_immobilier.Maison
 import empire.digiprem.dto.bien_immobilier.get.RecuperUneOffreResponseDTO
 import empire.digiprem.enums.TypeDHabitation
 import empire.digiprem.enums.TypeDeBien
+import empire.digiprem.model.NotificationItem
 import empire.digiprem.models.database.Equipement
 import kotlin.random.Random
 
@@ -48,6 +49,7 @@ object database {
         datePublication = "2023-10-01T12:00:00",
         // estEnLine = true, // Par défaut, l'offre est en ligne
         // estExpire = false, // Par défaut, l'offre n'est pas expirée
+
     )
 
    /* val equipementsTest = listOf(
@@ -106,4 +108,40 @@ object database {
         offre,
         offre2,
     )
+
+
+    val notifications = mutableListOf(
+        NotificationItem(
+            title = "Bienvenue sur DigiPrem !",
+            body = "Votre inscription a été complétée avec succès.",
+            time = "2025-06-29 08:15",
+            isRead = false
+        ),
+        NotificationItem(
+            title = "Nouvelle offre disponible",
+            body = "Une nouvelle offre de studio est disponible à Bonamoussadi.",
+            time = "2025-06-29 10:42",
+            isRead = false
+        ),
+        NotificationItem(
+            title = "Mot de passe changé",
+            body = "Votre mot de passe a été modifié avec succès.",
+            time = "2025-06-28 17:00",
+            isRead = true
+        ),
+        NotificationItem(
+            title = "Paiement reçu",
+            body = "Votre paiement pour l'abonnement premium a été reçu.",
+            time = "2025-06-27 14:23",
+            isRead = true
+        ),
+        NotificationItem(
+            title = "Message de l'administrateur",
+            body = "Merci d’utiliser nos services. Nous restons à votre disposition.",
+            time = "2025-06-26 09:00",
+            isRead = false
+        )
+    )
+    val updatedNotifiactions=notifications
+
 }

@@ -1,7 +1,11 @@
 package empire.digiprem.presentation.viewmodels.componenet
 
 import androidx.lifecycle.viewModelScope
+import empire.digiprem.data.config.DataSourceEventHandlerDecorator
 import empire.digiprem.data.local.DataBaseTemp
+import empire.digiprem.data.remote.service.NotificationsService
+import empire.digiprem.domain.servives.remote.INotificationsService
+import empire.digiprem.dto.notification.GetNotificationResponseDTO
 import empire.digiprem.presentation.intents.component.WebDesktopHeaderIntent
 import empire.digiprem.presentation.models.components.WebDesktopHeaderModel
 import empire.digiprem.presentation.viewmodels.base.AbstractViewModel
@@ -11,6 +15,12 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class WebDesktopHeaderViewModel(val isConnected:Boolean): AbstractViewModel<WebDesktopHeaderModel, WebDesktopHeaderIntent>(defaultState = WebDesktopHeaderModel()){
+
+    private val notificationsService:INotificationsService=NotificationsService()
+
+    init {
+        onIntentHandler(WebDesktopHeaderIntent.OnInitIntent)
+    }
     override fun onIntentHandler(intent: WebDesktopHeaderIntent) {
       viewModelScope.launch {
           when (intent) {
@@ -23,15 +33,8 @@ class WebDesktopHeaderViewModel(val isConnected:Boolean): AbstractViewModel<WebD
     suspend fun getNotifications(enabled:Boolean){
         if(enabled){
             while (true){
-                _mutableState.update {
-                    it.copy(
-                        notifications = DataBaseTemp.notifications.filter { n->/*it.id<= Random.nextInt(6) || */n.isRead==Random.nextBoolean() },
-                        messages = listOf(
-
-                        )
-                    )
-                }
-                delay(1*60*1000L)
+                getAllNotifications()
+                delay(60*1000L)
             }
         }
     }
@@ -40,5 +43,24 @@ class WebDesktopHeaderViewModel(val isConnected:Boolean): AbstractViewModel<WebD
       viewModelScope.launch {
           getNotifications(false)
       }
+    }
+
+
+    suspend fun getAllNotifications(){
+        collectDataSourceEvent(
+            notificationsService.getAllNotifications(),
+            object :DataSourceEventHandlerDecorator<GetNotificationResponseDTO> (){
+
+                override suspend fun onSuccessConnexion(key: Any?, data: GetNotificationResponseDTO) {
+                    super.onSuccessConnexion(key, data)
+                    _mutableState.update {
+                        it.copy(
+                            notifications =  it.notifications + data.notifications.filter {n->!it.notifications.contains(n)},
+                        )
+                    }
+                }
+
+            }
+        )
     }
 }

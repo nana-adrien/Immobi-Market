@@ -35,12 +35,14 @@ import composeApp.src.commonMain.ComposeResources.drawable.IM_Plan_de_travail_3
 import composeApp.src.commonMain.ComposeResources.drawable.Res
 import empire.digiprem.config.isCompactApplication
 import empire.digiprem.enums.Role
+import empire.digiprem.model.NotificationsFilter
 import empire.digiprem.navigation.*
 import empire.digiprem.presentation.base.color.Colors
 import empire.digiprem.presentation.components.AppHeader
 import empire.digiprem.presentation.components.AppIconActionButton
 import empire.digiprem.presentation.components.CustomExpensiveNavItem
 import empire.digiprem.presentation.components.TopBarAction
+import empire.digiprem.presentation.intents.component.WebDesktopHeaderIntent
 import empire.digiprem.presentation.viewmodels.componenet.WebDesktopHeaderViewModel
 import empire.digiprem.ui.Screen.dashboard_screen.screens.notifications.Notifications
 import octopusfx.client.mobile.core.ui.theme.LocalSessionManager
@@ -69,6 +71,13 @@ fun WebDesktopHeaderAppBar(
             )
         )
     }
+
+    LaunchedEffect(isConnected){
+        if(isConnected){
+            viewModel.onIntentHandler(WebDesktopHeaderIntent.OnInitIntent)
+        }
+    }
+
     var selectedPage by remember { mutableStateOf(pages.entries.first().key) }
 
     var lamd: (String, @Composable () -> Unit) -> Unit = { title, content ->
@@ -197,7 +206,92 @@ fun WebDesktopHeaderAppBar(
                                         Box(
                                             modifier = Modifier.height(250.dp).width(350.dp)
                                         ) {
-                                            Notifications(state.notifications)
+                                            Column {
+                                                Column {
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth()
+                                                            .padding(start = 10.dp, end = 10.dp),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.SpaceBetween
+                                                    ) {
+                                                        Text(
+                                                            text = "Notifications",
+                                                            style = MaterialTheme.typography.titleMedium.copy(
+                                                                color = MaterialTheme.colorScheme.onBackground,
+                                                                fontWeight = FontWeight.Bold
+                                                            ),
+                                                        )
+
+                                                        IconButton(onClick = {}) {
+                                                            Icon(
+                                                                imageVector = Icons.Default.MoreHoriz,
+                                                                contentDescription = null
+                                                            )
+                                                        }
+
+                                                    }
+                                                    var selectedItem by remember { mutableStateOf(0) }
+                                                    var notificationFilter by remember { mutableStateOf(NotificationsFilter.ALL) }
+                                                    ScrollableTabRow(
+                                                        selectedTabIndex = selectedItem,
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        //verticalAlignment = Alignment.CenterVertically,
+                                                       /* horizontalArrangement = Arrangement.spacedBy(
+                                                            10.dp,
+                                                            alignment = Alignment.Start
+                                                        )*/
+                                                    ) {
+                                                        TextButton(
+                                                            onClick = {
+                                                                notificationFilter=NotificationsFilter.ALL
+                                                                selectedItem=0
+                                                            },
+                                                        ) {
+                                                            Text(
+                                                                "Tout"
+                                                            )
+                                                        }
+                                                        TextButton(
+                                                            onClick = {
+                                                                notificationFilter=NotificationsFilter.AS_READ
+                                                                selectedItem=1},
+                                                        ) {
+                                                            Text(
+                                                                "Lu"
+                                                            )
+                                                        }
+                                                        TextButton(
+                                                            onClick = {
+                                                                notificationFilter=NotificationsFilter.NOT_READ
+                                                                selectedItem=2},
+                                                        ) {
+                                                            Text(
+                                                                "Non lu"
+                                                            )
+                                                        }
+                                                        TextButton(
+                                                            onClick = {
+                                                                notificationFilter=NotificationsFilter.NOT_READ
+                                                                selectedItem=2},
+                                                        ) {
+                                                            Text(
+                                                                "voir plus..."
+                                                            )
+                                                        }
+                                                    }
+                                                    Notifications(state.notifications.filter {
+                                                        when(notificationFilter){
+                                                            NotificationsFilter.ALL -> true
+                                                            NotificationsFilter.AS_READ -> it.isRead
+                                                            NotificationsFilter.NOT_READ -> !it.isRead
+                                                        }
+                                                    })
+                                                }
+                                                /*  Conversations(
+                                                      navController = navController
+                                                  )*/
+                                            }
+
                                         }
                                     }
                                 },
@@ -391,7 +485,7 @@ fun WebDesktopHeaderAppBar(
 fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit = {}) {
     val sessionManager = LocalSessionManager.current
     val utilisateur by sessionManager.utilisateur.collectAsState()
-    var enabledLogOutDialog by remember { mutableStateOf(false) }
+   var enabledLogOutDialog by remember { mutableStateOf(false) }
     var enabledAddPropertyPermission by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.wrapContentHeight().width(300.dp).padding(10.dp),
@@ -429,11 +523,11 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit = {}) {
             IconButton(
                 modifier = Modifier.padding(top = 10.dp, end = 10.dp).size(30.dp).align(Alignment.TopEnd),
                 onClick = {
-                    navController.navigate(ViewStatistics())
+                    sessionManager.changeTheme()
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.LightMode,
+                    imageVector = if (utilisateur?.enabledlightMode==true) Icons.Default.LightMode else Icons.Default.DarkMode,
                     contentDescription = ""
                 )
             }
@@ -503,7 +597,6 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit = {}) {
                     label = "Deconnexion",
                     icon = Icons.AutoMirrored.Filled.Logout,
                     onClick = {
-                        onClickItem()
                         enabledLogOutDialog =true
                     }
                 )
@@ -519,7 +612,7 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit = {}) {
             onDismissRequest = { enabledLogOutDialog = false },
         ) {
             Column(
-                modifier = Modifier.height(600.dp).width(400.dp).padding(horizontal = 10.dp)
+                modifier = Modifier.padding(horizontal = 10.dp)
                     .clip(RoundedCornerShape(7.dp)).background(Color.White).padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -534,6 +627,7 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit = {}) {
                     TextButton(
                         onClick = {
                             enabledLogOutDialog = false
+                            onClickItem()
                         }
                     ) {
                         Text("Annuler")
@@ -542,6 +636,7 @@ fun ProfilMenu(navController: NavHostController, onClickItem: () -> Unit = {}) {
                         onClick = {
                             enabledLogOutDialog = false
                             sessionManager.logOut()
+                            onClickItem()
                             navController.navigate(ViewHome())
                         }
                     ) {

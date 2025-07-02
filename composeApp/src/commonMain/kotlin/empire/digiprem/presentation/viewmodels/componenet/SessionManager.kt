@@ -26,7 +26,11 @@ import org.koin.core.component.KoinComponent
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-class SessionManager(val userRepository: IUserRepository, private val tokenStorage: TokenStorage, private val oAuthEndPointEndPointService:OAuthEndPointEndPointService): ViewModel(), KoinComponent {
+class SessionManager(
+    val userRepository: IUserRepository,
+    private val tokenStorage: TokenStorage,
+    private val oAuthEndPointEndPointService: OAuthEndPointEndPointService
+) : ViewModel(), KoinComponent {
     private val _utilisateur = MutableStateFlow<Utilisateur?>(null)
     val utilisateur: StateFlow<Utilisateur?> = _utilisateur.asStateFlow()
     private val _isStarted = MutableStateFlow(false)
@@ -34,7 +38,7 @@ class SessionManager(val userRepository: IUserRepository, private val tokenStora
     private val _enabledLogOutDialog = MutableStateFlow(false)
     val enabledLogOutDialog = _enabledLogOutDialog.asStateFlow()
 
-  private  val dataSourceEventCollector=DataSourceEventCollector()
+    private val dataSourceEventCollector = DataSourceEventCollector()
 
     init {
         viewModelScope.launch {
@@ -42,21 +46,21 @@ class SessionManager(val userRepository: IUserRepository, private val tokenStora
                 val token = getToken()
                 if (token != null) {
                     if (!isTokenExpired(token)) {
-                        if (userRepository.getUser()!=null){
-                            _utilisateur.value=userRepository.getUser()
+                        if (userRepository.getUser() != null) {
+                            _utilisateur.value = userRepository.getUser()
                             _isStarted.value = true
                         }
                     } else {
-                        val refreshToken=getRefreshToken()
-                        if (refreshToken!=null){
-                            Log.e("refreshtoken",refreshToken.toString())
-                            if (!isTokenExpired(refreshToken)){
-                                Log.e("refreshtoken",refreshToken.toString())
+                        val refreshToken = getRefreshToken()
+                        if (refreshToken != null) {
+                            Log.e("refreshtoken", refreshToken.toString())
+                            if (!isTokenExpired(refreshToken)) {
+                                Log.e("refreshtoken", refreshToken.toString())
                                 refreshToken(refreshToken)
-                            }else{
+                            } else {
                                 logOut()
                             }
-                        } else{
+                        } else {
                             logOut()
                         }
                     }
@@ -65,23 +69,28 @@ class SessionManager(val userRepository: IUserRepository, private val tokenStora
             }
         }
     }
-    suspend fun refreshToken(refreshToken:String) {
+
+    suspend fun refreshToken(refreshToken: String) {
         dataSourceEventCollector.collectEvent(
             event = oAuthEndPointEndPointService.refreshToken(refreshToken),
-            object : BaseDataSourceEventHandler<RefreshTokenResponseDTO>(){
+            object : BaseDataSourceEventHandler<RefreshTokenResponseDTO>() {
                 override suspend fun onLoading() {
                 }
+
                 override suspend fun onFailConnexion(message: String) {
-                    Log.e("refreshToken",message)
+                    Log.e("refreshToken", message)
                     logOut()
                 }
+
                 override suspend fun onErrorConnexion(code: Int, messages: List<ApiResponse2.ErrorMessage>) {
-                    Log.e("refreshToken",messages.toString())
+                    Log.e("refreshToken", messages.toString())
                     logOut()
                 }
+
                 override suspend fun onFailProcess() {
                     logOut()
                 }
+
                 override suspend fun onSuccessConnexion(key: Any?, data: RefreshTokenResponseDTO) {
                     clearTokens()
                     saveToken(data.tokensResult)
@@ -97,8 +106,8 @@ class SessionManager(val userRepository: IUserRepository, private val tokenStora
     }
 
     @OptIn(ExperimentalTime::class)
-    fun isTokenExpired(token: String):Boolean{
-        val expirationTime=1000*TokensResult.getAccessTokenClaims(token, TokenHelper.EXPIRATION_TIME).toLong()
+    fun isTokenExpired(token: String): Boolean {
+        val expirationTime = 1000 * TokensResult.getAccessTokenClaims(token, TokenHelper.EXPIRATION_TIME).toLong()
         if (expirationTime < Clock.System.now()
                 .toEpochMilliseconds()
         ) {
@@ -116,35 +125,49 @@ class SessionManager(val userRepository: IUserRepository, private val tokenStora
     fun updateNom(nouveauNom: String) {
         _utilisateur.update { it?.copy(nom = nouveauNom) }
     }
-    fun  logOut(){
+
+    fun logOut() {
         viewModelScope.launch {
             _isStarted.value = false
             if (_utilisateur.value != null) {
                 _utilisateur.value = null
-                _enabledLogOutDialog.value=true
+                _enabledLogOutDialog.value = true
                 userRepository.deleteUser()
             }
             clearTokens()
         }
     }
-    fun diseableDialogSessionExpirateMessage(){
-        _enabledLogOutDialog.value=false
+
+    fun diseableDialogSessionExpirateMessage() {
+        _enabledLogOutDialog.value = false
     }
+
     fun clear() {
         _utilisateur.value = null
     }
+
     suspend fun getToken(): String? {
         return tokenStorage.getToken(TokenEnum.ACCESS_TOKEN)
     }
-    private suspend fun getRefreshToken():String?{
+
+    private suspend fun getRefreshToken(): String? {
         return tokenStorage.getToken(TokenEnum.REFRESH_TOKEN)
     }
-    suspend fun saveToken(tokensResult: TokensResult){
-        tokenStorage.saveToken(TokenEnum.ACCESS_TOKEN,tokensResult.accessToken)
-        tokenStorage.saveToken(TokenEnum.REFRESH_TOKEN,tokensResult.refreshToken)
+
+    suspend fun saveToken(tokensResult: TokensResult) {
+        tokenStorage.saveToken(TokenEnum.ACCESS_TOKEN, tokensResult.accessToken)
+        tokenStorage.saveToken(TokenEnum.REFRESH_TOKEN, tokensResult.refreshToken)
     }
 
-    suspend fun getUser(){
-        _utilisateur.value=userRepository.getUser()
+    suspend fun getUser() {
+        _utilisateur.value = userRepository.getUser()
+    }
+     fun changeTheme() {
+         viewModelScope.launch {
+             val oldThemeMode = _utilisateur.value?.enabledlightMode == true
+             _utilisateur.value?.let {
+                 setUtilisateur(user =it.copy(enabledlightMode = !oldThemeMode))
+             }
+         }
     }
 }

@@ -1,41 +1,28 @@
 package empire.digiprem.presentation.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil3.compose.AsyncImage
-import composeApp.src.commonMain.ComposeResources.drawable.Res
-import composeApp.src.commonMain.ComposeResources.drawable.compose_multiplatform
-import composeApp.src.commonMain.ComposeResources.drawable.images
-import empire.digiprem.config.isCompactMobilePlatform
-import empire.digiprem.config.isCompactPlatform
+import empire.digiprem.model.NotificationItem
 import empire.digiprem.navigation.EnumView
 import empire.digiprem.navigation.ViewNotifications
-import empire.digiprem.navigation.ViewProfil
-import empire.digiprem.presentation.components.*
 import empire.digiprem.presentation.components.wrapper.PageWrapperState
 import empire.digiprem.presentation.components.wrapper.WebDesktopPageWrapper
 import empire.digiprem.presentation.viewmodels.NotificationsViewModel
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -198,7 +185,7 @@ fun NotificationScreen(
     notifications: List<NotificationItem>,
     onDeleteSelected: (List<NotificationItem>) -> Unit
 ) {
-    var selectedItems by remember {mutableStateOf(setOf<Int>()) }
+    var selectedItems by remember {mutableStateOf(setOf<String>()) }
 
     val isSelectionMode = selectedItems.isNotEmpty()
 
@@ -289,19 +276,13 @@ fun NotificationRow(
         }
     }
 }
-data class NotificationItem(
-    val id: Int,
-    val title: String,
-    val body: String,
-    val time: String,
-    val isRead:Boolean=false,
-)
+
 @Composable
 fun NotificationScreenPreview() {
     val sampleNotifications = listOf(
-        NotificationItem(1, "New Message", "You have a new message from John", "5 mins ago"),
-        NotificationItem(2, "App Update", "Version 2.0 is available", "1 hour ago"),
-        NotificationItem(3, "Reminder", "Meeting at 3PM today", "Yesterday")
+        NotificationItem("1", "New Message", "You have a new message from John", "5 mins ago"),
+        NotificationItem("2", "App Update", "Version 2.0 is available", "1 hour ago"),
+        NotificationItem("3", "Reminder", "Meeting at 3PM today", "Yesterday")
     )
     NotificationScreen(notifications = sampleNotifications, onDeleteSelected = {})
 }
